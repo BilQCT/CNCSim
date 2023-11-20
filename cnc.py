@@ -97,7 +97,7 @@ class CNCState:
                 if pauli in commuting_paulis:
                     new_value_assignment[pauli] = self.value_assignment[pauli]
                 else:
-                    beta = pauli.calculate_beta(measured_pauli)
+                    beta = pauli.calculate_beta(measured_pauli) % 2
                     new_value_assignment[pauli] = (
                         self.value_assignment[pauli + measured_pauli] + outcome + beta
                     ) % 2
@@ -143,7 +143,7 @@ class CNCState:
                     gamma_a = value_assignment[pauli]
                     gamma_b = value_assignment[other_pauli]
                     gamma_ab = value_assignment[(pauli + other_pauli)]
-                    beta = pauli.calculate_beta(other_pauli)
+                    beta = pauli.calculate_beta(other_pauli) % 2
                     if (gamma_a + gamma_b - gamma_ab) % 2 != beta:
                         return False
         return True
@@ -206,7 +206,9 @@ def run_simulations_with_distribution(
     rng = np.random.default_rng()
     counts = []
     for _ in range(num_simulations):
-        initial_state = rng.choice(distribution.keys(), p=distribution.values())
+        initial_state = rng.choice(
+            list(distribution.keys()), p=list(distribution.values())
+        )
         outcomes = simulate(initial_state, measurements)
         counts.append("".join(str(i) for i in outcomes))
 

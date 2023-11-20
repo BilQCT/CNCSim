@@ -70,7 +70,7 @@ class HyperCubeManager:
         result = ((state + np.ones(len(state))) % 2).astype(int)
         for comm_pauli in self.commuting_paulis[pauli]:
             comm_index = comm_pauli.order
-            gamma = comm_pauli.calculate_beta(pauli)
+            gamma = comm_pauli.calculate_beta(pauli) % 2
 
             # Note that addition in the formula is defined in arrays and in modulo 2 not in their order
             added_index = binary_array_to_decimal((pauli.a + comm_pauli.a) % 2)
@@ -117,7 +117,9 @@ class HyperCubeManager:
         rng = np.random.default_rng()
         counts = []
         for _ in range(num_simulations):
-            initial_state = rng.choice(distribution.keys(), p=distribution.values())
+            initial_state = rng.choice(
+                list(distribution.keys()), p=list(distribution.values())
+            )
             outcomes = self.simulate(initial_state, measurements)
             counts.append("".join(str(i) for i in outcomes))
 
@@ -179,8 +181,8 @@ def two_qubit_counter_example():
 
     # Z1, ZX
     measurements = [
-        PauliOperator(np.array([0, 0, 1, 0])),
-        PauliOperator(np.array([0, 1, 1, 0])),
+        PauliOperator('ZI'),
+        PauliOperator('ZX'),
     ]
     counts_hm = hm.run_simulations_with_distribution(
         distribution, measurements, num_simulations
