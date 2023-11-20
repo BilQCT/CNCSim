@@ -5,9 +5,14 @@ from qutip import Qobj, identity, sigmax, sigmaz, tensor
 from qutip.measurement import measure
 import matplotlib.pyplot as plt
 from qiskit.tools.visualization import plot_histogram
-from utils import (PauliOperator, decimal_to_binary_array,
-                     binary_array_to_decimal, H_GATE,
-                     T_GATE)
+from utils import (
+    PauliOperator,
+    decimal_to_binary_array,
+    binary_array_to_decimal,
+    H_GATE,
+    T_GATE,
+)
+
 
 class HyperCubeManager:
     def __init__(self, n: int) -> None:
@@ -64,7 +69,6 @@ class HyperCubeManager:
         s = state[index]
         result = ((state + np.ones(len(state))) % 2).astype(int)
         for comm_pauli in self.commuting_paulis[pauli]:
-            print(comm_pauli)
             comm_index = comm_pauli.order
             gamma = comm_pauli.calculate_beta(pauli)
 
@@ -76,7 +80,7 @@ class HyperCubeManager:
 
     def simulate(
         self, initial_state: np.ndarray, measurements: list[PauliOperator]
-    ) -> list:
+    ) -> list[int]:
         state = initial_state
         rng = np.random.default_rng()
         outcomes = []
@@ -85,22 +89,20 @@ class HyperCubeManager:
             s = int(state[index])
             # If the coin flip is 1, then we transition to a new state, otherwise we stay in the same state
             if rng.choice([0, 1]) == 1:
-                print("Transitioned!!")
                 state = self.find_transition_state(state, measurement)
-            print("State:", state)
             outcomes.append(s)
 
         return outcomes
 
     def run_simulations_with_state(
         self, rho: np.ndarray, measurements: list[PauliOperator], num_simulations: int
-    ) -> list:
+    ) -> dict[str, int]:
         counts = []
         alphas = self.find_pauli_coefficients(rho)
         for _ in range(num_simulations):
             initial_state = self.sample_initial_state(alphas)
             outcomes = self.simulate(initial_state, measurements)
-            counts.append("".join(str(i) for i in outcomes)[::-1])
+            counts.append("".join(str(i) for i in outcomes))
 
         counts.sort()
         counts = {x: counts.count(x) for x in counts}
@@ -111,14 +113,11 @@ class HyperCubeManager:
         distribution: dict[tuple, float],
         measurements: list[PauliOperator],
         num_simulations: int,
-    ) -> list:
+    ) -> dict[str, int]:
         rng = np.random.default_rng()
-        states = list(distribution.keys())
-        distribution = list(distribution.values())
         counts = []
         for _ in range(num_simulations):
-            initial_state = rng.choice(states, p=distribution)
-            print("\ninitial state:",  initial_state)
+            initial_state = rng.choice(distribution.keys(), p=distribution.values())
             outcomes = self.simulate(initial_state, measurements)
             counts.append("".join(str(i) for i in outcomes))
 
@@ -129,7 +128,7 @@ class HyperCubeManager:
 
 def qutip_simuation(
     initial_state: Qobj, measurements: list[Qobj], num_simulations: int
-) -> list:
+) -> dict[str, int]:
     counts = []
     for _ in range(num_simulations):
         state = initial_state
@@ -200,17 +199,14 @@ def two_qubit_counter_example():
     counts_qutip = qutip_simuation(state, measurements, num_simulations)
 
     colors = ["blue", "orange"]
-    
+
     plot_histogram([counts_qutip, counts_hm], color=colors)
     handles = [plt.Rectangle((0, 0), 1, 1, color=color) for color in colors]
     labels = ["Qutip", "Hypercube"]
     plt.legend(handles, labels)
     plt.title("Maximally mixed state measured in Z1, ZX Bases")
     plt.show()
-    
 
 
 if __name__ == "__main__":
     two_qubit_counter_example()
-    
-
