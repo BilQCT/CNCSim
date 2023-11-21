@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import numpy as np
 from utils import PauliOperator
-
+from qutip import Qobj, identity, sigmax, sigmay, sigmaz, tensor
+from qutip.measurement import measure
+import matplotlib.pyplot as plt
+from qiskit.tools.visualization import plot_histogram
+import copy
 
 class CNCState:
     def __init__(
@@ -149,7 +153,7 @@ class CNCState:
         return True
 
     def __str__(self) -> str:
-        return f"CNC State(n={self.n}, omega={self.omega}, gamma={self.gamma})"
+        return f"CNC State(n={self.n}, cnc_set={self.cnc_set}, value_assignment={self.value_assignment})"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -209,9 +213,96 @@ def run_simulations_with_distribution(
         initial_state = rng.choice(
             list(distribution.keys()), p=list(distribution.values())
         )
+        initial_state = copy.deepcopy(initial_state)
         outcomes = simulate(initial_state, measurements)
         counts.append("".join(str(i) for i in outcomes))
 
     counts.sort()
     counts = {x: counts.count(x) for x in counts}
     return counts
+
+def qutip_simuation(
+    initial_state: Qobj, measurements: list[Qobj], num_simulations: int
+) -> dict[str, int]:
+    counts = []
+    for _ in range(num_simulations):
+        state = initial_state
+        outcomes = []
+        for measurement in measurements:
+            outcome, state = measure(state, measurement)
+            if outcome == 1:
+                outcome = 0
+            else:
+                outcome = 1
+            outcomes.append(outcome)
+
+        counts.append("".join(str(i) for i in outcomes))
+
+    counts.sort()
+    counts = {x: counts.count(x) for x in counts}
+
+    return counts
+
+if __name__ == "__main__":
+    num_simulations = 4096
+    cnc_set = {
+        PauliOperator('II'),
+        PauliOperator('IZ'),
+        PauliOperator('ZI'),
+        PauliOperator('ZZ'),
+        PauliOperator('YI'),
+        PauliOperator('YZ'),
+        PauliOperator('XI'),
+        PauliOperator('XZ')
+    }
+
+    value_assignment1 = {
+        pauli: 0 for pauli in cnc_set
+    }
+
+    value_assignment2 = {
+        PauliOperator('II'): 0,
+        PauliOperator('IZ'): 0,
+        PauliOperator('ZI'): 0,
+        PauliOperator('ZZ'): 0,
+        PauliOperator('YI'): 1,
+        PauliOperator('YZ'): 1,
+        PauliOperator('XI'): 1,
+        PauliOperator('XZ'): 1
+    }
+
+    initial_state1 = CNCState(2, cnc_set, value_assignment1)
+    initial_state2 = CNCState(2, cnc_set, value_assignment2)
+
+    measurements = [
+        PauliOperator('YY'),
+        PauliOperator('ZI'),
+    ]
+
+    distribution = {
+        initial_state1: 0.5,
+        initial_state2: 0.5
+    }
+
+    counts_cnc = run_simulations_with_distribution(distribution, measurements, num_simulations)
+
+    II = tensor(identity(2), identity(2))
+    ZI = tensor(sigmaz(), identity(2))
+    IZ = tensor(identity(2), sigmaz())
+    ZZ = tensor(sigmaz(), sigmaz())
+    YY = tensor(sigmay(), sigmay())
+
+    rho = 1/4 * (II + ZI + IZ + ZZ)
+
+    measurements = [YY, ZI]
+
+    counts_qutip = qutip_simuation(rho, measurements, num_simulations)
+
+    colors = ["blue", "orange"]
+
+    plot_histogram([counts_qutip, counts_cnc], color=colors)
+    handles = [plt.Rectangle((0, 0), 1, 1, color=color) for color in colors]
+    labels = ["Qutip", "CNC"]
+    plt.legend(handles, labels)
+    plt.title("rho in YY, ZI Bases")
+    plt.show()
