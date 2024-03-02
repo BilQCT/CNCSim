@@ -1,6 +1,7 @@
 from __future__ import annotations
 import numpy as np
 from typing import Union
+import itertools
 
 # Quantum Gates
 PAULI_X = np.array([[0, 1], [1, 0]])
@@ -160,6 +161,21 @@ class PauliOperator:
         if self.n != other.n:
             raise RuntimeError("Size of the operators is not correct")
         return (self.a_z.dot(other.a_x) + self.a_x.dot(other.a_z)) % 2
+    
+    def find_commuting_paulis(self) -> list[PauliOperator]:
+        """
+        Finds the Pauli operators that commutes with the instance Pauli operator.
+
+        Returns:
+        list[PauliOperator]: List of commuting Pauli operators.
+        """
+        result = []
+        for p in itertools.product([0, 1], repeat=2 * self.n):
+            pauli = PauliOperator(np.array(p))
+            if pauli.calculate_omega(self) == 0:
+                result.append(pauli)
+
+        return result
 
     def _pauli_string_to_pauli_array(self, pauli_string: str) -> np.ndarray:
         """
@@ -235,3 +251,37 @@ class PauliOperator:
     def __hash__(self) -> int:
         return hash(self.a.tobytes())
     
+
+def get_canonical_isotropic_generators(n: int) -> list[PauliOperator]:
+    """
+    Returns the canonical isotropic generators for the given number of qubits.
+
+    Parameters:
+    n (int): Number of qubits.
+
+    Returns:
+    list[PauliOperator]: List of canonical isotropic generators. The generators are
+        X_1, X_2, ..., X_n
+    """
+    if n < 0:
+        raise RuntimeError("Number of qubits cannot be negative")
+
+    if n == 0:
+        return []
+
+    result = []
+    for i in range(n):
+        a = np.zeros(2 * n)
+        a[i] = 1
+        result.append(PauliOperator(a))
+
+    return result
+
+
+
+
+
+if __name__ == '__main__':
+    pass
+         
+
