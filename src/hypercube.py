@@ -1,17 +1,14 @@
 from __future__ import annotations
-import numpy as np
+
 import itertools
-from qutip import Qobj, identity, sigmax, sigmaz, tensor
-from qutip.measurement import measure
+
 import matplotlib.pyplot as plt
+import numpy as np
 from qiskit.tools.visualization import plot_histogram
-from utils import (
-    PauliOperator,
-    decimal_to_binary_array,
-    binary_array_to_decimal,
-    H_GATE,
-    T_GATE,
-)
+from qutip import identity, sigmax, sigmaz, tensor
+
+from utils import (H_GATE, T_GATE, Pauli, binary_array_to_decimal,
+                   decimal_to_binary_array, qutip_simuation)
 
 
 class HyperCubeManager:
@@ -24,15 +21,13 @@ class HyperCubeManager:
         return self._n
 
     @property
-    def commuting_paulis(self) -> dict[PauliOperator, list[PauliOperator]]:
+    def commuting_paulis(self) -> dict[Pauli, list[Pauli]]:
         return self._commuting_paulis
 
     def find_pauli_coefficients(self, rho: np.ndarray) -> np.ndarray:
         alphas = np.zeros(2 ** (2 * self.n))
         for i in range(2 ** (2 * self.n)):
-            pauli_i = PauliOperator(
-                decimal_to_binary_array(i, width=2 * self.n)
-            ).get_operator()
+            pauli_i = Pauli(decimal_to_binary_array(i, width=2 * self.n)).get_operator()
             alphas[i] = np.trace(pauli_i @ rho).real
 
         return alphas
@@ -51,9 +46,7 @@ class HyperCubeManager:
         return np.array(f_values)
 
     def find_commuting_paulis(self, n: int) -> dict[np.ndarray, list[np.ndarray]]:
-        paulis = [
-            PauliOperator(np.array(p)) for p in itertools.product([0, 1], repeat=2 * n)
-        ]
+        paulis = [Pauli(np.array(p)) for p in itertools.product([0, 1], repeat=2 * n)]
         result = {paulis[i]: [paulis[i]] for i in range(len(paulis))}
         for i in range(len(paulis)):
             for j in range(i + 1, len(paulis)):
@@ -62,30 +55,28 @@ class HyperCubeManager:
                     result[paulis[j]].append(paulis[i])
         return result
 
-    def find_transition_state(
-        self, state: np.ndarray, pauli: PauliOperator
-    ) -> np.ndarray:
-        index = pauli.order
+    def find_transition_state(self, state: np.ndarray, pauli: Pauli) -> np.ndarray:
+        index = pauli.associated_integer
         s = state[index]
         result = ((state + np.ones(len(state))) % 2).astype(int)
         for comm_pauli in self.commuting_paulis[pauli]:
-            comm_index = comm_pauli.order
+            comm_index = comm_pauli.associated_integer
             gamma = comm_pauli.calculate_beta(pauli) % 2
 
             # Note that addition in the formula is defined in arrays and in modulo 2 not in their order
-            added_index = binary_array_to_decimal((pauli.a + comm_pauli.a) % 2)
+            added_index = binary_array_to_decimal((pauli.bsf + comm_pauli.bsf) % 2)
             result[comm_index] = (s + gamma + state[added_index]) % 2
 
         return result
 
     def simulate(
-        self, initial_state: np.ndarray, measurements: list[PauliOperator]
+        self, initial_state: np.ndarray, measurements: list[Pauli]
     ) -> list[int]:
         state = initial_state
         rng = np.random.default_rng()
         outcomes = []
         for measurement in measurements:
-            index = measurement.order
+            index = measurement.associated_integer
             s = int(state[index])
             # If the coin flip is 1, then we transition to a new state, otherwise we stay in the same state
             if rng.choice([0, 1]) == 1:
@@ -95,7 +86,10 @@ class HyperCubeManager:
         return outcomes
 
     def run_simulations_with_state(
-        self, rho: np.ndarray, measurements: list[PauliOperator], num_simulations: int
+        self,
+        rho: np.ndarray,
+        measurements: list[Pauli],
+        num_simulations: int,
     ) -> dict[str, int]:
         counts = []
         alphas = self.find_pauli_coefficients(rho)
@@ -111,7 +105,7 @@ class HyperCubeManager:
     def run_simulations_with_distribution(
         self,
         distribution: dict[tuple, float],
-        measurements: list[PauliOperator],
+        measurements: list[Pauli],
         num_simulations: int,
     ) -> dict[str, int]:
         rng = np.random.default_rng()
@@ -128,38 +122,15 @@ class HyperCubeManager:
         return counts
 
 
-def qutip_simuation(
-    initial_state: Qobj, measurements: list[Qobj], num_simulations: int
-) -> dict[str, int]:
-    counts = []
-    for _ in range(num_simulations):
-        state = initial_state
-        outcomes = []
-        for measurement in measurements:
-            outcome, state = measure(state, measurement)
-            if outcome == 1:
-                outcome = 0
-            else:
-                outcome = 1
-            outcomes.append(outcome)
-
-        counts.append("".join(str(i) for i in outcomes))
-
-    counts.sort()
-    counts = {x: counts.count(x) for x in counts}
-
-    return counts
-
-
 def one_qubit_example():
     n = 1
     hm = HyperCubeManager(n)
     rho = T_GATE @ H_GATE @ np.array([[1, 0], [0, 0]]) @ H_GATE @ T_GATE.conj().T
     measurements = [
-        PauliOperator(np.array([1, 0])),
-        PauliOperator(np.array([1, 0])),
-        PauliOperator(np.array([1, 1])),
-        PauliOperator(np.array([0, 1])),
+        Pauli(np.array([1, 0])),
+        Pauli(np.array([1, 0])),
+        Pauli(np.array([1, 1])),
+        Pauli(np.array([0, 1])),
     ]
     counts = hm.run_simulations_with_state(rho, measurements, 2048)
     plot_histogram(counts)
@@ -181,8 +152,8 @@ def two_qubit_counter_example():
 
     # Z1, ZX
     measurements = [
-        PauliOperator('ZI'),
-        PauliOperator('ZX'),
+        Pauli("ZI"),
+        Pauli("ZX"),
     ]
     counts_hm = hm.run_simulations_with_distribution(
         distribution, measurements, num_simulations
