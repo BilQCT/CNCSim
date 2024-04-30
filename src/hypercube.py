@@ -56,11 +56,11 @@ class HyperCubeManager:
         return result
 
     def find_transition_state(self, state: np.ndarray, pauli: Pauli) -> np.ndarray:
-        index = pauli.associated_integer
+        index = pauli.basis_order
         s = state[index]
         result = ((state + np.ones(len(state))) % 2).astype(int)
         for comm_pauli in self.commuting_paulis[pauli]:
-            comm_index = comm_pauli.associated_integer
+            comm_index = comm_pauli.basis_order
             gamma = comm_pauli.calculate_beta(pauli) % 2
 
             # Note that addition in the formula is defined in arrays and in modulo 2 not in their order
@@ -76,7 +76,7 @@ class HyperCubeManager:
         rng = np.random.default_rng()
         outcomes = []
         for measurement in measurements:
-            index = measurement.associated_integer
+            index = measurement.basis_order
             s = int(state[index])
             # If the coin flip is 1, then we transition to a new state, otherwise we stay in the same state
             if rng.choice([0, 1]) == 1:

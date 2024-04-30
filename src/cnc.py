@@ -8,8 +8,18 @@ from utils import Pauli
 
 
 class CNC:
-    """Class for the Closed-Under-Inference and Noncontextual (CNC) operators. For detailed information,
-    see https://arxiv.org/abs/1905.05374.
+    """Class for the Closed-Under-Inference and Noncontextual (CNC) operators.
+
+    Note:
+        The CNC operator is defined using a set of Pauli operators which we call :py:attr:`omega` and a function
+        from this set to {0, 1} which we call :py:attr:`gamma`. The set :py:attr:`omega` is closed under inference
+        and the function :py:attr:`gamma` is noncontextual. The CNC operator is defined as the pair
+        (:py:attr:`omega`, :py:attr:`gamma`). We can write the n qubit CNC operator as,
+
+        .. math::
+            A_{\\Omega}^{\\gamma} = \\frac{1}{2^n} \\sum_{a \\in \\Omega} (-1)^{\\gamma(a)} T_a
+
+        For detailed information, see https://arxiv.org/abs/1905.05374.
     """
 
     def __init__(
@@ -90,6 +100,42 @@ class CNC:
         """Noncontextual value assignment for each Pauli operator in the set omega. It takes the Pauli operator
         as the key and the value is either 0 or 1."""
         return self._gamma
+
+    @classmethod
+    def from_pauli_basis_representation(
+        cls, n: int, basis_representation: np.ndarray
+    ) -> CNC:
+        """Creates a CNC operator from a Pauli basis representation.
+
+        Args:
+            n (int): Number of qubits.
+            basis_representation (np.ndarray): Pauli basis representation of the CNC operator. In a Pauli basis
+                representation, value of the index i is the value of the :py:attr:`gamma` for the Pauli with
+                :py:attr:`~utils.Pauli.basis_order` i.
+
+        Returns:
+            CNC: CNC operator created from the Pauli basis representation.
+        """
+        gamma = {}
+        for i, value in enumerate(basis_representation):
+            pauli = Pauli.from_basis_order(n, i)
+            gamma[pauli] = value
+
+        return cls(gamma)
+
+    def get_pauli_basis_representation(self) -> np.ndarray:
+        """Returns the Pauli basis representation of the CNC operator. In a Pauli basis representation,value of
+        the index i is the value of the :py:attr:`gamma` for the Pauli with :py:attr:`~utils.Pauli.basis_order` i.
+
+        Returns:
+            np.ndarray: Pauli basis representation of the CNC operator.
+        """
+        basis_representation = np.zeros(4**self.n)
+        for pauli, value in self.gamma.items():
+            index = pauli.basis_order
+            basis_representation[index] = value
+
+        return basis_representation
 
     def update(self, measured_pauli: Pauli) -> int:
         """Updates the CNC state according to given measurement, and returns the outcome of the measurement.

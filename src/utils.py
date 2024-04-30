@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import itertools
+import os
 from math import isclose
 from typing import Sequence, Union
 
@@ -16,103 +16,6 @@ H_GATE = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
 T_GATE = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
 
 
-def decimal_to_binary_array(decimal: int, width: int) -> np.ndarray:
-    """Converts a decimal number to a numpy array of 0s and 1s. For example 5 in width 4 is converted to [0, 1, 0, 1].
-    Width is required to fill the leading 0s.
-
-    Args:
-        decimal (int): Decimal number.
-        width (int): Width of the binary array.
-
-    Returns:
-        np.ndarray: Numpy array of 0s and 1s.
-    """
-    if decimal < 0:
-        raise RuntimeError("Decimal number cannot be negative")
-    if decimal >= 2**width:
-        raise RuntimeError("Decimal number is too large for the given width")
-
-    binary_str = np.binary_repr(decimal, width=width)
-    return np.array(list(map(int, binary_str)))
-
-
-def binary_array_to_decimal(binary_array: np.ndarray) -> int:
-    """Converts a numpy array of 0s and 1s to a decimal number. For example, [0, 1, 0, 1] is converted to 5.
-
-    Args:
-        binary_array (np.ndarray): Numpy array of 0s and 1s.
-
-    Returns:
-        int: Decimal number.
-    """
-
-    for i in binary_array:
-        if i != 0 and i != 1:
-            raise RuntimeError("Array is not a binary array")
-
-    binary_str = "".join(map(str, binary_array))
-    return int(binary_str, 2)
-
-
-def pauli_str_to_pauli_array(pauli_string: str) -> np.ndarray:
-    """Converts a string of Pauli operators to a numpy array of 0s and 1s.
-    For example "XZ" is converted to [1, 0, 0, 1]. The string is case insensitive.
-
-    Args:
-        pauli_string (str): String of Pauli operators.
-
-    Returns:
-        np.ndarray: Numpy array of 0s and 1s.
-    """
-    if not all([i in ["X", "Y", "Z", "I"] for i in pauli_string]):
-        raise RuntimeError("Invalid Pauli string. It must contain only X, Y, Z, and I.")
-
-    a_x = np.zeros(len(pauli_string))
-    a_z = np.zeros(len(pauli_string))
-
-    pauli_string = pauli_string.upper()
-
-    for i, op in enumerate(pauli_string):
-        if op == "X":
-            a_x[i] = 1
-        elif op == "Y":
-            a_x[i] = 1
-            a_z[i] = 1
-        elif op == "Z":
-            a_z[i] = 1
-        elif op == "I":
-            pass
-        else:
-            raise RuntimeError("Invalid Pauli string")
-
-    pauli_array = np.concatenate((a_x, a_z)).astype(int)
-
-    return pauli_array
-
-
-def qutip_simuation(
-    initial_state: Qobj, measurements: list[Qobj], num_simulations: int
-) -> dict[str, int]:
-    counts = []
-    for _ in range(num_simulations):
-        state = initial_state
-        outcomes = []
-        for measurement in measurements:
-            outcome, state = measure(state, measurement)
-            if isclose(outcome, 1):
-                outcome = 0
-            else:
-                outcome = 1
-            outcomes.append(outcome)
-
-        counts.append("".join(str(i) for i in outcomes))
-
-    counts.sort()
-    counts = {x: counts.count(x) for x in counts}
-
-    return counts
-
-
 class Pauli:
     """Class for Pauli operators."""
 
@@ -126,7 +29,7 @@ class Pauli:
                 For example, "XZ" is equivalent to [1, 0, 0, 1].
         """
         if isinstance(identifier, str):
-            bsf = pauli_str_to_pauli_array(identifier)
+            bsf = pauli_str_to_bsf(identifier)
         elif isinstance(identifier, Sequence):
             if not all(isinstance(i, int) for i in identifier):
                 raise RuntimeError("Sequence elements must contain only integers")
@@ -164,13 +67,25 @@ class Pauli:
         return self._bsf
 
     @property
-    def associated_integer(self) -> int:
+    def basis_order(self) -> int:
         # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
-        """Associated integer of the Pauli which is the decimal value of bsf of the Pauli when
-        it is read as a binary number. Assigning a unique integer to each Pauli operator is useful. This can be seen
-        as enumerating the Pauli basis. So we can write operators in Pauli basis using this enumeration.
+        """Basis order of the Pauli is its order when all Paulis with same number of qubits are sorted
+        lexicographically according to their string representations. This number is used in enumaration
+        of Pauli basis.
         """
-        return binary_array_to_decimal(self.bsf)
+        pauli_str = pauli_bsf_to_str(self.bsf)
+        basis_order = 0
+        for i in range(self.n):
+            qubit_index = self.n - i - 1
+            inc_unit = 4**i
+            if pauli_str[qubit_index] == "X":
+                basis_order += inc_unit
+            elif pauli_str[qubit_index] == "Y":
+                basis_order += inc_unit * 2
+            elif pauli_str[qubit_index] == "Z":
+                basis_order += inc_unit * 3
+
+        return basis_order
 
     @classmethod
     def identity(cls, n: int) -> Pauli:
@@ -178,10 +93,10 @@ class Pauli:
         return cls(np.zeros(2 * n))
 
     @classmethod
-    def from_integer(cls, n: int, associated_integer: int) -> Pauli:
+    def from_basis_order(cls, n: int, basis_order: int) -> Pauli:
         # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
-        """Creates a Pauli with a given number of qubits and an associated integer."""
-        return cls(decimal_to_binary_array(associated_integer, 2 * n))
+        """Creates a Pauli with a given number of qubits and basis order."""
+        return cls(decimal_to_binary_array(basis_order, 2 * n))
 
     def get_operator(self) -> np.ndarray:
         """Creates the matrix representation of the Pauli operator."""
@@ -258,16 +173,7 @@ class Pauli:
         ) % 2
 
     def __str__(self) -> str:
-        pauli_str = "Pauli Operator: "
-        for i in range(self.n):
-            if self.bsf[i] == 1 and self.bsf[i + self.n] == 1:
-                pauli_str += "Y"
-            elif self.bsf[i + self.n] == 1:
-                pauli_str += "Z"
-            elif self.bsf[i] == 1:
-                pauli_str += "X"
-            else:
-                pauli_str += "I"
+        pauli_str = "Pauli Operator: " + pauli_bsf_to_str(self.bsf)
         return pauli_str
 
     def __repr__(self) -> str:
@@ -291,3 +197,184 @@ class Pauli:
 
     def __hash__(self) -> int:
         return hash(self.__str__())
+
+
+def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
+    """Loads the precomputed matrix of all maximal CNC states for n qubits. The matrix is stored in
+    a binary file. Every column of the matrix represents a CNC state in its Pauli basis representation.
+
+    Args:
+        n (int): Number of qubits.
+
+    Returns:
+        np.ndarray: Matrix of all possible CNC states.  Every column of the matrix represents a CNC state in its
+        Pauli basis representation.
+    """
+    file_name = f"../maximal_cnc_matrices/maximal_all_cncs_matrix_{n}.bin"
+
+    if not os.path.exists(file_name):
+        raise RuntimeError(
+            "There is no precomputed matrix of all maximal CNC atates for the given number of qubits"
+        )
+
+    with open(file_name, "rb") as file:
+        rows = int.from_bytes(file.read(8), "little")
+        cols = int.from_bytes(file.read(8), "little")
+        data = np.fromfile(file, dtype=np.uint8)
+
+    # Convert data to bit array and then to -1, 0, 1
+    bits = np.unpackbits(data)
+    matrix = np.zeros((rows, cols), dtype=int)
+    idx = 0
+    for r in range(rows):
+        for c in range(cols):
+            bit1, bit2 = bits[idx], bits[idx + 1]
+            if bit1 == 0 and bit2 == 1:
+                matrix[r, c] = -1
+            elif bit1 == 0 and bit2 == 0:
+                matrix[r, c] = 0
+            elif bit1 == 1 and bit2 == 0:
+                matrix[r, c] = 1
+            idx += 2
+
+    return matrix
+
+
+def decimal_to_binary_array(decimal: int, width: int) -> np.ndarray:
+    """Converts a decimal number to a numpy array of 0s and 1s. For example 5 in width 4 is converted to [0, 1, 0, 1].
+    Width is required to fill the leading 0s.
+
+    Args:
+        decimal (int): Decimal number.
+        width (int): Width of the binary array.
+
+    Returns:
+        np.ndarray: Binary array of the decimal number.
+    """
+    if decimal < 0:
+        raise RuntimeError("Decimal number cannot be negative")
+    if decimal >= 2**width:
+        raise RuntimeError("Decimal number is too large for the given width")
+
+    binary_str = np.binary_repr(decimal, width=width)
+    return np.array(list(map(int, binary_str)))
+
+
+def binary_array_to_decimal(binary_array: np.ndarray) -> int:
+    """Converts a numpy array of 0s and 1s to a decimal number. For example, [0, 1, 0, 1] is converted to 5.
+
+    Args:
+        binary_array (np.ndarray): Numpy array of 0s and 1s.
+
+    Returns:
+        int: Decimal number of the binary array when it is read as a binary number.
+    """
+
+    for i in binary_array:
+        if i != 0 and i != 1:
+            raise RuntimeError("Array is not a binary array")
+
+    binary_str = "".join(map(str, binary_array))
+    return int(binary_str, 2)
+
+
+def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
+    """Converts a string of Pauli operators to a array of 0s and 1s which is its Binary Symplectic Form.
+    For example "XZ" is converted to [1, 0, 0, 1]. The string is case insensitive.
+
+    Args:
+        pauli_string (str): String representation of the Pauli operator.
+
+    Returns:
+        np.ndarray: Binary Symplectic Form of the Pauli operator.
+    """
+
+    a_x = np.zeros(len(pauli_string))
+    a_z = np.zeros(len(pauli_string))
+
+    pauli_string = pauli_string.upper()
+
+    for i, op in enumerate(pauli_string):
+        if op == "X":
+            a_x[i] = 1
+        elif op == "Y":
+            a_x[i] = 1
+            a_z[i] = 1
+        elif op == "Z":
+            a_z[i] = 1
+        elif op == "I":
+            pass
+        else:
+            raise RuntimeError("Invalid Pauli string. It must contain only X, Y, Z, I.")
+
+    pauli_array = np.concatenate((a_x, a_z)).astype(int)
+
+    return pauli_array
+
+
+def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
+    """Converts Binary Symplectic Form of a Pauli operator to its string representation.
+    For example [1, 0, 0, 1] is converted to "XZ".
+
+    Args:
+        pauli_bsf (np.ndarray): Binary Symplectic Form of the Pauli operator.
+
+    Returns:
+        str: String representation of the Pauli operator.
+    """
+    if len(pauli_bsf) % 2 == 1 or len(pauli_bsf) <= 0:
+        raise RuntimeError(
+            "Size of the given Binary Symplectic Form is not correct. It must be a positive even number."
+        )
+
+    if not all([i in [0, 1] for i in pauli_bsf]):
+        raise RuntimeError("Array is not a binary array")
+
+    pauli_str = ""
+
+    n = len(pauli_bsf) // 2
+    for i in range(n):
+        if pauli_bsf[i] == 1 and pauli_bsf[i + n] == 1:
+            pauli_str += "Y"
+        elif pauli_bsf[i + n] == 1:
+            pauli_str += "Z"
+        elif pauli_bsf[i] == 1:
+            pauli_str += "X"
+        else:
+            pauli_str += "I"
+
+    return pauli_str
+
+
+def qutip_simuation(
+    initial_state: Qobj, measurements: list[Qobj], num_simulations: int
+) -> dict[str, int]:
+    """Runs a simulation with the given initial state and measurements using QuTiP. The simulation is repeated
+    num_simulations times and the counts of the measurement outcomes are returned.
+
+    Args:
+        initial_state (Qobj): Initial state of the system.
+        measurements (list[Qobj]): List of measurement operators.
+        num_simulations (int): Number of simulations.
+
+    Returns:
+        dict[str, int]: Dictionary of measurement outcomes and their counts.
+    """
+    counts = []
+    for _ in range(num_simulations):
+        state = initial_state
+        outcomes = []
+        for measurement in measurements:
+            outcome, state = measure(state, measurement)
+            if isclose(outcome, 1):
+                outcome = 0
+            else:
+                outcome = 1
+            outcomes.append(outcome)
+
+        counts.append("".join(str(i) for i in outcomes))
+
+    counts.sort()
+    counts = {x: counts.count(x) for x in counts}
+
+    return counts
