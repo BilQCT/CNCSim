@@ -7,7 +7,9 @@ from typing import Sequence, Union
 import numpy as np
 from qutip import Qobj
 from qutip.measurement import measure
-
+import h5py
+import zipfile
+import io
 # Quantum Gates
 PAULI_X = np.array([[0, 1], [1, 0]])
 PAULI_Y = np.array([[0, -1j], [1j, 0]])
@@ -96,7 +98,18 @@ class Pauli:
     def from_basis_order(cls, n: int, basis_order: int) -> Pauli:
         # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
         """Creates a Pauli with a given number of qubits and basis order."""
-        return cls(decimal_to_binary_array(basis_order, 2 * n))
+        if basis_order < 0 or basis_order >= 4 ** n:
+            raise RuntimeError("Basis order exceeds its limit. It must be between 0 and 4^n - 1.")
+        
+        index_to_pauli = {0: "I", 1: "X", 2: "Y", 3: "Z"}
+        inc_unit = 4 ** (n - 1)
+        pauli_str = ""
+        while inc_unit != 0:
+            pauli_index, basis_order = divmod(basis_order, inc_unit)
+            pauli_str += index_to_pauli[pauli_index]
+            inc_unit //= 4
+        
+        return cls(pauli_str)
 
     def get_operator(self) -> np.ndarray:
         """Creates the matrix representation of the Pauli operator."""
@@ -150,7 +163,19 @@ class Pauli:
         """
         if self.calculate_omega(other) != 0:
             raise RuntimeError("The operators are not commuting")
-        return self.calculate_gamma(other) % 2
+        
+        #TODO: Write a neater algorithm
+        pauli_str = pauli_bsf_to_str(self.bsf)
+        other_pauli_str = pauli_bsf_to_str(other.bsf)
+        count = 0
+        for paulis in zip(pauli_str, other_pauli_str):
+            if paulis == ("X", "Y") or paulis == ("Y", "Z") or paulis == ("Z", "X"):
+                count += 1
+            elif paulis == ("Y", "X") or paulis == ("Z", "Y") or paulis == ("X", "Z"):
+                count -= 1
+        
+        count = count % 4
+        return count // 2
 
     def calculate_omega(self, other: Pauli) -> int:
         """Calculates the omega value that determines if two Pauli operators are commuting or anticommuting.
@@ -169,7 +194,7 @@ class Pauli:
             raise RuntimeError("Size of the operators is not correct")
         return (
             self.bsf[self.n :].dot(other.bsf[: self.n])
-            + self.bsf[: self.n].dot(other.bsf[self.n :])
+            - self.bsf[: self.n].dot(other.bsf[self.n :])
         ) % 2
 
     def __str__(self) -> str:
@@ -200,8 +225,9 @@ class Pauli:
 
 
 def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
-    """Loads the precomputed matrix of all maximal CNC states for n qubits. The matrix is stored in
-    a binary file. Every column of the matrix represents a CNC state in its Pauli basis representation.
+    """Loads the precomputed matrix of all maximal CNC states for n qubits. The matrix is stored in a .jld file 
+    which zipped to reduce the size. Every column of the matrix represents a CNC state in its Pauli basis 
+    representation.
 
     Args:
         n (int): Number of qubits.
@@ -210,34 +236,20 @@ def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
         np.ndarray: Matrix of all possible CNC states.  Every column of the matrix represents a CNC state in its
         Pauli basis representation.
     """
-    file_name = f"../maximal_cnc_matrices/maximal_all_cncs_matrix_{n}.bin"
 
-    if not os.path.exists(file_name):
+    zip_file = f"../maximal_cnc_matrices/all_maximal_cncs_matrix_{n}.zip"
+    jld_file = f"all_maximal_cncs_matrix_{n}.jld"
+
+    if not os.path.exists(zip_file):
         raise RuntimeError(
-            "There is no precomputed matrix of all maximal CNC atates for the given number of qubits"
+            "There is no precomputed matrix of all maximal CNC atates for the given number of qubits."
         )
-
-    with open(file_name, "rb") as file:
-        rows = int.from_bytes(file.read(8), "little")
-        cols = int.from_bytes(file.read(8), "little")
-        data = np.fromfile(file, dtype=np.uint8)
-
-    # Convert data to bit array and then to -1, 0, 1
-    bits = np.unpackbits(data)
-    matrix = np.zeros((rows, cols), dtype=int)
-    idx = 0
-    for r in range(rows):
-        for c in range(cols):
-            bit1, bit2 = bits[idx], bits[idx + 1]
-            if bit1 == 0 and bit2 == 1:
-                matrix[r, c] = -1
-            elif bit1 == 0 and bit2 == 0:
-                matrix[r, c] = 0
-            elif bit1 == 1 and bit2 == 0:
-                matrix[r, c] = 1
-            idx += 2
-
-    return matrix
+    
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        with zip_ref.open(jld_file) as file:
+            with h5py.File(io.BytesIO(file.read()), "r") as f:
+                # cast to numpy array
+                return np.array(f["matrix"]).T
 
 
 def decimal_to_binary_array(decimal: int, width: int) -> np.ndarray:

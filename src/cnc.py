@@ -103,7 +103,7 @@ class CNC:
 
     @classmethod
     def from_pauli_basis_representation(
-        cls, n: int, basis_representation: np.ndarray
+        cls, basis_representation: np.ndarray
     ) -> CNC:
         """Creates a CNC operator from a Pauli basis representation.
 
@@ -116,10 +116,23 @@ class CNC:
         Returns:
             CNC: CNC operator created from the Pauli basis representation.
         """
+        n = 1
+        l = 4
+        while l < len(basis_representation):
+            n += 1
+            l *= 4
+
+        if l != len(basis_representation):
+            raise RuntimeError(
+                "The size of the basis representation must be a power of 4."
+            )
         gamma = {}
         for i, value in enumerate(basis_representation):
             pauli = Pauli.from_basis_order(n, i)
-            gamma[pauli] = value
+            if value == 1:
+                gamma[pauli] = 0
+            elif value == -1:
+                gamma[pauli] = 1
 
         return cls(gamma)
 
@@ -130,10 +143,10 @@ class CNC:
         Returns:
             np.ndarray: Pauli basis representation of the CNC operator.
         """
-        basis_representation = np.zeros(4**self.n)
+        basis_representation = np.zeros(4**self.n, dtype=int)
         for pauli, value in self.gamma.items():
             index = pauli.basis_order
-            basis_representation[index] = value
+            basis_representation[index] = (int)(-1) ** value
 
         return basis_representation
 
