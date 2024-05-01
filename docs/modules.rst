@@ -7,3 +7,4 @@ src
    cnc
    hypercube
    utils
+   vertex_decomposition

@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import io
 import os
+import zipfile
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from math import isclose
 from typing import Sequence, Union
 
+import h5py
 import numpy as np
 from qutip import Qobj
 from qutip.measurement import measure
-import h5py
-import zipfile
-import io
+
 # Quantum Gates
 PAULI_X = np.array([[0, 1], [1, 0]])
 PAULI_Y = np.array([[0, -1j], [1j, 0]])
@@ -98,9 +101,11 @@ class Pauli:
     def from_basis_order(cls, n: int, basis_order: int) -> Pauli:
         # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
         """Creates a Pauli with a given number of qubits and basis order."""
-        if basis_order < 0 or basis_order >= 4 ** n:
-            raise RuntimeError("Basis order exceeds its limit. It must be between 0 and 4^n - 1.")
-        
+        if basis_order < 0 or basis_order >= 4**n:
+            raise RuntimeError(
+                "Basis order exceeds its limit. It must be between 0 and 4^n - 1."
+            )
+
         index_to_pauli = {0: "I", 1: "X", 2: "Y", 3: "Z"}
         inc_unit = 4 ** (n - 1)
         pauli_str = ""
@@ -108,7 +113,7 @@ class Pauli:
             pauli_index, basis_order = divmod(basis_order, inc_unit)
             pauli_str += index_to_pauli[pauli_index]
             inc_unit //= 4
-        
+
         return cls(pauli_str)
 
     def get_operator(self) -> np.ndarray:
@@ -163,8 +168,8 @@ class Pauli:
         """
         if self.calculate_omega(other) != 0:
             raise RuntimeError("The operators are not commuting")
-        
-        #TODO: Write a neater algorithm
+
+        # TODO: Write a neater algorithm
         pauli_str = pauli_bsf_to_str(self.bsf)
         other_pauli_str = pauli_bsf_to_str(other.bsf)
         count = 0
@@ -173,7 +178,7 @@ class Pauli:
                 count += 1
             elif paulis == ("Y", "X") or paulis == ("Z", "Y") or paulis == ("X", "Z"):
                 count -= 1
-        
+
         count = count % 4
         return count // 2
 
@@ -225,8 +230,8 @@ class Pauli:
 
 
 def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
-    """Loads the precomputed matrix of all maximal CNC states for n qubits. The matrix is stored in a .jld file 
-    which zipped to reduce the size. Every column of the matrix represents a CNC state in its Pauli basis 
+    """Loads the precomputed matrix of all maximal CNC states for n qubits. The matrix is stored in a .jld file
+    which zipped to reduce the size. Every column of the matrix represents a CNC state in its Pauli basis
     representation.
 
     Args:
@@ -244,8 +249,8 @@ def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
         raise RuntimeError(
             "There is no precomputed matrix of all maximal CNC atates for the given number of qubits."
         )
-    
-    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+
+    with zipfile.ZipFile(zip_file, "r") as zip_ref:
         with zip_ref.open(jld_file) as file:
             with h5py.File(io.BytesIO(file.read()), "r") as f:
                 # cast to numpy array
@@ -390,3 +395,45 @@ def qutip_simuation(
     counts = {x: counts.count(x) for x in counts}
 
     return counts
+
+
+def get_n_from_pauli_basis_representation(
+    pauli_basis_representation: np.ndarray,
+) -> int:
+    """Calculates the number of qubits from the Pauli basis representation of a state.
+
+    Args:
+        pauli_basis_representation (np.ndarray): Pauli basis representation of a state.
+
+    Returns:
+        int: Number of qubits.
+    """
+    n = 1
+    l = 4
+    while l < len(pauli_basis_representation):
+        n += 1
+        l *= 4
+
+    if l != len(pauli_basis_representation):
+        raise RuntimeError("The size of the basis representation must be a power of 4.")
+
+    return n
+
+
+class PhasePointOperator(ABC):
+    """Abstract class for phase point operators."""
+
+    pass
+
+
+@dataclass
+class DecompositionElement:
+    """Class for the elements of the decomposition of a state.
+
+    Attributes:
+        operator (Union[np.ndarray, PhasePointOperator]): Operator of the element.
+        probability (float): Probability of the operator in the decomposition.
+    """
+
+    operator: Union[np.ndarray, PhasePointOperator]  # Operator of the element.
+    probability: float

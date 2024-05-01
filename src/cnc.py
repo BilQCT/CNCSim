@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import copy
-
 import numpy as np
 
-from utils import Pauli
+from utils import (Pauli, PhasePointOperator,
+                   get_n_from_pauli_basis_representation)
 
 
-class CNC:
+class CNC(PhasePointOperator):
     """Class for the Closed-Under-Inference and Noncontextual (CNC) operators.
 
     Note:
@@ -102,9 +101,7 @@ class CNC:
         return self._gamma
 
     @classmethod
-    def from_pauli_basis_representation(
-        cls, basis_representation: np.ndarray
-    ) -> CNC:
+    def from_pauli_basis_representation(cls, basis_representation: np.ndarray) -> CNC:
         """Creates a CNC operator from a Pauli basis representation.
 
         Args:
@@ -116,16 +113,7 @@ class CNC:
         Returns:
             CNC: CNC operator created from the Pauli basis representation.
         """
-        n = 1
-        l = 4
-        while l < len(basis_representation):
-            n += 1
-            l *= 4
-
-        if l != len(basis_representation):
-            raise RuntimeError(
-                "The size of the basis representation must be a power of 4."
-            )
+        n = get_n_from_pauli_basis_representation(basis_representation)
         gamma = {}
         for i, value in enumerate(basis_representation):
             pauli = Pauli.from_basis_order(n, i)
