@@ -28,4 +28,6 @@ Then, run the following command in the terminal:
     make html
 ```
 
+To view the generated documentation, open the `index.html` file in the `/docs/_build/html` folder.
+
 **Note:** If a new file is added into .rst files need to be created in the `docs` folder. To do that, one can create a `.rst` file in the `docs` folder and add its name into `modules.rst` file. 

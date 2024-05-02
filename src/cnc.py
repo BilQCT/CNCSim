@@ -76,9 +76,7 @@ class CNC(PhasePointOperator):
                     gamma_ab = gamma[(pauli + other_pauli)]
                     beta = pauli.calculate_beta(other_pauli)
                     if (gamma_a + gamma_b - gamma_ab) % 2 != beta:
-                        raise ValueError(
-                            "Given value assignment is not noncontextual."
-                        )
+                        raise ValueError("Given value assignment is not noncontextual.")
 
         self._n = n
         self._gamma = gamma
