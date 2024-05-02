@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 import os
 import zipfile
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 from math import isclose
 from typing import Sequence, Union
@@ -36,28 +36,30 @@ class Pauli:
         if isinstance(identifier, str):
             bsf = pauli_str_to_bsf(identifier)
         elif isinstance(identifier, Sequence):
-            if not all(isinstance(i, int) for i in identifier):
-                raise RuntimeError("Sequence elements must contain only integers")
-            if not all([i in [0, 1] for i in identifier]):
-                raise RuntimeError("Sequence elements must contain only 0s and 1s")
+            if not all(isinstance(i, int) for i in identifier) or not all(
+                i in [0, 1] for i in identifier
+            ):
+                raise ValueError(
+                    "Identifier provided as a Sequence must contain only integers 0 and 1."
+                )
             bsf = np.array(identifier)
         elif isinstance(identifier, np.ndarray):
-            if not all([i in [0, 1] for i in identifier]):
-                raise RuntimeError("Numpy Array elements must contain only 0s and 1s")
+            if not all(isinstance(i, np.int_) for i in identifier) or not all(
+                i in [0, 1] for i in identifier
+            ):
+                raise ValueError(
+                    "Identifier provided as a Numpy array must contain only integers 0 and 1."
+                )
             bsf = identifier
         else:
             raise RuntimeError("Invalid identifier")
 
-        if not all([i in [0, 1] for i in bsf]):
-            raise RuntimeError("Array is not a binary array")
-
         if len(bsf) < 0 or len(bsf) % 2 == 1:
-            raise RuntimeError(
+            raise ValueError(
                 "Size of a is not correct. It must be an positive even number."
             )
 
-        n = len(bsf) // 2
-        self._n = n
+        self._n = len(bsf) // 2
         self._bsf = bsf
 
     @property
@@ -73,7 +75,6 @@ class Pauli:
 
     @property
     def basis_order(self) -> int:
-        # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
         """Basis order of the Pauli is its order when all Paulis with same number of qubits are sorted
         lexicographically according to their string representations. This number is used in enumaration
         of Pauli basis.
@@ -94,15 +95,14 @@ class Pauli:
 
     @classmethod
     def identity(cls, n: int) -> Pauli:
-        """Returns the identity operator for n qubits."""
-        return cls(np.zeros(2 * n))
+        """It is the convenience function for creating n qubit identity Paulis. It returns the n qubit identity Pauli."""
+        return cls(np.zeros(2 * n, dtype=int))
 
     @classmethod
     def from_basis_order(cls, n: int, basis_order: int) -> Pauli:
-        # TODO: Change it to enumeration that goes like III, IIX, IIY, IIZ, IXI, IXY, ...
         """Creates a Pauli with a given number of qubits and basis order."""
         if basis_order < 0 or basis_order >= 4**n:
-            raise RuntimeError(
+            raise ValueError(
                 "Basis order exceeds its limit. It must be between 0 and 4^n - 1."
             )
 
@@ -135,7 +135,7 @@ class Pauli:
 
         Note:
             .. math::
-                T_a T_b = (-1)^{\\gamma} T_{a + b}
+                T_a T_b = (i)^{\\gamma} T_{a + b}
 
         Args:
             other (Pauli): The other Pauli operator.
@@ -144,10 +144,10 @@ class Pauli:
             int: gamma value (in modulo 4).
         """
         if self.n != other.n:
-            raise RuntimeError("Size of the operators is not correct")
+            raise ValueError("Size of the operators is not correct")
         return (
-            self.bsf[self.n :].dot(other.bsf[: self.n])
-            - self.bsf[: self.n].dot(other.bsf[self.n :])
+            self.bsf[: self.n].dot(other.bsf[self.n :])
+            - self.bsf[self.n :].dot(other.bsf[: self.n])
         ) % 4
 
     def calculate_beta(self, other: Pauli) -> int:
@@ -167,7 +167,7 @@ class Pauli:
             int: beta value (in modulo 2).
         """
         if self.calculate_omega(other) != 0:
-            raise RuntimeError("The operators are not commuting")
+            raise ValueError("The operators are not commuting")
 
         # TODO: Write a neater algorithm
         pauli_str = pauli_bsf_to_str(self.bsf)
@@ -196,7 +196,7 @@ class Pauli:
             int: omega value (in modulo 2).
         """
         if self.n != other.n:
-            raise RuntimeError("Size of the operators is not correct")
+            raise ValueError("Size of the operators is not correct")
         return (
             self.bsf[self.n :].dot(other.bsf[: self.n])
             - self.bsf[: self.n].dot(other.bsf[self.n :])
@@ -246,7 +246,7 @@ def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
     jld_file = f"all_maximal_cncs_matrix_{n}.jld"
 
     if not os.path.exists(zip_file):
-        raise RuntimeError(
+        raise ValueError(
             "There is no precomputed matrix of all maximal CNC atates for the given number of qubits."
         )
 
@@ -255,44 +255,6 @@ def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
             with h5py.File(io.BytesIO(file.read()), "r") as f:
                 # cast to numpy array
                 return np.array(f["matrix"]).T
-
-
-def decimal_to_binary_array(decimal: int, width: int) -> np.ndarray:
-    """Converts a decimal number to a numpy array of 0s and 1s. For example 5 in width 4 is converted to [0, 1, 0, 1].
-    Width is required to fill the leading 0s.
-
-    Args:
-        decimal (int): Decimal number.
-        width (int): Width of the binary array.
-
-    Returns:
-        np.ndarray: Binary array of the decimal number.
-    """
-    if decimal < 0:
-        raise RuntimeError("Decimal number cannot be negative")
-    if decimal >= 2**width:
-        raise RuntimeError("Decimal number is too large for the given width")
-
-    binary_str = np.binary_repr(decimal, width=width)
-    return np.array(list(map(int, binary_str)))
-
-
-def binary_array_to_decimal(binary_array: np.ndarray) -> int:
-    """Converts a numpy array of 0s and 1s to a decimal number. For example, [0, 1, 0, 1] is converted to 5.
-
-    Args:
-        binary_array (np.ndarray): Numpy array of 0s and 1s.
-
-    Returns:
-        int: Decimal number of the binary array when it is read as a binary number.
-    """
-
-    for i in binary_array:
-        if i != 0 and i != 1:
-            raise RuntimeError("Array is not a binary array")
-
-    binary_str = "".join(map(str, binary_array))
-    return int(binary_str, 2)
 
 
 def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
@@ -309,7 +271,7 @@ def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
     a_x = np.zeros(len(pauli_string))
     a_z = np.zeros(len(pauli_string))
 
-    pauli_string = pauli_string.upper()
+    pauli_string = pauli_string.upper().strip()
 
     for i, op in enumerate(pauli_string):
         if op == "X":
@@ -322,7 +284,7 @@ def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
         elif op == "I":
             pass
         else:
-            raise RuntimeError("Invalid Pauli string. It must contain only X, Y, Z, I.")
+            raise ValueError("Invalid Pauli string. It must contain only X, Y, Z, I.")
 
     pauli_array = np.concatenate((a_x, a_z)).astype(int)
 
@@ -340,12 +302,12 @@ def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
         str: String representation of the Pauli operator.
     """
     if len(pauli_bsf) % 2 == 1 or len(pauli_bsf) <= 0:
-        raise RuntimeError(
+        raise ValueError(
             "Size of the given Binary Symplectic Form is not correct. It must be a positive even number."
         )
 
     if not all([i in [0, 1] for i in pauli_bsf]):
-        raise RuntimeError("Array is not a binary array")
+        raise ValueError("Array is not a binary array")
 
     pauli_str = ""
 
@@ -415,7 +377,7 @@ def get_n_from_pauli_basis_representation(
         l *= 4
 
     if l != len(pauli_basis_representation):
-        raise RuntimeError("The size of the basis representation must be a power of 4.")
+        raise ValueError("The size of the basis representation must be a power of 4.")
 
     return n
 

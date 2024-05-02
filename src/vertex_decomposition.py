@@ -4,9 +4,10 @@ import numpy as np
 from pulp import (GLPK, LpMinimize, LpProblem, LpStatusOptimal, LpVariable,
                   lpDot, lpSum)
 
-from cnc import CNC
-from utils import (DecompositionElement, get_n_from_pauli_basis_representation,
-                   load_all_maximal_cncs_matrix)
+from src.cnc import CNC
+from src.utils import (DecompositionElement,
+                       get_n_from_pauli_basis_representation,
+                       load_all_maximal_cncs_matrix)
 
 
 def find_vertex_decomposition(
@@ -43,6 +44,7 @@ def find_vertex_decomposition(
     # Sum of x[j] should be 1
     model += lpSum([x[j] for j in range(num_vertices)]) == 1
 
+    # Any feasible solution is an optimal solution
     model += 0
 
     model.solve(GLPK(msg=False))

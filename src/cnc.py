@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from utils import (Pauli, PhasePointOperator,
-                   get_n_from_pauli_basis_representation)
+from src.utils import (Pauli, PhasePointOperator,
+                       get_n_from_pauli_basis_representation)
 
 
 class CNC(PhasePointOperator):
@@ -35,7 +35,7 @@ class CNC(PhasePointOperator):
         # Check whether the Pauli operators have the same size.
         n = list(gamma.keys())[0].n
         if any([pauli.n != n for pauli in gamma.keys()]):
-            raise RuntimeError("All Pauli operators must have the same size.")
+            raise ValueError("All Pauli operators must have the same size.")
         pass
 
         # Check whether given set of Pauli operators is closed under inference.
@@ -45,25 +45,25 @@ class CNC(PhasePointOperator):
                     pauli.calculate_omega(other_pauli) == 0
                     and pauli + other_pauli not in gamma.keys()
                 ):
-                    raise RuntimeError(
+                    raise ValueError(
                         "Given set of Pauli operators is not closed under inference."
                     )
 
         # Check whether gamma has values in {0, 1}.
         for value in gamma.values():
             if value not in [0, 1]:
-                raise RuntimeError(
+                raise ValueError(
                     "The value assignment image must be a subset of {0,1}."
                 )
 
         # Check whether the identity operator is in the value assignment.
         identity = Pauli.identity(n)
         if identity not in gamma.keys():
-            raise RuntimeError("The identity operator must be in the value assignment.")
+            raise ValueError("The identity operator must be in the value assignment.")
 
         # Check whether the value assignment is 0 for the identity operator.
         if gamma[identity] != 0:
-            raise RuntimeError(
+            raise ValueError(
                 "The value assignment must be 0 for the identity operator."
             )
 
@@ -76,7 +76,7 @@ class CNC(PhasePointOperator):
                     gamma_ab = gamma[(pauli + other_pauli)]
                     beta = pauli.calculate_beta(other_pauli)
                     if (gamma_a + gamma_b - gamma_ab) % 2 != beta:
-                        raise RuntimeError(
+                        raise ValueError(
                             "Given value assignment is not noncontextual."
                         )
 
@@ -236,7 +236,7 @@ def simulate_from_distribution(
     counts = []
     for _ in range(num_simulations):
         initial_state = rng.choice(list(dist.keys()), p=list(dist.values()))
-        initial_state = CNC(initial_state.gamma)
+        initial_state = CNC(initial_state.gamma)  # to get a copy
         outcomes = simulate_from_sampled_cnc(initial_state, measurements)
         counts.append("".join(str(i) for i in outcomes))
 
