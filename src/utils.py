@@ -61,6 +61,7 @@ class Pauli:
 
         self._n = len(bsf) // 2
         self._bsf = bsf
+        self._phase = (self.bsf[: self.n].dot(self.bsf[self.n :])) % 4
 
     @property
     def n(self) -> int:
@@ -92,6 +93,13 @@ class Pauli:
                 basis_order += inc_unit * 3
 
         return basis_order
+
+    @property
+    def phase(self) -> int:
+        """Phase of the Pauli operator. It is the phase factor that arises when the Pauli operator is
+        represented as a matrix. It is calculated as the dot product of the X and Z parts of the Pauli operator. For example,
+        Y has a phase of 1 and XZ has a phase of 0."""
+        return self._phase
 
     @classmethod
     def identity(cls, n: int) -> Pauli:
@@ -127,7 +135,7 @@ class Pauli:
                 temp = temp @ PAULI_Z
             result = np.kron(result, temp)
 
-        result = 1j ** self.bsf[: self.n].dot(self.bsf[self.n :]) * result
+        result = (1j**self.phase) * result
         return result
 
     def calculate_gamma(self, other: Pauli) -> int:
@@ -145,10 +153,20 @@ class Pauli:
         """
         if self.n != other.n:
             raise ValueError("Size of the operators is not correct")
-        return (
-            self.bsf[: self.n].dot(other.bsf[self.n :])
-            - self.bsf[self.n :].dot(other.bsf[: self.n])
-        ) % 4
+
+        n = self.n
+        a_x = self.bsf[:n]
+        a_z = self.bsf[n:]
+        b_x = other.bsf[:n]
+        b_z = other.bsf[n:]
+
+        x_terms = (a_x + b_x) % 2
+        z_terms = (a_z + b_z) % 2
+
+        combined_phase = x_terms.dot(z_terms) % 4
+        temp = (self.phase + other.phase + 2 * a_z.dot(b_x)) % 4
+        gamma = (temp - combined_phase) % 4
+        return (gamma) % 4
 
     def calculate_beta(self, other: Pauli) -> int:
         """Calculates the gamma value that arises when two commuting Pauli operators are multiplied.
@@ -169,18 +187,7 @@ class Pauli:
         if self.calculate_omega(other) != 0:
             raise ValueError("The operators are not commuting")
 
-        # TODO: Write a neater algorithm
-        pauli_str = pauli_bsf_to_str(self.bsf)
-        other_pauli_str = pauli_bsf_to_str(other.bsf)
-        count = 0
-        for paulis in zip(pauli_str, other_pauli_str):
-            if paulis == ("X", "Y") or paulis == ("Y", "Z") or paulis == ("Z", "X"):
-                count += 1
-            elif paulis == ("Y", "X") or paulis == ("Z", "Y") or paulis == ("X", "Z"):
-                count -= 1
-
-        count = count % 4
-        return count // 2
+        return self.calculate_gamma(other) // 2
 
     def calculate_omega(self, other: Pauli) -> int:
         """Calculates the omega value that determines if two Pauli operators are commuting or anticommuting.
@@ -197,10 +204,12 @@ class Pauli:
         """
         if self.n != other.n:
             raise ValueError("Size of the operators is not correct")
-        return (
-            self.bsf[self.n :].dot(other.bsf[: self.n])
-            - self.bsf[: self.n].dot(other.bsf[self.n :])
-        ) % 2
+        n = self.n
+        a_z = self.bsf[:n]
+        a_x = self.bsf[n:]
+        b_z = other.bsf[:n]
+        b_x = other.bsf[n:]
+        return (a_z.dot(b_x) - a_x.dot(b_z)) % 2
 
     def __str__(self) -> str:
         pauli_str = "Pauli Operator: " + pauli_bsf_to_str(self.bsf)
@@ -222,6 +231,11 @@ class Pauli:
         Returns:
             Pauli: Result of the addition of the Pauli operators.
         """
+        if self.n != other.n:
+            raise ValueError(
+                "Pauli operators with different number of qubits cannot be added."
+            )
+
         added_a = (self.bsf + other.bsf) % 2
         return Pauli(added_a)
 
@@ -241,8 +255,10 @@ def load_all_maximal_cncs_matrix(n: int) -> np.ndarray:
         np.ndarray: Matrix of all possible CNC states.  Every column of the matrix represents a CNC state in its
         Pauli basis representation.
     """
+    if not isinstance(n, int) or n <= 0:
+        raise ValueError("Number of qubits must be a positive integer.")
 
-    zip_file = f"../maximal_cnc_matrices/all_maximal_cncs_matrix_{n}.zip"
+    zip_file = f"maximal_cnc_matrices/all_maximal_cncs_matrix_{n}.zip"
     jld_file = f"all_maximal_cncs_matrix_{n}.jld"
 
     if not os.path.exists(zip_file):
@@ -267,6 +283,8 @@ def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
     Returns:
         np.ndarray: Binary Symplectic Form of the Pauli operator.
     """
+    if not isinstance(pauli_string, str):
+        raise RuntimeError("Pauli string must be a string.")
 
     a_x = np.zeros(len(pauli_string))
     a_z = np.zeros(len(pauli_string))
@@ -286,28 +304,32 @@ def pauli_str_to_bsf(pauli_string: str) -> np.ndarray:
         else:
             raise ValueError("Invalid Pauli string. It must contain only X, Y, Z, I.")
 
-    pauli_array = np.concatenate((a_x, a_z)).astype(int)
+    bsf = np.concatenate((a_x, a_z)).astype(int)
 
-    return pauli_array
+    return bsf
 
 
-def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
+def pauli_bsf_to_str(pauli_bsf: Union[np.ndarray, Sequence[int]]) -> str:
     """Converts Binary Symplectic Form of a Pauli operator to its string representation.
     For example [1, 0, 0, 1] is converted to "XZ".
 
     Args:
-        pauli_bsf (np.ndarray): Binary Symplectic Form of the Pauli operator.
+        pauli_bsf (Union[np.ndarray, Sequence[int]]): Binary Symplectic Form of the Pauli operator.
+            It can be a numpy array or any sequence(i.e. list or tuple) of 0s and 1s.
 
     Returns:
         str: String representation of the Pauli operator.
     """
+    if not isinstance(pauli_bsf, np.ndarray) and not isinstance(pauli_bsf, Sequence):
+        raise RuntimeError("Binary symplectic form of the Pauli operator must be a numpy array or a sequence.")
+
+    if not all(i in [0, 1] for i in pauli_bsf):
+        raise ValueError("Binary symplectic form of the Pauli operator is not a binary array.")
+
     if len(pauli_bsf) % 2 == 1 or len(pauli_bsf) <= 0:
         raise ValueError(
             "Size of the given Binary Symplectic Form is not correct. It must be a positive even number."
         )
-
-    if not all([i in [0, 1] for i in pauli_bsf]):
-        raise ValueError("Array is not a binary array")
 
     pauli_str = ""
 
@@ -315,10 +337,10 @@ def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
     for i in range(n):
         if pauli_bsf[i] == 1 and pauli_bsf[i + n] == 1:
             pauli_str += "Y"
-        elif pauli_bsf[i + n] == 1:
-            pauli_str += "Z"
         elif pauli_bsf[i] == 1:
             pauli_str += "X"
+        elif pauli_bsf[i + n] == 1:
+            pauli_str += "Z"
         else:
             pauli_str += "I"
 
@@ -370,6 +392,9 @@ def get_n_from_pauli_basis_representation(
     Returns:
         int: Number of qubits.
     """
+    if not isinstance(pauli_basis_representation, np.ndarray):
+        raise RuntimeError("Pauli basis representation must be a numpy array.")
+
     n = 1
     l = 4
     while l < len(pauli_basis_representation):
@@ -399,3 +424,9 @@ class DecompositionElement:
 
     operator: Union[np.ndarray, PhasePointOperator]  # Operator of the element.
     probability: float
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.probability, (int, float)):
+            raise ValueError("Probability must be a number.")
+        if self.probability <= 0:
+            raise ValueError("Probability must be a positive number.")
