@@ -169,7 +169,7 @@ class CNC(PhasePointOperator):
                 if pauli in commuting_paulis:
                     new_gamma[pauli] = self.gamma[pauli]
                 else:
-                    beta = pauli.calculate_beta(measured_pauli)
+                    beta = pauli.calculate_beta(measured_pauli) % 2
                     new_gamma[pauli] = (
                         self.gamma[pauli + measured_pauli] + outcome + beta
                     ) % 2
