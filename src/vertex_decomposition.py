@@ -1,7 +1,7 @@
 from typing import Optional
 
 import numpy as np
-from pulp import (GLPK, LpMinimize, LpProblem, LpStatusOptimal, LpVariable,
+from pulp import (LpMinimize, LpProblem, LpStatusOptimal, LpVariable,
                   lpDot, lpSum)
 
 from src.cnc import CNC
@@ -47,7 +47,7 @@ def find_vertex_decomposition(
     # Any feasible solution is an optimal solution
     model += 0
 
-    model.solve(GLPK(msg=False))
+    model.solve()
 
     is_convex = True
     if model.status != LpStatusOptimal:
