@@ -5,6 +5,7 @@ import numpy as np
 from src.utils import (Pauli, PhasePointOperator,
                        get_n_from_pauli_basis_representation)
 
+from copy import deepcopy
 
 class CNC(PhasePointOperator):
     """Class for the Closed-Under-Inference and Noncontextual (CNC) operators.
@@ -79,7 +80,7 @@ class CNC(PhasePointOperator):
                         raise ValueError("Given value assignment is not noncontextual.")
 
         self._n = n
-        self._gamma = gamma
+        self._gamma = deepcopy(gamma)
         self._omega = set(gamma.keys())
 
     @property
@@ -153,7 +154,7 @@ class CNC(PhasePointOperator):
             if rng.choice([0, 1]) == 1:
                 for pauli in self.gamma:
                     omega = measured_pauli.calculate_omega(pauli)
-                    self._gamma[pauli] = self.gamma[pauli] + omega
+                    self._gamma[pauli] = (self.gamma[pauli] + omega) % 2
         else:
             # If the measured Pauli operator is not in the set omega
             outcome = rng.choice([0, 1])
@@ -234,7 +235,6 @@ def simulate_from_distribution(
     counts = []
     for _ in range(num_simulations):
         initial_state = rng.choice(list(dist.keys()), p=list(dist.values()))
-        initial_state = CNC(initial_state.gamma)  # to get a copy
         outcomes = simulate_from_sampled_cnc(initial_state, measurements)
         counts.append("".join(str(i) for i in outcomes))
 
