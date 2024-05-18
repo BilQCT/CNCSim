@@ -100,4 +100,7 @@ def find_cnc_vertex_decomposition(
         for decomposition_element in distribution
     ]
 
+    cnc_distribution = {cnc_distribution[i].operator:cnc_distribution[i].probability for i in range(len(cnc_distribution))}
+
+
     return is_convex, cnc_distribution

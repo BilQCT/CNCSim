@@ -171,45 +171,6 @@ def qc_HTH():
     plt.title('Measurement Outcomes')
     plt.show()
 
-
-def qc_HTH_PBC():
-    # Create a quantum circuit with 1 qubit and 1 classical bit
-    qc = QuantumCircuit(1, 1)
-
-    # Initialize qubit in the T state
-    qc.h(0)
-    qc.p(pi/4, 0)  # T gate equivalent to u3(pi/4, 0, 0)
-
-    # Coin toss to decide the measurement basis
-    coin_toss = np.random.randint(2)  # Randomly choose 0 or 1
-    if coin_toss == 0:
-        # Measure qubit in X basis
-        qc.h(0)  # Apply Hadamard gate to change to X basis
-        qc.measure(0, 0)  # Measure qubit and store result in classical bit
-    else:
-        # Measure qubit in Y basis
-        qc.sdg(0)  # Apply Sdg gate to change to Y basis
-        qc.h(0)  # Apply Hadamard gate to change to Y basis
-        qc.measure(0, 0)  # Measure qubit and store result in classical bit
-
-    # Draw the circuit
-    print(qc.draw())
-
-    # Simulate the circuit
-    simulator = Aer.get_backend('qasm_simulator')
-    job = execute(qc, simulator, shots=1000)
-    result = job.result()
-
-    # Get the counts
-    counts = result.get_counts(qc)
-
-    # Plot the outcomes
-    plt.bar([list(counts.keys())[1],list(counts.keys())[0]], [list(counts.values())[1],list(counts.values())[0]])
-    plt.xlabel('Outcome')
-    plt.ylabel('Frequency')
-    plt.title('Measurement Outcomes')
-    plt.show()
-
 def qc_magic_HTH():
     # Create a quantum circuit with 2 qubits and 1 classical bit
     qc = QuantumCircuit(2, 1)
@@ -261,3 +222,53 @@ def qc_magic_HTH():
     plt.ylabel('Frequency')
     plt.title('Measurement Outcomes')
     plt.show()
+
+def qc_HTH_PBC():
+    # Create a quantum circuit with 1 qubit and 1 classical bit
+    qc = QuantumCircuit(1, 1)
+
+    # Initialize qubit in the T state
+    qc.h(0)
+    qc.p(pi/4, 0)  # T gate equivalent to u3(pi/4, 0, 0)
+
+    # Coin toss to decide the measurement basis
+    coin_toss = 0#np.random.randint(2)  # Randomly choose 0 or 1
+    if coin_toss == 0:
+        # Measure qubit in X basis
+        qc.h(0)  # Apply Hadamard gate to change to X basis
+        qc.measure(0, 0)  # Measure qubit and store result in classical bit
+    else:
+        # Measure qubit in Y basis
+        qc.sdg(0)  # Apply Sdg gate to change to Y basis
+        qc.h(0)  # Apply Hadamard gate to change to Y basis
+        qc.measure(0, 0)  # Measure qubit and store result in classical bit
+
+    # Draw the circuit
+    print(qc.draw())
+
+    # Simulate the circuit
+    simulator = Aer.get_backend('qasm_simulator')
+    job = execute(qc, simulator, shots=1000)
+    result = job.result()
+
+    # Get the counts
+    counts = result.get_counts(qc)
+
+    # Plot the outcomes
+    plt.bar([list(counts.keys())[1],list(counts.keys())[0]], [list(counts.values())[1],list(counts.values())[0]])
+    plt.xlabel('Outcome')
+    plt.ylabel('Frequency')
+    plt.title('Measurement Outcomes')
+    plt.show()
+
+def magic_sim_HTH(initial_distribution,measurements,shots):
+    outcome_counts = [simulate_from_distribution(initial_distribution, measurements[m], shots) for m in range(len(measurements))]
+
+    # Plot the outcomes
+    plt.bar(outcome_counts.keys(), outcome_counts.values())
+    plt.xlabel('Outcome')
+    plt.ylabel('Frequency')
+    plt.title('Measurement Outcomes')
+    plt.show()
+
+    return outcome_counts
