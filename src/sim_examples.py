@@ -1,7 +1,5 @@
 from math import pi
-import matplotlib.pyplot as plt;
-import h5py
-import numpy as np
+import matplotlib.pyplot as plt
 from src.cnc import *
 from qiskit import QuantumCircuit, Aer, execute
 
@@ -111,7 +109,7 @@ def qc_boolean_function():
 def magic_sim_boolean_function(initial_distribution,measurements,shots):
     outcome_counts = [simulate_from_distribution(initial_distribution, measurements[m], shots) for m in range(len(measurements))]
     xor_counts = [xor_frequencies(outcomes) for outcomes in outcome_counts]
-
+    
     # Plot results:
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))
     ax = [[x,y] for x in [0,1] for y in [0,1]]
@@ -123,7 +121,7 @@ def magic_sim_boolean_function(initial_distribution,measurements,shots):
 
     # Show plot
     plt.show()
-
+    
     return outcome_counts
 
 

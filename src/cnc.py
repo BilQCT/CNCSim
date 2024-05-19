@@ -177,7 +177,6 @@ class CNC(PhasePointOperator):
 
             self._gamma = new_gamma
             self._omega = new_omega
-
         return outcome
 
     def __str__(self) -> str:
@@ -214,6 +213,7 @@ def simulate_from_sampled_cnc(sampled_cnc: CNC, measurements: list[Pauli]) -> li
         outcomes.append(outcome)
     return outcomes
 
+import copy
 
 def simulate_from_distribution(
     dist: dict[CNC, float],
@@ -234,10 +234,10 @@ def simulate_from_distribution(
     rng = np.random.default_rng()
     counts = []
     for _ in range(num_simulations):
-        initial_state = rng.choice(list(dist.keys()), p=list(dist.values()))
+        sampling_dist = copy.deepcopy(dist)
+        initial_state = rng.choice(list(sampling_dist.keys()), p=list(sampling_dist.values()))
         outcomes = simulate_from_sampled_cnc(initial_state, measurements)
         counts.append("".join(str(i) for i in outcomes))
-
     counts.sort()
     counts = {x: counts.count(x) for x in counts}
     return counts
