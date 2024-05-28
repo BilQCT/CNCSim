@@ -2,9 +2,11 @@
 
 In this repository we develop code for converting a quantum computation in the circuit-based model to a measurement-based quantum computation (MBQC) scheme. Typically MBQC models begin with a quantum state containing a nonclassical resource (e.g., entanglement) and the quantum computation proceeds by successive measurements on the resource state, consuming the nonclassical resource in the process.
 
-There are several models of measurement-based quantum computation (MBQC). There is the one-way quantum computer first developed by Raussendorf and Briegel [https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.86.5188] and more recently, quantum computation with magic states (QCM) [https://arxiv.org/abs/quant-ph/0403025], which was later refined to Pauli-based computation (PBC) by Bravyi-Smith-Smolin [https://arxiv.org/abs/1506.01396]. In many, if not all cases, the measurement-based scheme requires an adaptive set of measurements and classical side processing is needed to choose the subsequent measurements so that the desired quantum algorithm is implemented. Since the complexity of quantum computation on a classical computer In each case the conversions should be polynomial in time.
+There are several models of measurement-based quantum computation (MBQC). There is the one-way quantum computer first developed by [Raussendorf and Briegel](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.86.5188) and more recently, quantum computation with magic states (QCM) [arXiv:quant-ph/0403025](https://arxiv.org/abs/quant-ph/0403025), which was later refined to Pauli-based computation (PBC) by [Bravyi-Smith-Smolin](https://arxiv.org/abs/1506.01396). In many, if not all cases, the measurement-based scheme requires an adaptive set of measurements and classical side processing is needed to choose the subsequent measurements so that the desired quantum algorithm is implemented. Since the complexity of quantum computation on a classical computer In each case the conversions should be polynomial in time.
 
-Our baseline PBC code draws from [https://github.com/fcrperes/CompHybPBC] which is based on the work of F.C. Peres and E.F. Galvao in [https://arxiv.org/abs/2203.01789]. For instructions and description on that code see [https://github.com/fcrperes/CompHybPBC].
+Our baseline PBC code draws from [GitHub](https://github.com/fcrperes/CompHybPBC) which is based on the work of F.C. Peres and E.F. Galvao in [arXiv:2203.01789](https://arxiv.org/abs/2203.01789). For instructions and description on that code see [https://github.com/fcrperes/CompHybPBC].
+
+
 -------------------------------------------------------------------------------
 
 
