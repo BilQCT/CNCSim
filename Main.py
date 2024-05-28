@@ -54,7 +54,7 @@ Last update: 26/09/2023
 import c_and_c as cc
 
 # Select the location and name of the input sample file(s)
-file_loc = './example1/'
+file_loc = './examples/example1/'
 input_file_name = 'example1.qasm'
 
 # Select the number of virtual qubits (place `0` to carry out PBC compilation)
