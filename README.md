@@ -1,18 +1,14 @@
-# Circuit compilation and hybrid computation using Pauli-based computation
+# Quantum circuit conversion
 
-In this repository we can find the Python code used to produce the results
-presented in our pre-print [https://arxiv.org/abs/2203.01789].
+In this repository we develop code for converting a quantum computation in the circuit-based model to a measurement-based quantum computation (MBQC) scheme. Typically MBQC models begin with a quantum state containing a nonclassical resource (e.g., entanglement) and the quantum computation proceeds by successive measurements on the resource state, consuming the nonclassical resource in the process.
 
-This code uses different modules, each equipped with different classes, methods
-and functions to make things more readable and user friendly.
-Each module is suitably documented at the start for clarity. In principle,
-users need only open and make changes to `Main.py`.
+There are several models of measurement-based quantum computation (MBQC). There is the one-way quantum computer first developed by Raussendorf and Briegel [https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.86.5188] and more recently, quantum computation with magic states (QCM) [https://arxiv.org/abs/quant-ph/0403025], which was later refined to Pauli-based computation (PBC) by Bravyi-Smith-Smolin [https://arxiv.org/abs/1506.01396]. In many, if not all cases, the measurement-based scheme requires an adaptive set of measurements and classical side processing is needed to choose the subsequent measurements so that the desired quantum algorithm is implemented. Since the complexity of quantum computation on a classical computer In each case the conversions should be polynomial in time.
 
-Contact: filipa.peres@inl.int
+Our baseline PBC code draws from [https://github.com/fcrperes/CompHybPBC] which is based on the work of F.C. Peres and E.F. Galvao in [https://arxiv.org/abs/2203.01789]. For instructions and description on that code see [https://github.com/fcrperes/CompHybPBC].
 -------------------------------------------------------------------------------
 
 
-**Prerequisites:** This code was written using the following versions:
+**Prerequisites:** This is for the PBC by F.C. Peres code:
 * Python 3.7.10;
 * numpy 1.20.1;
 * matplotlib 3.3.4;
@@ -50,39 +46,3 @@ simulation you want to run;
 5. Open a terminal window in the directory where you have placed the Python
 modules and run the command: `python Main.py`;
 6. Check the output files at the location that you have selected.
-
-
-**Tracking code versions**:
-1. First commit: the original version of the code;
-2. Second commit: no changes to the original code, simple inclusion of the
-e-print no. in this file and in the string documentation of the python files;
-3. Third commit: an improvement was made to the sampling complexity of the
-hybrid computation task (the theoretical explanation of this improvement can be
-seen in the final version of our article);
-4. Fourth commit: an improvement was made in the algorithm for assessing the
-(in)dependence of the Paulis; this lead to an improvement of the overall
-complexity of our code as seen in the new version of our article.
-
-
-**Copyright:**
-Copyright (C) 2022  Filipa C. R. Peres
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
