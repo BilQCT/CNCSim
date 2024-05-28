@@ -19,6 +19,13 @@ Our baseline PBC code draws from [GitHub](https://github.com/fcrperes/CompHybPBC
 'qiskit-nature': None, 'qiskit-finance': None, 'qiskit-optimization': None,
 'qiskit-machine-learning': None
 
+**Alternative Requirements:** The following packages also worked fine:
+* Python 3.8.19
+* numpy 1.24.4 (most recent)
+* qiskit 0.46.0
+* qiskit-aer 0.14.0.1 (most recent)
+* matplotlib 3.7.5 (most recent)
+
 
 **Brief description:** The modules supplied allow us to execute two different
 tasks (as described in our pre-print [https://arxiv.org/abs/2203.01789]):
