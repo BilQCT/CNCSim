@@ -53,9 +53,10 @@ Last update: 26/09/2023
 '''
 import c_and_c as cc
 
+from poly_sim.cnc import CNC, Pauli
 # Select the location and name of the input sample file(s)
-file_loc = './examples/example1/'
-input_file_name = 'example1.qasm'
+file_loc = './'
+input_file_name = 'example.qasm'
 
 # Select the number of virtual qubits (place `0` to carry out PBC compilation)
 vq = 0
@@ -67,25 +68,46 @@ clifford_file_name = 'MSI'
 output_file_name = 'Compilation_data'
 resources_file_name = 'Resources_data'
 
-if vq == 0:
-    # Run PBC compilation (Task 1 in [3]):
-    cc.run_pbc(file_loc,
-               input_file_name,
-               clifford_file_name,
-               output_file_name,
-               resources_file_name,
-               shots=1024,
-               paths_to_file=32,
-               dummy=False,
-               plot_hist=True,
-               norm_hist=True)
+cnc = CNC({
+    Pauli("IIII"): 0,
+    Pauli("IIIZ"): 0,
+    Pauli("IIZI"): 0,
+    Pauli("IIZZ"): 0,
+})
 
-else:
-    # Run hybrid PBC (Task 2 in [3])
-    cc.hybrid_pbc(file_loc,
-                  input_file_name,
-                  clifford_file_name,
-                  resources_file_name,
-                  virtual_qubits=vq,
-                  precision=prec,
-                  confidence_level=cl)
+dist = {cnc: 1}
+
+cc.run_cnc_simulation(dist,
+                      file_loc,
+                      input_file_name,
+                      clifford_file_name,
+                      output_file_name,
+                      shots=1024,
+                      paths_to_file=32,
+                      plot_hist=True)
+
+
+
+
+# if vq == 0:
+#     # Run PBC compilation (Task 1 in [3]):
+#     cc.run_pbc(file_loc,
+#                input_file_name,
+#                clifford_file_name,
+#                output_file_name,
+#                resources_file_name,
+#                shots=1024,
+#                paths_to_file=32,
+#                dummy=False,
+#                plot_hist=True,
+#                norm_hist=True)
+
+# else:
+#     # Run hybrid PBC (Task 2 in [3])
+#     cc.hybrid_pbc(file_loc,
+#                   input_file_name,
+#                   clifford_file_name,
+#                   resources_file_name,
+#                   virtual_qubits=vq,
+#                   precision=prec,
+#                   confidence_level=cl)

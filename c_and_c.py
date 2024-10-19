@@ -79,6 +79,9 @@ import qiskit.providers.aer as aer
 import input_prep_t1 as inp1
 import input_prep_t2 as inp2
 
+from poly_sim.cnc import CNC
+from poly_sim.utils import Pauli
+
 
 class Pauli_Operator():
     """This class represents Hermitian Pauli operators and defines several
@@ -937,6 +940,247 @@ def compiling(circuit_list,
     return circuit_list, pipc_Paulis, matrix, pipc_outcomes, all_Paulis,\
         all_outcomes, first_qm
 
+def cnc_compiling(
+        circuit_list:list[str],
+        q_count:int,
+        t_count:int,
+        first_gate_index:int,
+        pipc_Paulis:list[Pauli_Operator],
+        matrix,
+        pipc_outcomes:list[int],
+        all_Paulis:list[Pauli_Operator],
+        all_outcomes:list[int],
+        current_Pauli:Pauli_Operator,
+        current_cnc: CNC,
+):
+    Pauli_phases = [Pauli.bin_vec[-1] for Pauli in pipc_Paulis]
+
+    index_ac_Pauli = current_Pauli.is_commuting(q_count, t_count, pipc_Paulis)
+    if index_ac_Pauli != 'True':
+        outcome = random.randint(0, 1)
+
+        P = pipc_Paulis[index_ac_Pauli]
+        sP = int(pipc_outcomes[index_ac_Pauli])
+        Q = current_Pauli
+        sQ = int(outcome)
+        strP = ''
+        strQ = ''
+        for i in range(len(P.bin_vec)):
+            strP += str(int(P.bin_vec[i]))
+            strQ += str(int(Q.bin_vec[i]))
+        # Clifford for circuit list:
+        v = f'v {sP} {sQ} {strP} {strQ};\n'
+        circuit_list.insert(first_gate_index, v)
+
+    else:
+        kernel, matrix = current_Pauli.is_independent(q_count, t_count,
+                                                      pipc_Paulis, matrix)
+        if isinstance(kernel, list):
+            nr_rows = len(kernel)
+            outcome = 0
+            for i in range(nr_rows - 1):
+                if kernel[i] == 1:
+                    outcome = (outcome + pipc_outcomes[i + q_count] +
+                               Pauli_phases[i + q_count]) % 2
+            if current_Pauli.bin_vec[-1] == 1:
+                outcome = (outcome + 1) % 2
+
+        elif isinstance(kernel, int):
+            outcome = kernel
+
+        else:
+            # measure the current cnc in the current pauli basis
+            current_phase = current_Pauli.bin_vec[-1]
+
+            # First change convert PauliOperator to a PauliOperator in PolySim
+            measured_pauli = Pauli(current_Pauli.bin_vec[:-1]) # remove the phase
+
+            # Note that the update changes the current_cnc object
+            outcome = current_cnc.update(measured_pauli)
+
+            # Correct the outcome if the Pauli has a phase
+            if current_phase == 1:
+                outcome = (outcome + 1) % 2
+
+            pipc_Paulis.append(current_Pauli)
+            pipc_outcomes.append(outcome)
+
+    all_Paulis.append(current_Pauli)
+    all_outcomes.append(outcome)
+
+    for line in circuit_list:
+        if line.startswith('if'):
+            index = circuit_list.index(line)
+            if outcome == 0:
+                circuit_list[index] = ''
+            elif outcome == 1:
+                circuit_list[index] = line.partition(' ')[2]
+            break
+
+    return circuit_list, pipc_Paulis, matrix, pipc_outcomes, all_Paulis,\
+        all_outcomes
+
+
+def run_cnc_simulation(
+        dist: dict[CNC, float],
+        file_loc: str,
+        input_file_name: str,
+        clifford_file_name: str,
+        output_file_name: str,
+        shots: int=1024,
+        paths_to_file=0,
+        plot_hist=False,
+        norm_hist=False
+):
+    # Creating the folder for the output files:
+    if not os.path.exists(f'{file_loc}output'):
+        os.makedirs(f'{file_loc}output')
+
+    # STEP 1: Creates the gadgetized (i.e. adaptive) Clifford circuit which is
+    # equivalent to the original universal quantum circuit.
+    qc = inp1.QuCirc(file_loc, input_file_name)
+    clifford, q_count, t_count, cx_count, hs_count, nr_mmts = qc.msi_circuit(
+        file_loc, clifford_file_name)
+    
+    # q_count -> nr. of qubits of the original quantum circuit
+    # t_count -> nr. of T-gates of the original quantum circuit
+    # nr_mmts -> nr. of measurements of the (new) gadgetized circuit
+    
+    for line in clifford:
+        if (line.startswith('h ') or line.startswith('s ')
+                or line.startswith('cx ')):
+            first_gate_index = clifford.index(line)
+            break
+
+    # STEP 2: Compilation and computation
+    results = {}
+    
+    with open(f'{file_loc}output/{output_file_name}.txt', 'w') as file_object:
+        file_object.write(f'Numpy version: {np.__version__}\n')
+        file_object.write(f'Matplotlib version: {matplotlib.__version__}\n')
+        file_object.write(f'Qiskit version: {qiskit.__qiskit_version__}\n\n')
+
+        file_object.write(f'Total number of shots: {shots}\n')
+        file_object.write(
+            f'Number of shots recorded in this file: {paths_to_file}\n\n')
+
+
+        rng = np.random.default_rng()
+        for i in range(shots):
+            # the circuit list is copied:
+            clist = clifford.copy()
+
+            all_Ps, all_outcs = initialize_lists(q_count, t_count)
+            pipc_Ps, pipc_outcs = initialize_lists(q_count, t_count)
+            mat = []
+
+            # Sample a CNC according to the initial distribution
+            sampling_dist = copy.deepcopy(dist)
+            current_cnc = rng.choice(list(sampling_dist.keys()), p=list(sampling_dist.values()))
+
+            for j in range(nr_mmts):
+                clist, current_Pauli = find_new_Pauli(clist, q_count, t_count)
+                clist, pipc_Ps, mat, pipc_outcs, all_Ps, all_outcs = cnc_compiling(
+                    clist,
+                    q_count,
+                    t_count,
+                    first_gate_index,
+                    pipc_Ps,
+                    mat,
+                    pipc_outcs,
+                    all_Ps,
+                    all_outcs,
+                    current_Pauli,
+                    current_cnc)
+                
+            # Building the dictionary with the computation's outcomes:
+            computation_outcome = ''
+            for j in range(len(all_outcs[q_count + t_count:])):
+                computation_outcome += str(
+                    int(all_outcs[q_count + t_count + j]))
+
+            if not computation_outcome in results.keys():
+                results.update({computation_outcome: 1})
+            else:
+                results[computation_outcome] += 1
+
+            if i < paths_to_file:
+                # Writing things to file:
+                file_object.write(f'\n* Shot number: {i}\n')
+                if len(all_Ps) - q_count != nr_mmts:
+                    val1 = len(all_Ps) - q_count
+                    file_object.write(
+                        f'ERROR: Nr of Paulis ({val1}) different from t+m!')
+                    raise ValueError
+
+                else:
+                    file_object.write(
+                        '\n The general Pauli-based computation is:\n')
+                    j = q_count
+                    for Pauli in all_Ps[q_count:]:
+                        file_object.write(
+                            f'{Pauli.return_Pauli_str()} | {all_outcs[j]}\n')
+                        j += 1
+
+                if len(pipc_Ps) - q_count > t_count:
+                    val2 = len(pipc_Ps) - q_count
+                    file_object.write(
+                        f'ERROR: Nr of PIPC Paulis ({val2}) is larger than t!')
+                    raise ValueError
+
+                else:
+                    file_object.write(
+                        '\n The actual quantum computation is:\n')
+                    j = q_count
+                    for Pauli in pipc_Ps[q_count:]:
+                        string = Pauli.return_Pauli_str(
+                        ) + ' | ' + Pauli.return_Pauli_str(
+                        )[0] + Pauli.return_Pauli_str(
+                        )[q_count + 1:] + f' | {pipc_outcs[j]} \n'
+                        file_object.write(string)
+                        j += 1
+
+                file_object.write(
+                    '\n The sequence of computational outcomes is:\n')
+                j = q_count + t_count
+                for Pauli in all_Ps[(nr_mmts - t_count) * -1:]:
+                    file_object.write(
+                        f'{Pauli.return_Pauli_str()} | {all_outcs[j]}\n')
+                    j += 1
+                file_object.write(
+                    f'\n ----------------- End of shot {i} ----------------- \n'
+                )
+    
+    if norm_hist:
+        for key, value in results.items():
+            results[key] = value / shots
+
+    if plot_hist:
+        # Plotting the output distribution is such option was set to True:
+        fig = plt.figure(figsize=(12, 8))
+        plt.bar(*zip(*results.items()))
+        plt.xlabel('Possible outcomes', fontsize=14)
+        plt.xticks(fontsize=12, rotation=70)
+        plt.ylabel('Probabilities', fontsize=14)
+        plt.yticks(fontsize=14)
+        plt.title('Output distribution', fontsize=20)
+        for key, value in results.items():
+            plt.text(x=key,
+                     y=value,
+                     s=f'{round(value, 3)}',
+                     fontdict=dict(fontsize=14),
+                     ha='center',
+                     va='baseline')
+        plt.tight_layout()
+        if input_file_name[-5:] == '.qasm':
+            name = input_file_name[:-5]
+            fig.savefig(f'{file_loc}output/Output_distribution-{name}.pdf')
+            plt.close()
+        else:
+            fig.savefig(
+                f'{file_loc}output/Output_distribution-{input_file_name}.pdf')
+            plt.close()
+                
 
 def run_pbc(file_loc,
             input_file_name,
