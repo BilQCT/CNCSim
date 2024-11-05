@@ -122,6 +122,7 @@ class CNC(PhasePointOperator):
                 gamma[pauli] = 1
 
         return cls(gamma)
+    
 
     def get_pauli_basis_representation(self) -> np.ndarray:
         """Returns the Pauli basis representation of the CNC operator. In a Pauli basis representation,value of
