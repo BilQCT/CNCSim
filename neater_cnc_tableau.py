@@ -13,7 +13,9 @@ def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
     return (uz.dot(vx) - ux.dot(vz)) % 2
 
 
-def beta(u: np.ndarray, v: np.ndarray, skip_commutation_check=False) -> int:
+def beta(
+    u: np.ndarray, v: np.ndarray, skip_commutation_check: bool = False
+) -> int:
     n = len(u) // 2
 
     if not skip_commutation_check:
@@ -39,6 +41,51 @@ def symplectic_matrix(n: int) -> np.ndarray:
     zeros = np.zeros((n, n), dtype=np.uint8)
     identity = np.eye(n, dtype=np.uint8)
     return np.block([[zeros, identity], [identity, zeros]])
+
+
+def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
+    """Converts Binary Symplectic Form of a Pauli operator to its string
+    representation.
+    For example [1, 0, 0, 1] is converted to "XZ".
+
+    Args:
+        pauli_bsf (np.ndarray): Binary Symplectic Form of the Pauli operator.
+
+    Returns:
+        str: String representation of the Pauli operator.
+    """
+    if not isinstance(pauli_bsf, np.ndarray):
+        raise TypeError(
+            "Binary symplectic form of the Pauli operator "
+            "must be a numpy array."
+        )
+
+    if not all(i in [0, 1] for i in pauli_bsf):
+        raise ValueError(
+            "Binary symplectic form of the Pauli operator is not "
+            "a binary array."
+        )
+
+    if len(pauli_bsf) % 2 == 1 or len(pauli_bsf) <= 0:
+        raise ValueError(
+            "Size of the given Binary Symplectic Form is not correct. "
+            "It must be a positive even number."
+        )
+
+    pauli_str = ""
+
+    n = len(pauli_bsf) // 2
+    for i in range(n):
+        if pauli_bsf[i] == 1 and pauli_bsf[i + n] == 1:
+            pauli_str += "Y"
+        elif pauli_bsf[i] == 1:
+            pauli_str += "X"
+        elif pauli_bsf[i + n] == 1:
+            pauli_str += "Z"
+        else:
+            pauli_str += "I"
+
+    return pauli_str
 
 
 class CncSimulator:
@@ -463,3 +510,67 @@ class CncSimulator:
             2 * self.isotropic_dim:, :
         ]
         return new_instance
+
+    def __eq__(self, other: CncSimulator) -> bool:
+        if not isinstance(other, CncSimulator):
+            return NotImplemented
+
+        return (
+            self._n == other._n and
+            self._m == other._m and
+            np.array_equal(self._tableau, other._tableau)
+        )
+
+    def __str__(self) -> str:
+        title = f"CNC Simulator with n={self.n}, m={self.m}"
+
+        # Convert each destabilizer row to a string representation
+        destabilizer_strings = [
+            pauli_bsf_to_str(row) for row in self._destabilizer_rows
+        ]
+        # Join all destabilizer strings with commas and enclose them
+        # within angle brackets
+        formatted_destabilizers = (
+            f"Destabilizers: <{', '.join(destabilizer_strings)}>"
+        )
+
+        # Convert each stabilizer string to a string representation
+        stabilizer_strings = [
+            pauli_bsf_to_str(row) for row in self._stabilizer_rows
+        ]
+        # Add minus if the stabilizer has a negative phase
+        stabilizer_strings = [
+            f"-{s}" if self._phase_col[self.isotropic_dim + i] == 1 else s
+            for i, s in enumerate(stabilizer_strings)
+        ]
+        # Join all stabilizer strings with commas and enclose them
+        # within angle brackets
+        formatted_stabilizers = (
+            f"Stabilizers: <{', '.join(stabilizer_strings)}>"
+        )
+
+        # Convert each JW element to a string representation
+        jw_element_strings = [
+            pauli_bsf_to_str(row) for row in self._jw_elements_rows
+        ]
+        # Add minus if the JW element has a negative phase
+        jw_element_strings = [
+            f"-{s}" if self._phase_col[2 * self.isotropic_dim + i] == 1 else s
+            for i, s in enumerate(jw_element_strings)
+        ]
+        # Join all JW element strings with commas and enclose them
+        formatted_jw_elements = (
+            f"JW Elements: {', '.join(jw_element_strings)}"
+        )
+
+        return "\n".join(
+            [
+                title,
+                formatted_destabilizers,
+                formatted_stabilizers,
+                formatted_jw_elements
+            ]
+        )
+
+    def __repr__(self) -> str:
+        return str(self)
