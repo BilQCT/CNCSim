@@ -1,11 +1,14 @@
 from __future__ import annotations
+
 import copy
-import galois
 import logging
 from typing import Optional
+
+import galois
 import numpy as np
 
 GF2 = galois.GF(2)
+
 
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
     """Computes the symplectic inner product of vectors u and v over GF(2)."""
@@ -26,8 +29,8 @@ def beta(
     ux, uz = u[:n], u[n:]
     vx, vz = v[:n], v[n:]
 
-    x_terms = (ux + vx) % 2
-    z_terms = (uz + vz) % 2
+    x_terms = (ux ^ vx) % 2
+    z_terms = (uz ^ vz) % 2
 
     u_phase = ux.dot(uz) % 4
     v_phase = vx.dot(vz) % 4
@@ -105,13 +108,13 @@ class CncSimulator:
         self._z_cols = self._tableau[:, n:-1]
         self._phase_col = self._tableau[:, -1]
         self._destabilizer_rows = self._tableau_without_phase[
-            : self.isotropic_dim, :
+            : self.isotropic_dim
         ]
         self._stabilizer_rows = self._tableau_without_phase[
-            self.isotropic_dim: 2 * self.isotropic_dim, :
+            self.isotropic_dim: 2 * self.isotropic_dim
         ]
         self._jw_elements_rows = self._tableau_without_phase[
-            2 * self.isotropic_dim:, :
+            2 * self.isotropic_dim:
         ]
 
         # Initialize local random generator
@@ -125,13 +128,13 @@ class CncSimulator:
         new_instance._z_cols = new_instance._tableau[:, self.n:-1]
         new_instance._phase_col = new_instance._tableau[:, -1]
         new_instance._destabilizer_rows = new_instance._tableau_without_phase[
-            : self.isotropic_dim, :
+            : self.isotropic_dim
         ]
         new_instance._stabilizer_rows = new_instance._tableau_without_phase[
-            self.isotropic_dim: 2 * self.isotropic_dim, :
+            self.isotropic_dim: 2 * self.isotropic_dim
         ]
         new_instance._jw_elements_rows = new_instance._tableau_without_phase[
-            2 * self.isotropic_dim:, :
+            2 * self.isotropic_dim:
         ]
         return new_instance
 
@@ -211,13 +214,13 @@ class CncSimulator:
         instance._z_cols = instance._tableau[:, n:-1]
         instance._phase_col = instance._tableau[:, -1]
         instance._destabilizer_rows = instance._tableau_without_phase[
-            : instance.isotropic_dim, :
+            : instance.isotropic_dim
         ]
         instance._stabilizer_rows = instance._tableau_without_phase[
-            instance.isotropic_dim: 2 * instance.isotropic_dim, :
+            instance.isotropic_dim: 2 * instance.isotropic_dim
         ]
         instance._jw_elements_rows = instance._tableau_without_phase[
-            2 * instance.isotropic_dim:, :
+            2 * instance.isotropic_dim:
         ]
         return instance
 
@@ -239,8 +242,8 @@ class CncSimulator:
         # Check commutation relations
         commutation_matrix = (
             tableau_without_phase @ symplectic_matrix(n) @
-            tableau_without_phase.T % 2
-        )
+            tableau_without_phase.T
+        ) % 2
 
         destabilizer_destabilizer_commutations = commutation_matrix[
             : isotropic_dim, : isotropic_dim
@@ -470,8 +473,8 @@ class CncSimulator:
                     # phase of the e_i in the stabilizer
                     s_i = self._phase_col[self.isotropic_dim + i]
 
-                    outcome = (outcome + s_i + beta(e_i, temp_vec)) % 2
-                    temp_vec = (temp_vec + e_i) % 2
+                    outcome = outcome ^ s_i ^ beta(e_i, temp_vec)
+                    temp_vec = temp_vec ^ e_i
 
         # Case 2: Measurement basis is Omega but not in the stabilizer
         elif commutes_with_stabilizer and (
@@ -500,16 +503,16 @@ class CncSimulator:
                     # phase of the e_i in the stabilizer
                     s_i = self._phase_col[self.isotropic_dim + i]
 
-                    outcome = (outcome + s_i + beta(e_i, temp_vec)) % 2
-                    temp_vec = (temp_vec + e_i) % 2
+                    outcome = outcome ^ s_i ^ beta(e_i, temp_vec)
+                    temp_vec = temp_vec ^ e_i
 
             # With probability 1/2, flip the phase of the non-commuting
             # JW elements
             if self._rng.integers(2) == 1:
-                for j in range(2 * self.m + 1):
-                    jw_elements_start_index = 2 * self.isotropic_dim
-                    if j != k:
-                        self._phase_col[jw_elements_start_index + j] ^= 1
+                jw_elements_start_index = 2 * self.isotropic_dim
+                indices = np.arange(2 * self.m + 1)
+                indices = indices[indices != k]
+                self._phase_col[jw_elements_start_index + indices] ^= 1
 
         # Case 3: Measurement basis commutes with the stabilizer
         # but not in Omega
@@ -654,12 +657,12 @@ class CncSimulator:
 
             # Replace p-th destabilizer with p-th stabilizer.
             # We do not care about phases of the destabilizers
-            self._tableau_without_phase[p - self.isotropic_dim, :] = (
-                self._tableau_without_phase[p, :]
+            self._tableau_without_phase[p - self.isotropic_dim] = (
+                self._tableau_without_phase[p]
             )
 
             # Replace p-th stabilizer with the measurement basis
-            self._tableau_without_phase[p, :] = measurement_basis
+            self._tableau_without_phase[p] = measurement_basis
 
             # Find outcome with coinflip and update the phase of the p-th
             # stabilizer accordingly
@@ -675,7 +678,7 @@ class CncSimulator:
         Adds row j to row i in the tableau but does not change the phase
         column.
         """
-        self._tableau_without_phase[i, :] ^= self._tableau_without_phase[j, :]
+        self._tableau_without_phase[i] ^= self._tableau_without_phase[j]
 
     def _row_add_with_phase(self, i: int, j: int) -> None:
         """
@@ -683,8 +686,8 @@ class CncSimulator:
         accordingly.
         """
         self._row_add_without_phase(i, j)
-        a = self._tableau_without_phase[i, :]
-        b = self._tableau_without_phase[j, :]
+        a = self._tableau_without_phase[i]
+        b = self._tableau_without_phase[j]
         s = self._phase_col[i]
         r = self._phase_col[j]
-        self._phase_col[i] = (s + r + beta(a, b)) % 2
+        self._phase_col[i] = s ^ r ^ beta(a, b)
