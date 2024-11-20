@@ -1,9 +1,11 @@
 from __future__ import annotations
 import copy
+import galois
 import logging
 from typing import Optional
 import numpy as np
 
+GF2 = galois.GF(2)
 
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
     """Computes the symplectic inner product of vectors u and v over GF(2)."""
@@ -89,6 +91,246 @@ def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
 
 
 class CncSimulator:
+    def __init__(self, n: int, m: int, seed: Optional[int] = None) -> None:
+        logging.debug(
+            f"Initializing CncSimulator with n={n}, m={m}, seed={seed}"
+        )
+        self._n = n
+        self._m = m
+        self._isotropic_dim = n - m
+        self._symplectic_matrix = symplectic_matrix(n)
+        self._tableau = self.initial_cnc_tableau(n, m)
+        self._tableau_without_phase = self._tableau[:, :-1]
+        self._x_cols = self._tableau[:, :n]
+        self._z_cols = self._tableau[:, n:-1]
+        self._phase_col = self._tableau[:, -1]
+        self._destabilizer_rows = self._tableau_without_phase[
+            : self.isotropic_dim, :
+        ]
+        self._stabilizer_rows = self._tableau_without_phase[
+            self.isotropic_dim: 2 * self.isotropic_dim, :
+        ]
+        self._jw_elements_rows = self._tableau_without_phase[
+            2 * self.isotropic_dim:, :
+        ]
+
+        # Initialize local random generator
+        self._rng = np.random.default_rng(seed)
+
+    def __deepcopy__(self, memo: Optional[dict] = None) -> CncSimulator:
+        new_instance = CncSimulator(self.n, self.m)
+        new_instance._tableau = copy.deepcopy(self._tableau)
+        new_instance._tableau_without_phase = new_instance._tableau[:, :-1]
+        new_instance._x_cols = new_instance._tableau[:, :self.n]
+        new_instance._z_cols = new_instance._tableau[:, self.n:-1]
+        new_instance._phase_col = new_instance._tableau[:, -1]
+        new_instance._destabilizer_rows = new_instance._tableau_without_phase[
+            : self.isotropic_dim, :
+        ]
+        new_instance._stabilizer_rows = new_instance._tableau_without_phase[
+            self.isotropic_dim: 2 * self.isotropic_dim, :
+        ]
+        new_instance._jw_elements_rows = new_instance._tableau_without_phase[
+            2 * self.isotropic_dim:, :
+        ]
+        return new_instance
+
+    def __eq__(self, other: CncSimulator) -> bool:
+        if not isinstance(other, CncSimulator):
+            return NotImplemented
+
+        return (
+            self._n == other._n and
+            self._m == other._m and
+            np.array_equal(self._tableau, other._tableau)
+        )
+
+    def __str__(self) -> str:
+        title = f"CNC Simulator with n={self.n}, m={self.m}"
+
+        # Convert each destabilizer row to a string representation
+        destabilizer_strings = [
+            pauli_bsf_to_str(row) for row in self._destabilizer_rows
+        ]
+        # Join all destabilizer strings with commas and enclose them
+        # within angle brackets
+        formatted_destabilizers = (
+            f"Destabilizers: <{', '.join(destabilizer_strings)}>"
+        )
+
+        # Convert each stabilizer string to a string representation
+        stabilizer_strings = [
+            pauli_bsf_to_str(row) for row in self._stabilizer_rows
+        ]
+        # Add minus if the stabilizer has a negative phase
+        stabilizer_strings = [
+            f"-{s}" if self._phase_col[self.isotropic_dim + i] == 1 else s
+            for i, s in enumerate(stabilizer_strings)
+        ]
+        # Join all stabilizer strings with commas and enclose them
+        # within angle brackets
+        formatted_stabilizers = (
+            f"Stabilizers: <{', '.join(stabilizer_strings)}>"
+        )
+
+        # Convert each JW element to a string representation
+        jw_element_strings = [
+            pauli_bsf_to_str(row) for row in self._jw_elements_rows
+        ]
+        # Add minus if the JW element has a negative phase
+        jw_element_strings = [
+            f"-{s}" if self._phase_col[2 * self.isotropic_dim + i] == 1 else s
+            for i, s in enumerate(jw_element_strings)
+        ]
+        # Join all JW element strings with commas and enclose them
+        formatted_jw_elements = (
+            f"JW Elements: {', '.join(jw_element_strings)}"
+        )
+
+        return "\n".join(
+            [
+                title,
+                formatted_destabilizers,
+                formatted_stabilizers,
+                formatted_jw_elements
+            ]
+        )
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    @classmethod
+    def from_tableau(cls, n: int, m: int, tableau: np.ndarray) -> CncSimulator:
+        if not cls.is_cnc(n, m, tableau):
+            raise ValueError("Given tableau is not a valid CNC tableau.")
+
+        instance = cls(n, m)
+        instance._tableau = copy.deepcopy(tableau)
+        instance._tableau_without_phase = instance._tableau[:, :-1]
+        instance._x_cols = instance._tableau[:, :n]
+        instance._z_cols = instance._tableau[:, n:-1]
+        instance._phase_col = instance._tableau[:, -1]
+        instance._destabilizer_rows = instance._tableau_without_phase[
+            : instance.isotropic_dim, :
+        ]
+        instance._stabilizer_rows = instance._tableau_without_phase[
+            instance.isotropic_dim: 2 * instance.isotropic_dim, :
+        ]
+        instance._jw_elements_rows = instance._tableau_without_phase[
+            2 * instance.isotropic_dim:, :
+        ]
+        return instance
+
+    @classmethod
+    def is_cnc(cls, n: int, m: int, tableau: np.ndarray) -> bool:
+        # Check if the tableau has the correct shape
+        if tableau.shape != (2 * n + 1, 2 * n + 1):
+            logging.info("Tableau has incorrect shape.")
+            return False
+
+        # Check tableau only contains 0s and 1s
+        if not np.all(np.isin(tableau, [0, 1])):
+            logging.info("Tableau contains elements other than 0 and 1.")
+            return False
+
+        isotropic_dim = n - m
+        tableau_without_phase = tableau[:, :-1]
+
+        # Check commutation relations
+        commutation_matrix = (
+            tableau_without_phase @ symplectic_matrix(n) @
+            tableau_without_phase.T % 2
+        )
+
+        destabilizer_destabilizer_commutations = commutation_matrix[
+            : isotropic_dim, : isotropic_dim
+        ]
+        if not np.array_equal(
+            destabilizer_destabilizer_commutations,
+            np.zeros((isotropic_dim, isotropic_dim))
+        ):
+            logging.info("Destabilizers do not commute with each other.")
+            return False
+
+        destabilizer_stabilizer_commutations = commutation_matrix[
+            : isotropic_dim, isotropic_dim: 2 * isotropic_dim
+        ]
+        if not np.array_equal(
+            destabilizer_stabilizer_commutations,
+            np.eye(isotropic_dim)
+        ):
+            logging.info(
+                "Destabilizier and stabilizer bases are not symplectic bases."
+                )
+            return False
+
+        destabilizer_jw_elements_commutations = commutation_matrix[
+            : isotropic_dim, 2 * isotropic_dim:
+        ]
+        if not np.array_equal(
+            destabilizer_jw_elements_commutations,
+            np.zeros((isotropic_dim, 2*m + 1))
+        ):
+            logging.info("Destabilizers do not commute with JW elements.")
+            return False
+
+        stabilizer_stabilizer_commutations = commutation_matrix[
+            isotropic_dim: 2 * isotropic_dim, isotropic_dim: 2 * isotropic_dim
+        ]
+        if not np.array_equal(
+            stabilizer_stabilizer_commutations,
+            np.zeros((isotropic_dim, isotropic_dim))
+        ):
+            logging.info("Stabilizers do not commute with each other.")
+            return False
+
+        stabilizer_jw_elements_commutations = commutation_matrix[
+            isotropic_dim: 2 * isotropic_dim, 2 * isotropic_dim:
+        ]
+        if not np.array_equal(
+            stabilizer_jw_elements_commutations,
+            np.zeros((isotropic_dim, 2*m + 1))
+        ):
+            logging.info("Stabilizers do not commute with JW elements.")
+            return False
+
+        jw_elements_jw_elements_commutations = commutation_matrix[
+            2 * isotropic_dim:, 2 * isotropic_dim:
+        ]
+        expected = np.ones((2*m + 1, 2*m + 1), dtype=np.uint8)
+        expected -= np.eye(2*m + 1, dtype=np.uint8)
+        if not np.array_equal(jw_elements_jw_elements_commutations, expected):
+            logging.info("JW elements do not anticommute with each other.")
+            return False
+
+        # Check independence
+        destabilizer_rows = GF2(
+            tableau_without_phase[: isotropic_dim]
+            )
+        if np.linalg.matrix_rank(destabilizer_rows) != isotropic_dim:
+            logging.info("Destabilizer rows are not linearly independent.")
+            return False
+
+        stabilizer_rows = GF2(
+            tableau_without_phase[isotropic_dim: 2*isotropic_dim]
+            )
+        if np.linalg.matrix_rank(stabilizer_rows) != isotropic_dim:
+            logging.info("Stabilizer rows are not linearly independent.")
+            return False
+        jw_elements_rows = GF2(
+            tableau_without_phase[2*isotropic_dim:]
+            )
+        if np.linalg.matrix_rank(jw_elements_rows) != 2*m:
+            logging.info("JW elements rows do not have rank 2m.")
+            return False
+
+        all_rows = GF2(tableau_without_phase)
+        if np.linalg.matrix_rank(all_rows) != 2*n:
+            logging.info("All rows do not span the whole space.")
+            return False
+
+        return True
+
     @staticmethod
     def initial_cnc_tableau(n: int, m: int) -> np.ndarray:
         isotropic_dim = n - m
@@ -142,32 +384,6 @@ class CncSimulator:
 
         return tableau
 
-    def __init__(self, n: int, m: int, seed: Optional[int] = None) -> None:
-        logging.debug(
-            f"Initializing CncSimulator with n={n}, m={m}, seed={seed}"
-        )
-        self._n = n
-        self._m = m
-        self._isotropic_dim = n - m
-        self._symplectic_matrix = symplectic_matrix(n)
-        self._tableau = self.initial_cnc_tableau(n, m)
-        self._tableau_without_phase = self._tableau[:, :-1]
-        self._x_cols = self._tableau[:, :n]
-        self._z_cols = self._tableau[:, n:-1]
-        self._phase_col = self._tableau[:, -1]
-        self._destabilizer_rows = self._tableau_without_phase[
-            : self.isotropic_dim, :
-        ]
-        self._stabilizer_rows = self._tableau_without_phase[
-            self.isotropic_dim: 2 * self.isotropic_dim, :
-        ]
-        self._jw_elements_rows = self._tableau_without_phase[
-            2 * self.isotropic_dim:, :
-        ]
-
-        # Initialize local random generator
-        self._rng = np.random.default_rng(seed)
-
     @property
     def n(self) -> int:
         return self._n
@@ -183,26 +399,6 @@ class CncSimulator:
     @property
     def tableau(self) -> np.ndarray:
         return self._tableau
-
-    @classmethod
-    def from_tableau(cls, n: int, m: int, tableau: np.ndarray) -> CncSimulator:
-        instance = cls(n, m)
-        # TODO: Check whether given tableau is valid
-        instance._tableau = copy.deepcopy(tableau)
-        instance._tableau_without_phase = instance._tableau[:, :-1]
-        instance._x_cols = instance._tableau[:, :n]
-        instance._z_cols = instance._tableau[:, n:-1]
-        instance._phase_col = instance._tableau[:, -1]
-        instance._destabilizer_rows = instance._tableau_without_phase[
-            : instance.isotropic_dim, :
-        ]
-        instance._stabilizer_rows = instance._tableau_without_phase[
-            instance.isotropic_dim: 2 * instance.isotropic_dim, :
-        ]
-        instance._jw_elements_rows = instance._tableau_without_phase[
-            2 * instance.isotropic_dim:, :
-        ]
-        return instance
 
     def apply_cnot(self, control_qubit: int, target_qubit: int) -> None:
         logging.debug(
@@ -492,85 +688,3 @@ class CncSimulator:
         s = self._phase_col[i]
         r = self._phase_col[j]
         self._phase_col[i] = (s + r + beta(a, b)) % 2
-
-    def __deepcopy__(self, memo: Optional[dict] = None) -> CncSimulator:
-        new_instance = CncSimulator(self.n, self.m)
-        new_instance._tableau = copy.deepcopy(self._tableau)
-        new_instance._tableau_without_phase = new_instance._tableau[:, :-1]
-        new_instance._x_cols = new_instance._tableau[:, :self.n]
-        new_instance._z_cols = new_instance._tableau[:, self.n:-1]
-        new_instance._phase_col = new_instance._tableau[:, -1]
-        new_instance._destabilizer_rows = new_instance._tableau_without_phase[
-            : self.isotropic_dim, :
-        ]
-        new_instance._stabilizer_rows = new_instance._tableau_without_phase[
-            self.isotropic_dim: 2 * self.isotropic_dim, :
-        ]
-        new_instance._jw_elements_rows = new_instance._tableau_without_phase[
-            2 * self.isotropic_dim:, :
-        ]
-        return new_instance
-
-    def __eq__(self, other: CncSimulator) -> bool:
-        if not isinstance(other, CncSimulator):
-            return NotImplemented
-
-        return (
-            self._n == other._n and
-            self._m == other._m and
-            np.array_equal(self._tableau, other._tableau)
-        )
-
-    def __str__(self) -> str:
-        title = f"CNC Simulator with n={self.n}, m={self.m}"
-
-        # Convert each destabilizer row to a string representation
-        destabilizer_strings = [
-            pauli_bsf_to_str(row) for row in self._destabilizer_rows
-        ]
-        # Join all destabilizer strings with commas and enclose them
-        # within angle brackets
-        formatted_destabilizers = (
-            f"Destabilizers: <{', '.join(destabilizer_strings)}>"
-        )
-
-        # Convert each stabilizer string to a string representation
-        stabilizer_strings = [
-            pauli_bsf_to_str(row) for row in self._stabilizer_rows
-        ]
-        # Add minus if the stabilizer has a negative phase
-        stabilizer_strings = [
-            f"-{s}" if self._phase_col[self.isotropic_dim + i] == 1 else s
-            for i, s in enumerate(stabilizer_strings)
-        ]
-        # Join all stabilizer strings with commas and enclose them
-        # within angle brackets
-        formatted_stabilizers = (
-            f"Stabilizers: <{', '.join(stabilizer_strings)}>"
-        )
-
-        # Convert each JW element to a string representation
-        jw_element_strings = [
-            pauli_bsf_to_str(row) for row in self._jw_elements_rows
-        ]
-        # Add minus if the JW element has a negative phase
-        jw_element_strings = [
-            f"-{s}" if self._phase_col[2 * self.isotropic_dim + i] == 1 else s
-            for i, s in enumerate(jw_element_strings)
-        ]
-        # Join all JW element strings with commas and enclose them
-        formatted_jw_elements = (
-            f"JW Elements: {', '.join(jw_element_strings)}"
-        )
-
-        return "\n".join(
-            [
-                title,
-                formatted_destabilizers,
-                formatted_stabilizers,
-                formatted_jw_elements
-            ]
-        )
-
-    def __repr__(self) -> str:
-        return str(self)
