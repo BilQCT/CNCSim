@@ -164,4 +164,4 @@ cython_debug/
 
 
 # large data files
-data/
+large_data/

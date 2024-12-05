@@ -1,0 +1,1203 @@
+Optimal decomposition for 1 qubit(s)
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  String[]
+- Anticommuting Paulis:
+  ["Y", "X", "Z"]
+
+- Value assignment:
+  I: 1
+  Y: -1
+  X: -1
+  Z: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  String[]
+- Anticommuting Paulis:
+  ["Y", "X", "Z"]
+
+- Value assignment:
+  I: 1
+  Y: 1
+  X: 1
+  Z: -1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  String[]
+- Anticommuting Paulis:
+  ["Y", "X", "Z"]
+
+- Value assignment:
+  I: 1
+  Y: 1
+  X: 1
+  Z: 1
+
+
+
+Optimal decomposition for 2 qubit(s)
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YI"]
+- Anticommuting Paulis:
+  ["YX", "YZ", "IY"]
+
+- Value assignment:
+  YX: 1
+  YZ: -1
+  IY: 1
+  YI: 1
+  IX: 1
+  IZ: -1
+  II: 1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XY"]
+- Anticommuting Paulis:
+  ["YX", "YZ", "IY"]
+
+- Value assignment:
+  YX: 1
+  YZ: -1
+  IY: 1
+  II: 1
+  XY: 1
+  ZX: 1
+  ZZ: 1
+  XI: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IX"]
+- Anticommuting Paulis:
+  ["YX", "XX", "ZX"]
+
+- Value assignment:
+  YX: 1
+  YI: 1
+  IX: 1
+  II: 1
+  XX: 1
+  ZX: -1
+  XI: 1
+  ZI: -1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YI"]
+- Anticommuting Paulis:
+  ["YX", "YZ", "IY"]
+
+- Value assignment:
+  YX: 1
+  YZ: 1
+  IY: 1
+  YI: 1
+  IX: 1
+  IZ: 1
+  II: 1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XX"]
+- Anticommuting Paulis:
+  ["YZ", "IX", "ZZ"]
+
+- Value assignment:
+  YZ: -1
+  IX: 1
+  II: 1
+  ZY: -1
+  XX: 1
+  ZZ: -1
+  XI: 1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IY"]
+- Anticommuting Paulis:
+  ["YI", "XY", "ZY"]
+
+- Value assignment:
+  IY: 1
+  YI: 1
+  II: 1
+  XY: 1
+  ZY: 1
+  XI: 1
+  ZI: 1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IY"]
+- Anticommuting Paulis:
+  ["YI", "XY", "ZY"]
+
+- Value assignment:
+  IY: 1
+  YI: 1
+  II: 1
+  XY: 1
+  ZY: -1
+  XI: 1
+  ZI: -1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IX"]
+- Anticommuting Paulis:
+  ["YX", "XX", "ZX"]
+
+- Value assignment:
+  YX: 1
+  YI: 1
+  IX: 1
+  II: 1
+  XX: 1
+  ZX: 1
+  XI: 1
+  ZI: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YX"]
+- Anticommuting Paulis:
+  ["YI", "XY", "ZY"]
+
+- Value assignment:
+  YX: 1
+  YI: 1
+  IX: 1
+  II: 1
+  XY: 1
+  ZY: -1
+  XZ: 1
+  ZZ: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YY"]
+- Anticommuting Paulis:
+  ["IY", "XX", "XZ"]
+
+- Value assignment:
+  IY: 1
+  YI: 1
+  II: 1
+  XX: 1
+  XZ: 1
+  ZX: 1
+  ZZ: -1
+  YY: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XI"]
+- Anticommuting Paulis:
+  ["IY", "IX", "IZ"]
+
+- Value assignment:
+  IY: 1
+  IX: 1
+  IZ: 1
+  II: 1
+  XY: 1
+  XX: 1
+  XZ: 1
+  XI: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XI"]
+- Anticommuting Paulis:
+  ["IY", "IX", "IZ"]
+
+- Value assignment:
+  IY: 1
+  IX: 1
+  IZ: -1
+  II: 1
+  XY: 1
+  XX: 1
+  XZ: -1
+  XI: 1
+
+
+
+Optimal decomposition for 3 qubit(s)
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "IYX"]
+- Anticommuting Paulis:
+  ["IZZ", "XYI", "XZY"]
+
+- Value assignment:
+  XZY: 1
+  XXZ: -1
+  ZXY: 1
+  IZZ: 1
+  ZYX: 1
+  XYI: 1
+  YIX: 1
+  YZY: -1
+  ZII: 1
+  YXZ: 1
+  IXY: 1
+  ZZZ: 1
+  YYI: 1
+  IYX: 1
+  XIX: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YII", "IIX"]
+- Anticommuting Paulis:
+  ["IYI", "IZI", "YXX"]
+
+- Value assignment:
+  IYI: 1
+  IZI: 1
+  YXX: 1
+  YIX: 1
+  YYX: 1
+  YZX: 1
+  YXI: 1
+  IXX: 1
+  YII: 1
+  IIX: 1
+  YYI: 1
+  IYX: 1
+  YZI: 1
+  IZX: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "IIY"]
+- Anticommuting Paulis:
+  ["ZIY", "XII", "YIY"]
+
+- Value assignment:
+  ZIY: 1
+  IYI: 1
+  XII: 1
+  ZYY: 1
+  YIY: 1
+  XYI: 1
+  YYY: 1
+  ZII: 1
+  ZYI: 1
+  IIY: 1
+  YII: 1
+  IYY: 1
+  YYI: 1
+  XIY: 1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IXX", "IIX"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "YXX"]
+
+- Value assignment:
+  ZXX: -1
+  XXI: 1
+  ZIX: -1
+  XII: 1
+  YXX: 1
+  YIX: 1
+  ZXI: -1
+  ZII: -1
+  YXI: 1
+  IXX: 1
+  YII: 1
+  IIX: 1
+  XXX: 1
+  XIX: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "YII"]
+- Anticommuting Paulis:
+  ["IYZ", "YIY", "YIX"]
+
+- Value assignment:
+  IYZ: -1
+  IYI: 1
+  YIY: 1
+  YIX: 1
+  YYY: 1
+  YYX: 1
+  YIZ: -1
+  IIY: 1
+  YII: 1
+  IIX: 1
+  YYZ: -1
+  IYY: 1
+  YYI: 1
+  IYX: 1
+  IIZ: -1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IXY", "IIY"]
+- Anticommuting Paulis:
+  ["XXI", "YXY", "ZXY"]
+
+- Value assignment:
+  ZXY: -1
+  ZIY: -1
+  XXI: 1
+  XII: 1
+  YXY: 1
+  YIY: 1
+  ZXI: -1
+  ZII: -1
+  IXY: 1
+  YXI: 1
+  IIY: 1
+  YII: 1
+  XXY: 1
+  XIY: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XZX", "ZZZ"]
+- Anticommuting Paulis:
+  ["XXZ", "IZI", "XYZ"]
+
+- Value assignment:
+  XXZ: -1
+  XZX: -1
+  ZXX: -1
+  IZI: -1
+  XYZ: 1
+  YIY: 1
+  ZYX: 1
+  ZIZ: -1
+  YZY: -1
+  IXY: 1
+  YXI: 1
+  ZZZ: 1
+  IYY: 1
+  YYI: 1
+  XIX: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "IXX"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: 1
+  ZXX: -1
+  IZZ: -1
+  XXI: 1
+  ZYY: -1
+  XYZ: 1
+  YIX: 1
+  YZY: -1
+  ZII: -1
+  YXI: 1
+  ZZZ: 1
+  IXX: 1
+  YYZ: -1
+  IYY: 1
+  XIX: 1
+  III: 1
+
+Has sign: -1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YIX", "XIY"]
+- Anticommuting Paulis:
+  ["IYI", "YXX", "XZY"]
+
+- Value assignment:
+  XZY: 1
+  IYI: 1
+  IZI: -1
+  YXX: -1
+  YIX: -1
+  ZXZ: 1
+  ZIZ: 1
+  YYX: -1
+  YZX: 1
+  ZYZ: 1
+  ZZZ: -1
+  XXY: -1
+  XIY: -1
+  IXI: 1
+  XYY: -1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IIY", "YII"]
+- Anticommuting Paulis:
+  ["IYI", "IZI", "YXY"]
+
+- Value assignment:
+  IYI: 1
+  IZI: 1
+  YXY: 1
+  YIY: 1
+  YYY: 1
+  YZY: 1
+  IXY: 1
+  YXI: 1
+  IIY: 1
+  YII: 1
+  IYY: 1
+  YYI: 1
+  IZY: 1
+  YZI: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XXI", "XII"]
+- Anticommuting Paulis:
+  ["XXZ", "IXY", "IXX"]
+
+- Value assignment:
+  XXZ: -1
+  XIZ: -1
+  XXI: 1
+  XII: 1
+  IXY: 1
+  IIY: 1
+  IXX: 1
+  IIX: 1
+  XXY: 1
+  XIY: 1
+  XXX: 1
+  IXZ: -1
+  XIX: 1
+  IIZ: -1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YII", "IIX"]
+- Anticommuting Paulis:
+  ["IYI", "IZI", "YXX"]
+
+- Value assignment:
+  IYI: 1
+  IZI: -1
+  YXX: 1
+  YIX: 1
+  YYX: 1
+  YZX: -1
+  YXI: 1
+  IXX: 1
+  YII: 1
+  IIX: 1
+  YYI: 1
+  IYX: 1
+  YZI: -1
+  IZX: -1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "XIY"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: -1
+  ZXX: 1
+  XXI: 1
+  IZI: -1
+  ZYX: -1
+  XYI: 1
+  YIX: 1
+  ZIZ: 1
+  YXZ: -1
+  YZX: -1
+  IXY: 1
+  ZZZ: -1
+  YYZ: 1
+  IYY: 1
+  XIY: 1
+  III: 1
+
+Has sign: -1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YXI", "ZZI"]
+- Anticommuting Paulis:
+  ["YXY", "XYZ", "XYX"]
+
+- Value assignment:
+  XYX: -1
+  YXY: -1
+  XYZ: -1
+  YXX: -1
+  XYI: -1
+  ZZX: 1
+  ZZY: 1
+  YXZ: -1
+  YXI: -1
+  ZZZ: 1
+  IIY: 1
+  ZZI: 1
+  IIX: 1
+  IIZ: 1
+  XYY: -1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YXI", "YII"]
+- Anticommuting Paulis:
+  ["YXY", "YXX", "YXZ"]
+
+- Value assignment:
+  YXY: 1
+  YIY: 1
+  YXX: 1
+  YIX: 1
+  YXZ: -1
+  IXY: 1
+  YIZ: -1
+  IIY: 1
+  IXX: 1
+  IIX: 1
+  YII: 1
+  YXI: 1
+  IXZ: -1
+  IIZ: -1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "XIY"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: 1
+  ZXX: -1
+  XXI: 1
+  IZI: 1
+  ZYX: 1
+  XYI: 1
+  YIX: 1
+  ZIZ: 1
+  YXZ: 1
+  YZX: 1
+  IXY: 1
+  ZZZ: 1
+  YYZ: -1
+  IYY: 1
+  XIY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XII", "IIX"]
+- Anticommuting Paulis:
+  ["XZX", "XXI", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  XZX: -1
+  IYI: 1
+  XXI: 1
+  IZI: -1
+  XII: 1
+  XYI: 1
+  XZI: -1
+  IXX: 1
+  IIX: 1
+  IYX: 1
+  XXX: 1
+  IZX: -1
+  XIX: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IIY", "XII"]
+- Anticommuting Paulis:
+  ["IYI", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: -1
+  IYI: 1
+  XXI: 1
+  IZI: -1
+  XII: 1
+  XYI: 1
+  XZI: -1
+  IXY: 1
+  IIY: 1
+  IYY: 1
+  XXY: 1
+  IZY: -1
+  XIY: 1
+  IXI: 1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "IIX"]
+- Anticommuting Paulis:
+  ["ZIX", "YIX", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  IYI: 1
+  ZIX: -1
+  XII: 1
+  ZYX: -1
+  XYI: 1
+  YIX: 1
+  YYX: 1
+  ZII: -1
+  ZYI: -1
+  YII: 1
+  IIX: 1
+  YYI: 1
+  IYX: 1
+  XIX: 1
+  III: 1
+
+Has sign: -1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YIY", "ZIZ"]
+- Anticommuting Paulis:
+  ["XZX", "YXY", "XYX"]
+
+- Value assignment:
+  XYX: -1
+  XZX: -1
+  IYI: 1
+  IZI: 1
+  YXY: -1
+  YIY: -1
+  ZXZ: -1
+  YYY: -1
+  ZIZ: -1
+  YZY: -1
+  ZYZ: -1
+  ZZZ: -1
+  XXX: -1
+  XIX: -1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "XII"]
+- Anticommuting Paulis:
+  ["IYZ", "IIY", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  IYZ: 1
+  IYI: 1
+  XIZ: 1
+  XII: 1
+  XYZ: 1
+  XYI: 1
+  IIY: 1
+  IIX: 1
+  IYY: 1
+  IYX: 1
+  XIY: 1
+  XIX: 1
+  IIZ: 1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "IYX"]
+- Anticommuting Paulis:
+  ["IZZ", "XYI", "XZY"]
+
+- Value assignment:
+  XZY: -1
+  XXZ: 1
+  ZXY: -1
+  IZZ: 1
+  ZYX: -1
+  XYI: 1
+  YIX: 1
+  YZY: 1
+  ZII: -1
+  YXZ: -1
+  IXY: 1
+  ZZZ: -1
+  YYI: 1
+  IYX: 1
+  XIX: 1
+  III: 1
+
+Has sign: -1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XXI", "ZZI"]
+- Anticommuting Paulis:
+  ["XXZ", "ZZY", "ZZX"]
+
+- Value assignment:
+  XXZ: 1
+  XXI: -1
+  ZZY: -1
+  ZZX: -1
+  YYY: -1
+  YYX: -1
+  ZZZ: 1
+  IIY: 1
+  ZZI: -1
+  IIX: 1
+  YYZ: 1
+  XXY: -1
+  YYI: -1
+  XXX: -1
+  IIZ: -1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IXY", "IIY"]
+- Anticommuting Paulis:
+  ["XXI", "YXY", "ZXY"]
+
+- Value assignment:
+  ZXY: 1
+  ZIY: 1
+  XXI: 1
+  XII: 1
+  YXY: 1
+  YIY: 1
+  ZXI: 1
+  ZII: 1
+  IXY: 1
+  YXI: 1
+  IIY: 1
+  YII: 1
+  XXY: 1
+  XIY: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "IIX"]
+- Anticommuting Paulis:
+  ["ZIX", "YIX", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  IYI: 1
+  ZIX: 1
+  XII: 1
+  ZYX: 1
+  XYI: 1
+  YIX: 1
+  YYX: 1
+  ZII: 1
+  ZYI: 1
+  YII: 1
+  IIX: 1
+  YYI: 1
+  IYX: 1
+  XIX: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XZX", "ZZZ"]
+- Anticommuting Paulis:
+  ["XXZ", "IZI", "XYZ"]
+
+- Value assignment:
+  XXZ: 1
+  XZX: 1
+  ZXX: 1
+  IZI: 1
+  XYZ: -1
+  YIY: 1
+  ZYX: -1
+  ZIZ: -1
+  YZY: 1
+  IXY: 1
+  YXI: 1
+  ZZZ: -1
+  IYY: 1
+  YYI: 1
+  XIX: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IXX", "IIX"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "YXX"]
+
+- Value assignment:
+  ZXX: 1
+  XXI: 1
+  ZIX: 1
+  XII: 1
+  YXX: 1
+  YIX: 1
+  ZXI: 1
+  ZII: 1
+  YXI: 1
+  IXX: 1
+  YII: 1
+  IIX: 1
+  XXX: 1
+  XIX: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "XII"]
+- Anticommuting Paulis:
+  ["IYZ", "IIY", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  IYZ: -1
+  IYI: 1
+  XIZ: -1
+  XII: 1
+  XYZ: -1
+  XYI: 1
+  IIY: 1
+  IIX: 1
+  IYY: 1
+  IYX: 1
+  XIY: 1
+  XIX: 1
+  IIZ: -1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XII", "IIX"]
+- Anticommuting Paulis:
+  ["XZX", "XXI", "XYX"]
+
+- Value assignment:
+  XYX: 1
+  XZX: 1
+  IYI: 1
+  XXI: 1
+  IZI: 1
+  XII: 1
+  XYI: 1
+  XZI: 1
+  IXX: 1
+  IIX: 1
+  IYX: 1
+  XXX: 1
+  IZX: 1
+  XIX: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["XXI", "XII"]
+- Anticommuting Paulis:
+  ["XXZ", "IXY", "IXX"]
+
+- Value assignment:
+  XXZ: 1
+  XIZ: 1
+  XXI: 1
+  XII: 1
+  IXY: 1
+  IIY: 1
+  IXX: 1
+  IIX: 1
+  XXY: 1
+  XIY: 1
+  XXX: 1
+  IXZ: 1
+  XIX: 1
+  IIZ: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "IIY"]
+- Anticommuting Paulis:
+  ["ZIY", "XII", "YIY"]
+
+- Value assignment:
+  ZIY: -1
+  IYI: 1
+  XII: 1
+  ZYY: -1
+  YIY: 1
+  XYI: 1
+  YYY: 1
+  ZII: -1
+  ZYI: -1
+  IIY: 1
+  YII: 1
+  IYY: 1
+  YYI: 1
+  XIY: 1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IIY", "XII"]
+- Anticommuting Paulis:
+  ["IYI", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: 1
+  IYI: 1
+  XXI: 1
+  IZI: 1
+  XII: 1
+  XYI: 1
+  XZI: 1
+  IXY: 1
+  IIY: 1
+  IYY: 1
+  XXY: 1
+  IZY: 1
+  XIY: 1
+  IXI: 1
+  XYY: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IIY", "YII"]
+- Anticommuting Paulis:
+  ["IYI", "IZI", "YXY"]
+
+- Value assignment:
+  IYI: 1
+  IZI: -1
+  YXY: 1
+  YIY: 1
+  YYY: 1
+  YZY: -1
+  IXY: 1
+  YXI: 1
+  IIY: 1
+  YII: 1
+  IYY: 1
+  YYI: 1
+  IZY: -1
+  YZI: -1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["ZZZ", "IXX"]
+- Anticommuting Paulis:
+  ["ZXX", "XXI", "XZY"]
+
+- Value assignment:
+  XZY: -1
+  ZXX: 1
+  IZZ: -1
+  XXI: 1
+  ZYY: 1
+  XYZ: -1
+  YIX: 1
+  YZY: 1
+  ZII: 1
+  YXI: 1
+  ZZZ: -1
+  IXX: 1
+  YYZ: 1
+  IYY: 1
+  XIX: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["YXI", "YII"]
+- Anticommuting Paulis:
+  ["YXY", "YXX", "YXZ"]
+
+- Value assignment:
+  YXY: 1
+  YIY: 1
+  YXX: 1
+  YIX: 1
+  YXZ: 1
+  IXY: 1
+  YIZ: 1
+  IIY: 1
+  IXX: 1
+  IIX: 1
+  YII: 1
+  YXI: 1
+  IXZ: 1
+  IIZ: 1
+  IXI: 1
+  III: 1
+
+Has sign: +1
+CNC:
+Maximal CNC set:
+- Isotropic generators:
+  ["IYI", "YII"]
+- Anticommuting Paulis:
+  ["IYZ", "YIY", "YIX"]
+
+- Value assignment:
+  IYZ: 1
+  IYI: 1
+  YIY: 1
+  YIX: 1
+  YYY: 1
+  YYX: 1
+  YIZ: 1
+  IIY: 1
+  YII: 1
+  IIX: 1
+  YYZ: 1
+  IYY: 1
+  YYI: 1
+  IYX: 1
+  IIZ: 1
+  III: 1
+
+
+
