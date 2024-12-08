@@ -1,0 +1,6 @@
+numpy>=1.25.2
+pytest>=8.0.0
+qutip>=5.0.0
+h5py>=3.10.0
+sphinx>=7.3.0
+sphinx-book-theme>=1.1.2
