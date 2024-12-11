@@ -9,13 +9,23 @@ import numpy as np
 
 #GF2 = galois.GF(2)
 
-
+'''
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
     """Computes the symplectic inner product of vectors u and v over GF(2)."""
     n = len(u) // 2
     ux, uz = u[:n], u[n:]
     vx, vz = v[:n], v[n:]
     return (uz.dot(vx) - ux.dot(vz)) % 2
+''';
+    
+
+def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
+    """Computes the symplectic inner product of vectors u and v over GF(2)."""
+    n = len(u) // 2
+    ux, uz = u[:n].astype(np.int64), u[n:].astype(np.int64)
+    vx, vz = v[:n].astype(np.int64), v[n:].astype(np.int64)
+    return (uz.dot(vx) - ux.dot(vz)) % 2
+
 
 
 def beta(
@@ -36,7 +46,14 @@ def beta(
     v_phase = vx.dot(vz) % 4
     combined_phase = x_terms.dot(z_terms) % 4
 
-    gamma = (u_phase + v_phase + 2 * uz.dot(vx) - combined_phase) % 4
+    #gamma = (u_phase + v_phase + 2 * uz.dot(vx) - combined_phase) % 4
+    gamma = (
+    u_phase.astype(np.int32)
+    + v_phase.astype(np.int32)
+    + 2 * uz.astype(np.int32).dot(vx.astype(np.int32))
+    - combined_phase.astype(np.int32)
+) % 4
+
     beta = gamma // 2
 
     return beta
