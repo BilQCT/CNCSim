@@ -1,6 +1,6 @@
 
 from qiskit import QuantumCircuit
-from trial import *
+from ccz_gadget import *
 from qiskit import Aer, execute, QuantumCircuit, ClassicalRegister
 
 def hshift6():
