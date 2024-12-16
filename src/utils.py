@@ -431,3 +431,6 @@ class DecompositionElement:
             raise ValueError("Probability must be a number.")
         if self.probability <= 0:
             raise ValueError("Probability must be a positive number.")
+
+
+
