@@ -4,10 +4,10 @@ import copy
 import logging
 from typing import Optional
 
-#import galois
+import galois
 import numpy as np
 
-#GF2 = galois.GF(2)
+GF2 = galois.GF(2)
 
 '''
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:

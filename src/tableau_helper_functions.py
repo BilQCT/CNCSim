@@ -406,29 +406,23 @@ def left_compose(tableau1,tableau2,m1,m2):
     n1 = int((tableau1.shape[1]-1)/2)
     n2 = int((tableau2.shape[1]-1)/2)
 
-    # stabilizer dimension:
-    #dim_vals = [n_vals[i]-m_vals[i] for i in range(2)]
-
     # total rows and columns:
-    N1 = 2*n1
-
-    # check if right tableau is stabilizer
-    if m2 == 0:
-        N2 = 2*n2
-        diff = 1
-    else:
-        N2 = 2*n2+1
-        diff = 0
+    rows1 = tableau1.shape[0]; cols1 = tableau1.shape[1]
+    rows2 = tableau2.shape[0]; cols2 = tableau2.shape[1]
 
     # initialize tableau:
-    tableau = np.empty((N1+N2,N1+N2+diff),dtype = int)
+    tableau = np.empty((rows1+rows2,cols1+cols2-1),dtype = int)
 
-    # lift tableau 1
-    _tableau1 = np.concatenate((tableau1[:,:-1],np.zeros((N1,N2+diff))),axis = 1)
-    _tableau1[:,-1] = tableau1[:,-1]
+    # separate into x-z pieces:
+    _tableau1_x = np.concatenate((tableau1[:,:n1],np.zeros((rows1,n2))),axis=1)
+    _tableau1_z = np.concatenate((tableau1[:,n1:-1],np.zeros((rows1,n2))),axis=1)
+    _tableau1 = np.concatenate((_tableau1_x,_tableau1_z),axis=1)
+    _tableau1 = np.concatenate((_tableau1,tableau1[:,-1].reshape(rows1,1)),axis=1)
 
-    # lift tableau 2
-    _tableau2 = np.concatenate((np.zeros((N2,N1)),tableau2),axis = 1)
+    _tableau2_x = np.concatenate((np.zeros((rows2,n1)),tableau2[:,:n2]),axis=1)
+    _tableau2_z = np.concatenate((np.zeros((rows2,n1)),tableau2[:,n2:-1]),axis=1)
+    _tableau2 = np.concatenate((_tableau2_x,_tableau2_z),axis=1)
+    _tableau2 = np.concatenate((_tableau2,tableau2[:,-1].reshape(rows2,1)),axis=1)
 
     # stack: destabilizer1 (n1), destabilizer2 (n2-m2)
     tableau[:n1,:] = _tableau1[:n1,:]
@@ -448,49 +442,44 @@ def left_compose(tableau1,tableau2,m1,m2):
 
 
 def right_compose(tableau1,tableau2,m1,m2):
-    
+
     # check if composition is valid:
     if m2 != 0:
-        raise ValueError("Composition is not valid. Left tableau must be a stabilizer.")
+        raise ValueError("Composition is not valid. Right tableau must be a stabilizer.")
 
     # qubit numbers:
     n1 = int((tableau1.shape[1]-1)/2)
     n2 = int((tableau2.shape[1]-1)/2)
 
-    # stabilizer dimension:
-    #dim_vals = [n_vals[i]-m_vals[i] for i in range(2)]
-
     # total rows and columns:
-    N1 = 2*n1
-
-    # check if right tableau is stabilizer
-    if m2 == 0:
-        N2 = 2*n2
-        diff = 1
-    else:
-        N2 = 2*n2+1
-        diff = 0
+    rows1 = tableau1.shape[0]; cols1 = tableau1.shape[1]
+    rows2 = tableau2.shape[0]; cols2 = tableau2.shape[1]
 
     # initialize tableau:
-    tableau = np.empty((N1+N2,N1+N2+diff),dtype = int)
+    tableau = np.empty((rows1+rows2,cols1+cols2-1),dtype = int)
 
-    # lift tableau 1
-    _tableau1 = np.concatenate((tableau1[:,:-1],np.zeros((N1,N2+diff))),axis = 1)
-    _tableau1[:,-1] = tableau1[:,-1]
+    # separate tableau1 into x-z pieces and recombine
+    _tableau1_x = np.concatenate((tableau1[:,:n1],np.zeros((rows1,n2))),axis=1)
+    _tableau1_z = np.concatenate((tableau1[:,n1:-1],np.zeros((rows1,n2))),axis=1)
+    _tableau1 = np.concatenate((_tableau1_x,_tableau1_z),axis=1)
+    _tableau1 = np.concatenate((_tableau1,tableau1[:,-1].reshape(rows1,1)),axis=1)
 
-    # lift tableau 2
-    _tableau2 = np.concatenate((np.zeros((N2,N1)),tableau2),axis = 1)
+    # separate tableau2 into x-z pieces and recombine:
+    _tableau2_x = np.concatenate((np.zeros((rows2,n1)),tableau2[:,:n2]),axis=1)
+    _tableau2_z = np.concatenate((np.zeros((rows2,n1)),tableau2[:,n2:-1]),axis=1)
+    _tableau2 = np.concatenate((_tableau2_x,_tableau2_z),axis=1)
+    _tableau2 = np.concatenate((_tableau2,tableau2[:,-1].reshape(rows2,1)),axis=1)
 
-    # stack: destabilizer1 (n1), destabilizer2 (n2-m2)
-    tableau[:n1,:] = _tableau1[:n1,:]
-    tableau[n1:(n1+n2-m2),:] = _tableau2[:(n2-m2),:]
+    # stack: destabilizer1 (n2), destabilizer2 (n1-m1)
+    tableau[:n2,:] = _tableau2[:n2,:]
+    tableau[n2:(n1+n2-m1),:] = _tableau1[:(n1-m1),:]
 
-    # stack: stabilizer1 (n1), stabilizer2 (n2-m2)
-    tableau[(n1+n2-m2):(2*n1+n2-m2),:] = _tableau1[n1:,:]
-    tableau[(2*n1+n2-m2):(2*(n1+n2-m2)),:] = _tableau2[(n2-m2):2*(n2-m2),:]
+    # stack: stabilizer1 (n2), stabilizer2 (n1-m1)
+    tableau[(n1+n2-m1):(n1+2*n2-m1),:] = _tableau2[n2:,:]
+    tableau[(n1+2*n2-m1):(2*(n1+n2-m1)),:] = _tableau1[(n1-m1):2*(n1-m1),:]
 
-    # stack: jw (2m2)
-    tableau[(2*(n1+n2-m2)):,:] = _tableau2[2*(n2-m2):,:]
+    # stack: jw (2m1)
+    tableau[(2*(n1+n2-m1)):,:] = _tableau1[2*(n1-m1):,:]
     
     return tableau
 
@@ -501,7 +490,7 @@ def compose_tableaus(tableau1,tableau2,m1,m2):
     # check if composition is valid:
     if (m1!=0) and (m2 !=0):
         raise ValueError("Composition is not valid. One of m1 or m2 must be 0.")
-    elif m1 == 0:
+    elif (m1 == 0) and (m2 != 0):
         return left_compose(tableau1,tableau2,m1,m2)
     else:
         return right_compose(tableau1,tableau2,m1,m2)
