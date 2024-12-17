@@ -88,9 +88,6 @@ def find_cosets(vectors):
 
     return cosets
 
-
-import numpy as np
-
 def gaussian_elimination_mod2(A):
     """
     Perform Gaussian elimination on matrix A over Z2.
@@ -301,6 +298,8 @@ def symplectic_gram_schmidt(array1, array2, r):
     """
     Perform the Symplectic Gram-Schmidt process on a set of vectors over Z2.
 
+    Based off Symplectic Gram-Schmidt pseudo-code of https://arxiv.org/abs/1406.2170
+
     Args:
         array1: A list of binary vectors for the first set.
         array2: A list of binary vectors for the second set.
@@ -308,6 +307,7 @@ def symplectic_gram_schmidt(array1, array2, r):
 
     Returns:
         Two numpy arrays representing the symplectic basis vectors.
+    
     """
     old_basis1 = [np.array(v, dtype=int) for v in array1]
     old_basis2 = [np.array(v, dtype=int) for v in array2]
