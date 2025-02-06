@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import pytest
 
-from neater_cnc_tableau import (
+from src.neater_cnc_tableau import (
     symplectic_inner_product,
     beta,
     symplectic_matrix,

@@ -1,0 +1,3396 @@
+Processing Stabilizer vectors for n = 1:
+
+Quantum state from decomposition agrees with theory? True 
+
+Stabilizer in decomposition: 1
+
+Quasiprobability weight: -0.20710678118654746
+
+Pauli Operator: I
+Pauli Operator: Y
+
+ Cnc tableau object: 
+ CNC Simulator with n=1, m=0
+Destabilizers: <X>
+Stabilizers: <-Y>
+JW Elements: I
+
+Stabilizer in decomposition: 2
+
+Quasiprobability weight: 0.7071067811865475
+
+Pauli Operator: I
+Pauli Operator: X
+
+ Cnc tableau object: 
+ CNC Simulator with n=1, m=0
+Destabilizers: <Z>
+Stabilizers: <X>
+JW Elements: I
+
+Stabilizer in decomposition: 3
+
+Quasiprobability weight: 0.5
+
+Pauli Operator: I
+Pauli Operator: Y
+
+ Cnc tableau object: 
+ CNC Simulator with n=1, m=0
+Destabilizers: <X>
+Stabilizers: <Y>
+JW Elements: I
+
+Saving Stabilizer Tableau Keys: n = 1: 
+
+Processing Stabilizer vectors for n = 2:
+
+Quantum state from decomposition agrees with theory? True 
+
+Stabilizer in decomposition: 1
+
+Quasiprobability weight: 0.35355339059327373
+
+Pauli Operator: II
+Pauli Operator: IY
+Pauli Operator: XI
+Pauli Operator: XY
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IX, ZI>
+Stabilizers: <IY, XI>
+JW Elements: II
+
+Stabilizer in decomposition: 2
+
+Quasiprobability weight: -0.1666666666666666
+
+Pauli Operator: II
+Pauli Operator: XY
+Pauli Operator: YX
+Pauli Operator: ZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IX, XI>
+Stabilizers: <-XY, -YX>
+JW Elements: II
+
+Stabilizer in decomposition: 3
+
+Quasiprobability weight: 0.3333333333333333
+
+Pauli Operator: II
+Pauli Operator: IY
+Pauli Operator: YI
+Pauli Operator: YY
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IX, XI>
+Stabilizers: <IY, YI>
+JW Elements: II
+
+Stabilizer in decomposition: 4
+
+Quasiprobability weight: 0.35355339059327373
+
+Pauli Operator: II
+Pauli Operator: IX
+Pauli Operator: YI
+Pauli Operator: YX
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IZ, XI>
+Stabilizers: <IX, YI>
+JW Elements: II
+
+Stabilizer in decomposition: 5
+
+Quasiprobability weight: -0.02022005725994047
+
+Pauli Operator: II
+Pauli Operator: IY
+Pauli Operator: XI
+Pauli Operator: XY
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IX, ZI>
+Stabilizers: <-IY, -XI>
+JW Elements: II
+
+Stabilizer in decomposition: 6
+
+Quasiprobability weight: -0.16666666666666657
+
+Pauli Operator: II
+Pauli Operator: XX
+Pauli Operator: YY
+Pauli Operator: ZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <ZI, IX>
+Stabilizers: <-XX, -ZZ>
+JW Elements: II
+
+Stabilizer in decomposition: 7
+
+Quasiprobability weight: 0.3333333333333333
+
+Pauli Operator: II
+Pauli Operator: IX
+Pauli Operator: XI
+Pauli Operator: XX
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IZ, ZI>
+Stabilizers: <IX, XI>
+JW Elements: II
+
+Stabilizer in decomposition: 8
+
+Quasiprobability weight: -0.020220057259940444
+
+Pauli Operator: II
+Pauli Operator: IX
+Pauli Operator: YI
+Pauli Operator: YX
+
+ Cnc tableau object: 
+ CNC Simulator with n=2, m=0
+Destabilizers: <IZ, XI>
+Stabilizers: <-IX, -YI>
+JW Elements: II
+
+Saving Stabilizer Tableau Keys: n = 2: 
+
+Processing Stabilizer vectors for n = 3:
+
+Quantum state from decomposition agrees with theory? True 
+
+Stabilizer in decomposition: 1
+
+Quasiprobability weight: -1.0061396160665481e-16
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IXI
+Pauli Operator: IXY
+Pauli Operator: YII
+Pauli Operator: YIY
+Pauli Operator: YXI
+Pauli Operator: YXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IZI, XII>
+Stabilizers: <-IIY, -IXI, -YII>
+JW Elements: III
+
+Stabilizer in decomposition: 2
+
+Quasiprobability weight: 0.195262145875635
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IYI
+Pauli Operator: IYY
+Pauli Operator: YII
+Pauli Operator: YIY
+Pauli Operator: YYI
+Pauli Operator: YYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, XII>
+Stabilizers: <IIY, IYI, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 3
+
+Quasiprobability weight: -0.048815536468908696
+
+Pauli Operator: III
+Pauli Operator: IXI
+Pauli Operator: XIX
+Pauli Operator: XXX
+Pauli Operator: YIY
+Pauli Operator: YXY
+Pauli Operator: ZIZ
+Pauli Operator: ZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IZI, ZII, IIX>
+Stabilizers: <IXI, -XIX, -ZIZ>
+JW Elements: III
+
+Stabilizer in decomposition: 4
+
+Quasiprobability weight: -0.04881553646890873
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: XYI
+Pauli Operator: XYY
+Pauli Operator: YXI
+Pauli Operator: YXY
+Pauli Operator: ZZI
+Pauli Operator: ZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, XII>
+Stabilizers: <IIY, -XYI, -YXI>
+JW Elements: III
+
+Stabilizer in decomposition: 5
+
+Quasiprobability weight: -0.005922317655456218
+
+Pauli Operator: III
+Pauli Operator: IZZ
+Pauli Operator: XXY
+Pauli Operator: XYX
+Pauli Operator: YXX
+Pauli Operator: YYY
+Pauli Operator: ZIZ
+Pauli Operator: ZZI
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IXI, IXX, XII>
+Stabilizers: <IZZ, -XXY, YXX>
+JW Elements: III
+
+Stabilizer in decomposition: 6
+
+Quasiprobability weight: 0.20710678118654743
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IYI
+Pauli Operator: IYY
+Pauli Operator: XII
+Pauli Operator: XIY
+Pauli Operator: XYI
+Pauli Operator: XYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, ZII>
+Stabilizers: <IIY, IYI, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 7
+
+Quasiprobability weight: 1.2230258073228769e-16
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: IXI
+Pauli Operator: IXX
+Pauli Operator: YII
+Pauli Operator: YIX
+Pauli Operator: YXI
+Pauli Operator: YXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IZI, XII>
+Stabilizers: <-IIX, -IXI, -YII>
+JW Elements: III
+
+Stabilizer in decomposition: 8
+
+Quasiprobability weight: -0.048815536468908696
+
+Pauli Operator: III
+Pauli Operator: IXI
+Pauli Operator: XIY
+Pauli Operator: XXY
+Pauli Operator: YIX
+Pauli Operator: YXX
+Pauli Operator: ZIZ
+Pauli Operator: ZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IZI, IIX, XII>
+Stabilizers: <IXI, -XIY, -YIX>
+JW Elements: III
+
+Stabilizer in decomposition: 9
+
+Quasiprobability weight: -0.005922317655456225
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: XYI
+Pauli Operator: XYX
+Pauli Operator: YXI
+Pauli Operator: YXX
+Pauli Operator: ZZI
+Pauli Operator: ZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IXI, XII>
+Stabilizers: <-IIX, XYI, YXI>
+JW Elements: III
+
+Stabilizer in decomposition: 10
+
+Quasiprobability weight: 0.19526214587563487
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: IXI
+Pauli Operator: IXX
+Pauli Operator: YII
+Pauli Operator: YIX
+Pauli Operator: YXI
+Pauli Operator: YXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IZI, XII>
+Stabilizers: <IIX, IXI, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 11
+
+Quasiprobability weight: 0.20710678118654746
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: IYI
+Pauli Operator: IYX
+Pauli Operator: YII
+Pauli Operator: YIX
+Pauli Operator: YYI
+Pauli Operator: YYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IXI, XII>
+Stabilizers: <IIX, IYI, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 12
+
+Quasiprobability weight: 0.195262145875635
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: IYI
+Pauli Operator: IYX
+Pauli Operator: XII
+Pauli Operator: XIX
+Pauli Operator: XYI
+Pauli Operator: XYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IXI, ZII>
+Stabilizers: <IIX, IYI, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 13
+
+Quasiprobability weight: -0.04881553646890863
+
+Pauli Operator: III
+Pauli Operator: IXY
+Pauli Operator: IYX
+Pauli Operator: IZZ
+Pauli Operator: YII
+Pauli Operator: YXY
+Pauli Operator: YYX
+Pauli Operator: YZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, XII>
+Stabilizers: <-IXY, -IYX, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 14
+
+Quasiprobability weight: -0.04881553646890876
+
+Pauli Operator: III
+Pauli Operator: IYI
+Pauli Operator: XIY
+Pauli Operator: XYY
+Pauli Operator: YIX
+Pauli Operator: YYX
+Pauli Operator: ZIZ
+Pauli Operator: ZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IXI, IIX, XII>
+Stabilizers: <IYI, -XIY, -YIX>
+JW Elements: III
+
+Stabilizer in decomposition: 15
+
+Quasiprobability weight: 0.20710678118654763
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IXI
+Pauli Operator: IXY
+Pauli Operator: YII
+Pauli Operator: YIY
+Pauli Operator: YXI
+Pauli Operator: YXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IZI, XII>
+Stabilizers: <IIY, IXI, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 16
+
+Quasiprobability weight: -0.04881553646890875
+
+Pauli Operator: III
+Pauli Operator: IXX
+Pauli Operator: IYY
+Pauli Operator: IZZ
+Pauli Operator: XII
+Pauli Operator: XXX
+Pauli Operator: XYY
+Pauli Operator: XZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IZI, IIX, ZII>
+Stabilizers: <-IXX, -IZZ, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 17
+
+Quasiprobability weight: -0.048815536468908766
+
+Pauli Operator: III
+Pauli Operator: IXY
+Pauli Operator: IYX
+Pauli Operator: IZZ
+Pauli Operator: XII
+Pauli Operator: XXY
+Pauli Operator: XYX
+Pauli Operator: XZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, ZII>
+Stabilizers: <-IXY, -IYX, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 18
+
+Quasiprobability weight: 1.3877787807814457e-16
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IXI
+Pauli Operator: IXY
+Pauli Operator: XII
+Pauli Operator: XIY
+Pauli Operator: XXI
+Pauli Operator: XXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IZI, ZII>
+Stabilizers: <-IIY, -IXI, -XII>
+JW Elements: III
+
+Stabilizer in decomposition: 19
+
+Quasiprobability weight: -0.04881553646890872
+
+Pauli Operator: III
+Pauli Operator: IXX
+Pauli Operator: IYY
+Pauli Operator: IZZ
+Pauli Operator: YII
+Pauli Operator: YXX
+Pauli Operator: YYY
+Pauli Operator: YZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IZI, IIX, XII>
+Stabilizers: <-IXX, -IZZ, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 20
+
+Quasiprobability weight: -0.04881553646890874
+
+Pauli Operator: III
+Pauli Operator: IYI
+Pauli Operator: XIX
+Pauli Operator: XYX
+Pauli Operator: YIY
+Pauli Operator: YYY
+Pauli Operator: ZIZ
+Pauli Operator: ZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IXI, ZII, IIX>
+Stabilizers: <IYI, -XIX, -ZIZ>
+JW Elements: III
+
+Stabilizer in decomposition: 21
+
+Quasiprobability weight: -0.04881553646890872
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: XXI
+Pauli Operator: XXY
+Pauli Operator: YYI
+Pauli Operator: YYY
+Pauli Operator: ZZI
+Pauli Operator: ZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, ZII, IXI>
+Stabilizers: <IIY, -XXI, -ZZI>
+JW Elements: III
+
+Stabilizer in decomposition: 22
+
+Quasiprobability weight: -0.048815536468908696
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: XXI
+Pauli Operator: XXX
+Pauli Operator: YYI
+Pauli Operator: YYX
+Pauli Operator: ZZI
+Pauli Operator: ZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, ZII, IXI>
+Stabilizers: <IIX, -XXI, -ZZI>
+JW Elements: III
+
+Stabilizer in decomposition: 23
+
+Quasiprobability weight: 0.20710678118654754
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: IXI
+Pauli Operator: IXX
+Pauli Operator: XII
+Pauli Operator: XIX
+Pauli Operator: XXI
+Pauli Operator: XXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IZI, ZII>
+Stabilizers: <IIX, IXI, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 24
+
+Quasiprobability weight: 0.19526214587563492
+
+Pauli Operator: III
+Pauli Operator: IIY
+Pauli Operator: IXI
+Pauli Operator: IXY
+Pauli Operator: XII
+Pauli Operator: XIY
+Pauli Operator: XXI
+Pauli Operator: XXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IZI, ZII>
+Stabilizers: <IIY, IXI, XII>
+JW Elements: III
+
+Stabilizer in decomposition: 25
+
+Quasiprobability weight: 1.1102230246251565e-16
+
+Pauli Operator: III
+Pauli Operator: IXY
+Pauli Operator: IYX
+Pauli Operator: IZZ
+Pauli Operator: YII
+Pauli Operator: YXY
+Pauli Operator: YYX
+Pauli Operator: YZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIX, IXI, XII>
+Stabilizers: <-IXY, IYX, YII>
+JW Elements: III
+
+Stabilizer in decomposition: 26
+
+Quasiprobability weight: -0.005922317655456308
+
+Pauli Operator: III
+Pauli Operator: IZZ
+Pauli Operator: XXY
+Pauli Operator: XYX
+Pauli Operator: YXX
+Pauli Operator: YYY
+Pauli Operator: ZIZ
+Pauli Operator: ZZI
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IXI, IXX, XII>
+Stabilizers: <-IZZ, -XXY, -YXX>
+JW Elements: III
+
+Stabilizer in decomposition: 27
+
+Quasiprobability weight: -0.05473785412436498
+
+Pauli Operator: III
+Pauli Operator: IIX
+Pauli Operator: XYI
+Pauli Operator: XYX
+Pauli Operator: YXI
+Pauli Operator: YXX
+Pauli Operator: ZZI
+Pauli Operator: ZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=3, m=0
+Destabilizers: <IIZ, IXI, XII>
+Stabilizers: <IIX, -XYI, -YXI>
+JW Elements: III
+
+Saving Stabilizer Tableau Keys: n = 3: 
+
+Processing Stabilizer vectors for n = 4:
+
+Quantum state from decomposition agrees with theory? True 
+
+Stabilizer in decomposition: 1
+
+Quasiprobability weight: -0.011719426993575657
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXII
+Pauli Operator: IXXI
+Pauli Operator: XIIY
+Pauli Operator: XIXY
+Pauli Operator: XXIY
+Pauli Operator: XXXY
+Pauli Operator: YIIX
+Pauli Operator: YIXX
+Pauli Operator: YXIX
+Pauli Operator: YXXX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZXIZ
+Pauli Operator: ZXXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IZII, IIIX, XIII>
+Stabilizers: <IIXI, IXII, -XIIY, -YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 2
+
+Quasiprobability weight: -0.011719426993575827
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IYII
+Pauli Operator: IYYI
+Pauli Operator: XIIY
+Pauli Operator: XIYY
+Pauli Operator: XYIY
+Pauli Operator: XYYY
+Pauli Operator: YIIX
+Pauli Operator: YIYX
+Pauli Operator: YYIX
+Pauli Operator: YYYX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIYZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, IIIX, XIII>
+Stabilizers: <IIYI, IYII, -XIIY, -YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 3
+
+Quasiprobability weight: -0.033470869120796325
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXY
+Pauli Operator: IXYX
+Pauli Operator: IXZZ
+Pauli Operator: XIII
+Pauli Operator: XIXY
+Pauli Operator: XIYX
+Pauli Operator: XIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXY
+Pauli Operator: XXYX
+Pauli Operator: XXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, ZIII>
+Stabilizers: <-IIXY, -IIYX, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 4
+
+Quasiprobability weight: 1.2527867869435792e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYYI
+Pauli Operator: YYYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <-IIIY, -IIYI, -IYII, -YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 5
+
+Quasiprobability weight: 0.002297077300919926
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXII
+Pauli Operator: IXXI
+Pauli Operator: XIIX
+Pauli Operator: XIXX
+Pauli Operator: XXIX
+Pauli Operator: XXXX
+Pauli Operator: YIIY
+Pauli Operator: YIXY
+Pauli Operator: YXIY
+Pauli Operator: YXXY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZXIZ
+Pauli Operator: ZXXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IZII, ZIII, IIIX>
+Stabilizers: <IIXI, IXII, XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 6
+
+Quasiprobability weight: -2.5326962749261384e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXXI
+Pauli Operator: XXXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IZII, ZIII>
+Stabilizers: <-IIIX, -IIXI, -IXII, -XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 7
+
+Quasiprobability weight: 0.13725830020304686
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YIYI
+Pauli Operator: YIYX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXYI
+Pauli Operator: YXYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IZII, XIII>
+Stabilizers: <IIIX, IIYI, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 8
+
+Quasiprobability weight: -0.025735931288071407
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXIY
+Pauli Operator: IXXY
+Pauli Operator: IYIX
+Pauli Operator: IYXX
+Pauli Operator: IZIZ
+Pauli Operator: IZXZ
+Pauli Operator: XIII
+Pauli Operator: XIXI
+Pauli Operator: XXIY
+Pauli Operator: XXXY
+Pauli Operator: XYIX
+Pauli Operator: XYXX
+Pauli Operator: XZIZ
+Pauli Operator: XZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, ZIII>
+Stabilizers: <IIXI, -IXIY, -IYIX, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 9
+
+Quasiprobability weight: -0.023438853987151828
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXIX
+Pauli Operator: IXXX
+Pauli Operator: IYIY
+Pauli Operator: IYXY
+Pauli Operator: IZIZ
+Pauli Operator: IZXZ
+Pauli Operator: YIII
+Pauli Operator: YIXI
+Pauli Operator: YXIX
+Pauli Operator: YXXX
+Pauli Operator: YYIY
+Pauli Operator: YYXY
+Pauli Operator: YZIZ
+Pauli Operator: YZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IZII, IIIX, XIII>
+Stabilizers: <IIXI, -IXIX, -IZIZ, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 10
+
+Quasiprobability weight: -0.02573593128807128
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XXYI
+Pauli Operator: XXYY
+Pauli Operator: YIXI
+Pauli Operator: YIXY
+Pauli Operator: YXXI
+Pauli Operator: YXXY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZXZI
+Pauli Operator: ZXZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IZII, IIXI, XIII>
+Stabilizers: <IIIY, IXII, -XIYI, -YIXI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 11
+
+Quasiprobability weight: 0.07781745930520205
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IXII, ZIII>
+Stabilizers: <IIIX, IIXI, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 12
+
+Quasiprobability weight: 0.09159992311071997
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIYI
+Pauli Operator: XIYX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IZII, ZIII>
+Stabilizers: <IIIX, IIYI, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 13
+
+Quasiprobability weight: 3.5388358909926865e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXX
+Pauli Operator: XXYY
+Pauli Operator: XXZZ
+Pauli Operator: YYII
+Pauli Operator: YYXX
+Pauli Operator: YYYY
+Pauli Operator: YYZZ
+Pauli Operator: ZZII
+Pauli Operator: ZZXX
+Pauli Operator: ZZYY
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, ZIII, IXII>
+Stabilizers: <IIXX, -IIZZ, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 14
+
+Quasiprobability weight: 0.08700576850887937
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: IYYI
+Pauli Operator: IYYX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YIYI
+Pauli Operator: YIYX
+Pauli Operator: YYII
+Pauli Operator: YYIX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, XIII>
+Stabilizers: <IIIX, IIYI, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 15
+
+Quasiprobability weight: 0.01286796564403559
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: IYXI
+Pauli Operator: IYXY
+Pauli Operator: IZZI
+Pauli Operator: IZZY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+Pauli Operator: YZZI
+Pauli Operator: YZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIIY, IXYI, IYXI, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 16
+
+Quasiprobability weight: -0.026884469938531327
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIY
+Pauli Operator: IXYY
+Pauli Operator: IYIX
+Pauli Operator: IYYX
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: XIII
+Pauli Operator: XIYI
+Pauli Operator: XXIY
+Pauli Operator: XXYY
+Pauli Operator: XYIX
+Pauli Operator: XYYX
+Pauli Operator: XZIZ
+Pauli Operator: XZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IIIX, IXII, ZIII>
+Stabilizers: <IIYI, -IXIY, -IYIX, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 17
+
+Quasiprobability weight: -0.02688446993853104
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XYXI
+Pauli Operator: XYXY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YYYI
+Pauli Operator: YYYY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZYZI
+Pauli Operator: ZYZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IXII, ZIII, IIXI>
+Stabilizers: <IIIY, IYII, -XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 18
+
+Quasiprobability weight: 0.1372583002030483
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXXI
+Pauli Operator: XXXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IZII, ZIII>
+Stabilizers: <IIIX, IIXI, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 19
+
+Quasiprobability weight: -0.0346194077712559
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXX
+Pauli Operator: IYYY
+Pauli Operator: IYZZ
+Pauli Operator: XIII
+Pauli Operator: XIXX
+Pauli Operator: XIYY
+Pauli Operator: XIZZ
+Pauli Operator: XYII
+Pauli Operator: XYXX
+Pauli Operator: XYYY
+Pauli Operator: XYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, ZIII>
+Stabilizers: <-IIXX, -IIZZ, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 20
+
+Quasiprobability weight: 0.014016504294495663
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: IYYI
+Pauli Operator: IYYX
+Pauli Operator: IZZI
+Pauli Operator: IZZX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+Pauli Operator: YZZI
+Pauli Operator: YZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IZII, IIXI, XIII>
+Stabilizers: <IIIX, IXXI, -IZZI, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 21
+
+Quasiprobability weight: -0.02573593128807129
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIX
+Pauli Operator: IXYX
+Pauli Operator: IYIY
+Pauli Operator: IYYY
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: YIII
+Pauli Operator: YIYI
+Pauli Operator: YXIX
+Pauli Operator: YXYX
+Pauli Operator: YYIY
+Pauli Operator: YYYY
+Pauli Operator: YZIZ
+Pauli Operator: YZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IZII, IIIX, XIII>
+Stabilizers: <IIYI, -IXIX, -IZIZ, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 22
+
+Quasiprobability weight: -0.015469875665448047
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXX
+Pauli Operator: IYYY
+Pauli Operator: IYZZ
+Pauli Operator: YIII
+Pauli Operator: YIXX
+Pauli Operator: YIYY
+Pauli Operator: YIZZ
+Pauli Operator: YYII
+Pauli Operator: YYXX
+Pauli Operator: YYYY
+Pauli Operator: YYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, XIII>
+Stabilizers: <-IIXX, -IIZZ, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 23
+
+Quasiprobability weight: -0.013172798364529795
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXY
+Pauli Operator: IYYX
+Pauli Operator: IYZZ
+Pauli Operator: XIII
+Pauli Operator: XIXY
+Pauli Operator: XIYX
+Pauli Operator: XIZZ
+Pauli Operator: XYII
+Pauli Operator: XYXY
+Pauli Operator: XYYX
+Pauli Operator: XYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, ZIII>
+Stabilizers: <-IIXY, -IIYX, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 24
+
+Quasiprobability weight: 0.014016504294495486
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXII
+Pauli Operator: IXXI
+Pauli Operator: XIIY
+Pauli Operator: XIXY
+Pauli Operator: XXIY
+Pauli Operator: XXXY
+Pauli Operator: YIIX
+Pauli Operator: YIXX
+Pauli Operator: YXIX
+Pauli Operator: YXXX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZXIZ
+Pauli Operator: ZXXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IZII, IIIX, XIII>
+Stabilizers: <IIXI, IXII, XIIY, YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 25
+
+Quasiprobability weight: 0.014016504294495557
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IYII
+Pauli Operator: IYYI
+Pauli Operator: XIIY
+Pauli Operator: XIYY
+Pauli Operator: XYIY
+Pauli Operator: XYYY
+Pauli Operator: YIIX
+Pauli Operator: YIYX
+Pauli Operator: YYIX
+Pauli Operator: YYYX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIYZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, IIIX, XIII>
+Stabilizers: <IIYI, IYII, XIIY, YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 26
+
+Quasiprobability weight: -0.013172798364530048
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXY
+Pauli Operator: IXYX
+Pauli Operator: IXZZ
+Pauli Operator: YIII
+Pauli Operator: YIXY
+Pauli Operator: YIYX
+Pauli Operator: YIZZ
+Pauli Operator: YXII
+Pauli Operator: YXXY
+Pauli Operator: YXYX
+Pauli Operator: YXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, XIII>
+Stabilizers: <-IIXY, -IIYX, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 27
+
+Quasiprobability weight: 0.0008437059299673533
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXY
+Pauli Operator: IYYX
+Pauli Operator: IYZZ
+Pauli Operator: YIII
+Pauli Operator: YIXY
+Pauli Operator: YIYX
+Pauli Operator: YIZZ
+Pauli Operator: YYII
+Pauli Operator: YYXY
+Pauli Operator: YYYX
+Pauli Operator: YYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIXY, IIYX, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 28
+
+Quasiprobability weight: 0.0847086912079609
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, ZIII>
+Stabilizers: <IIIY, IIYI, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 29
+
+Quasiprobability weight: 0.01286796564403564
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IYII
+Pauli Operator: IYXI
+Pauli Operator: XIIX
+Pauli Operator: XIXX
+Pauli Operator: XYIX
+Pauli Operator: XYXX
+Pauli Operator: YIIY
+Pauli Operator: YIXY
+Pauli Operator: YYIY
+Pauli Operator: YYXY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IXII, ZIII, IIIX>
+Stabilizers: <IIXI, IYII, XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 30
+
+Quasiprobability weight: 0.13725830020304847
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXYI
+Pauli Operator: XXYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, ZIII>
+Stabilizers: <IIIY, IIYI, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 31
+
+Quasiprobability weight: -0.0022970773009195426
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YIXI
+Pauli Operator: YIXX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IZII, XIII>
+Stabilizers: <-IIIX, -IIXI, -IXII, -YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 32
+
+Quasiprobability weight: -0.023438853987151828
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIX
+Pauli Operator: IXYX
+Pauli Operator: IYIY
+Pauli Operator: IYYY
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: XIII
+Pauli Operator: XIYI
+Pauli Operator: XXIX
+Pauli Operator: XXYX
+Pauli Operator: XYIY
+Pauli Operator: XYYY
+Pauli Operator: XZIZ
+Pauli Operator: XZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IZII, IIIX, ZIII>
+Stabilizers: <IIYI, -IXIX, -IZIZ, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 33
+
+Quasiprobability weight: 0.012867965644035664
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXII
+Pauli Operator: IXYI
+Pauli Operator: XIIX
+Pauli Operator: XIYX
+Pauli Operator: XXIX
+Pauli Operator: XXYX
+Pauli Operator: YIIY
+Pauli Operator: YIYY
+Pauli Operator: YXIY
+Pauli Operator: YXYY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIYZ
+Pauli Operator: ZXIZ
+Pauli Operator: ZXYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IZII, ZIII, IIIX>
+Stabilizers: <IIYI, IXII, XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 34
+
+Quasiprobability weight: 0.13725830020304863
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYXI
+Pauli Operator: IYXY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYXI
+Pauli Operator: XYXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IXII, ZIII>
+Stabilizers: <IIIY, IIXI, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 35
+
+Quasiprobability weight: 0.00428932188134484
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXX
+Pauli Operator: IXYY
+Pauli Operator: IXZZ
+Pauli Operator: YIII
+Pauli Operator: YIXX
+Pauli Operator: YIYY
+Pauli Operator: YIZZ
+Pauli Operator: YXII
+Pauli Operator: YXXX
+Pauli Operator: YXYY
+Pauli Operator: YXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IZII, XIII>
+Stabilizers: <IIXX, -IIZZ, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 36
+
+Quasiprobability weight: -0.03262716319083049
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYXI
+Pauli Operator: XYXY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXXI
+Pauli Operator: YXXY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZXI
+Pauli Operator: ZZXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IXII, XIII>
+Stabilizers: <IIIY, IIXI, -XYII, -YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 37
+
+Quasiprobability weight: -0.011719426993575935
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXXI
+Pauli Operator: IXXY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: IZZI
+Pauli Operator: IZZY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+Pauli Operator: XZZI
+Pauli Operator: XZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IZII, IIXI, ZIII>
+Stabilizers: <IIIY, -IXXI, -IZZI, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 38
+
+Quasiprobability weight: 1.4263342609443388e-16
+
+Pauli Operator: IIII
+Pauli Operator: IXXI
+Pauli Operator: IYYI
+Pauli Operator: IZZI
+Pauli Operator: XIIY
+Pauli Operator: XXXY
+Pauli Operator: XYYY
+Pauli Operator: XZZY
+Pauli Operator: YIIX
+Pauli Operator: YXXX
+Pauli Operator: YYYX
+Pauli Operator: YZZX
+Pauli Operator: ZIIZ
+Pauli Operator: ZXXZ
+Pauli Operator: ZYYZ
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IZII, IIXI, IIIX, XIII>
+Stabilizers: <IXXI, -IZZI, -XIIY, -YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 39
+
+Quasiprobability weight: 0.0008437059299651398
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+Pauli Operator: YYII
+Pauli Operator: YYIX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZYI
+Pauli Operator: ZZYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, ZIII, IXII>
+Stabilizers: <IIIX, IIYI, XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 40
+
+Quasiprobability weight: 0.004289321881345511
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZXI
+Pauli Operator: ZZXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IXII, XIII>
+Stabilizers: <IIIX, IIXI, XYII, YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 41
+
+Quasiprobability weight: -0.012867965644035589
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: IYXI
+Pauli Operator: IYXY
+Pauli Operator: IZZI
+Pauli Operator: IZZY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+Pauli Operator: YZZI
+Pauli Operator: YZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIIY, -IXYI, -IYXI, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 42
+
+Quasiprobability weight: 0.13725830020304694
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: IYYI
+Pauli Operator: IYYX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIYI
+Pauli Operator: XIYX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYYI
+Pauli Operator: XYYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, ZIII>
+Stabilizers: <IIIX, IIYI, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 43
+
+Quasiprobability weight: -0.03461940777125601
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXX
+Pauli Operator: IXYY
+Pauli Operator: IXZZ
+Pauli Operator: YIII
+Pauli Operator: YIXX
+Pauli Operator: YIYY
+Pauli Operator: YIZZ
+Pauli Operator: YXII
+Pauli Operator: YXXX
+Pauli Operator: YXYY
+Pauli Operator: YXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IZII, XIII>
+Stabilizers: <-IIXX, -IIZZ, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 44
+
+Quasiprobability weight: 2.3483495975322336e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIY
+Pauli Operator: IXYY
+Pauli Operator: IYIX
+Pauli Operator: IYYX
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: YIII
+Pauli Operator: YIYI
+Pauli Operator: YXIY
+Pauli Operator: YXYY
+Pauli Operator: YYIX
+Pauli Operator: YYYX
+Pauli Operator: YZIZ
+Pauli Operator: YZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IIIX, IXII, XIII>
+Stabilizers: <IIYI, IXIY, IYIX, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 45
+
+Quasiprobability weight: -0.026884469938531268
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXIY
+Pauli Operator: IXXY
+Pauli Operator: IYIX
+Pauli Operator: IYXX
+Pauli Operator: IZIZ
+Pauli Operator: IZXZ
+Pauli Operator: YIII
+Pauli Operator: YIXI
+Pauli Operator: YXIY
+Pauli Operator: YXXY
+Pauli Operator: YYIX
+Pauli Operator: YYXX
+Pauli Operator: YZIZ
+Pauli Operator: YZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, XIII>
+Stabilizers: <IIXI, -IXIY, -IYIX, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 46
+
+Quasiprobability weight: -2.8275992658421956e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IYII
+Pauli Operator: IYXI
+Pauli Operator: XIIY
+Pauli Operator: XIXY
+Pauli Operator: XYIY
+Pauli Operator: XYXY
+Pauli Operator: YIIX
+Pauli Operator: YIXX
+Pauli Operator: YYIX
+Pauli Operator: YYXX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IXII, IIIX, XIII>
+Stabilizers: <IIXI, IYII, XIIY, YIIX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 47
+
+Quasiprobability weight: -0.008578643762690555
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: XYII
+Pauli Operator: XYXY
+Pauli Operator: XYYX
+Pauli Operator: XYZZ
+Pauli Operator: YXII
+Pauli Operator: YXXY
+Pauli Operator: YXYX
+Pauli Operator: YXZZ
+Pauli Operator: ZZII
+Pauli Operator: ZZXY
+Pauli Operator: ZZYX
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <-IIXY, -IIYX, XYII, YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 48
+
+Quasiprobability weight: -1.175902858843679e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIZZ
+Pauli Operator: IZIZ
+Pauli Operator: IZZI
+Pauli Operator: XXXY
+Pauli Operator: XXYX
+Pauli Operator: XYXX
+Pauli Operator: XYYY
+Pauli Operator: YXXX
+Pauli Operator: YXYY
+Pauli Operator: YYXY
+Pauli Operator: YYYX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIZI
+Pauli Operator: ZZII
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, IXXX, XIII>
+Stabilizers: <IIZZ, -IZIZ, -XXXY, -YXXX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 49
+
+Quasiprobability weight: 2.0816681711721685e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IXII, ZIII>
+Stabilizers: <-IIIX, -IIXI, -IYII, -XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 50
+
+Quasiprobability weight: -0.011719426993575524
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: IYYI
+Pauli Operator: IYYX
+Pauli Operator: IZZI
+Pauli Operator: IZZX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+Pauli Operator: YZZI
+Pauli Operator: YZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IZII, IIXI, XIII>
+Stabilizers: <IIIX, -IXXI, -IZZI, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 51
+
+Quasiprobability weight: 0.014016504294495503
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXXI
+Pauli Operator: IXXY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: IZZI
+Pauli Operator: IZZY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+Pauli Operator: XZZI
+Pauli Operator: XZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IZII, IIXI, ZIII>
+Stabilizers: <IIIY, IXXI, -IZZI, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 52
+
+Quasiprobability weight: 0.08700576850888005
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXXI
+Pauli Operator: IXXY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IZII, ZIII>
+Stabilizers: <IIIY, IIXI, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 53
+
+Quasiprobability weight: -0.012867965644035606
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: IZZI
+Pauli Operator: IZZX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+Pauli Operator: XZZI
+Pauli Operator: XZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, ZIII>
+Stabilizers: <IIIX, -IXYI, -IYXI, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 54
+
+Quasiprobability weight: 1.491862189340054e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZXZI
+Pauli Operator: ZXZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IZII, ZIII, IIXI>
+Stabilizers: <IIIY, IXII, XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 55
+
+Quasiprobability weight: -0.008578643762690562
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXY
+Pauli Operator: XXYX
+Pauli Operator: XXZZ
+Pauli Operator: YYII
+Pauli Operator: YYXY
+Pauli Operator: YYYX
+Pauli Operator: YYZZ
+Pauli Operator: ZZII
+Pauli Operator: ZZXY
+Pauli Operator: ZZYX
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, ZIII, IXII>
+Stabilizers: <IIXY, IIYX, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 56
+
+Quasiprobability weight: 0.13725830020304677
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXXI
+Pauli Operator: IXXY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIXI
+Pauli Operator: YIXY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXXI
+Pauli Operator: YXXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IZII, XIII>
+Stabilizers: <IIIY, IIXI, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 57
+
+Quasiprobability weight: 0.0008437059299657296
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZXI
+Pauli Operator: ZZXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, ZIII, IXII>
+Stabilizers: <IIIY, IIXI, XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 58
+
+Quasiprobability weight: -0.025735931288071435
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: XIYI
+Pauli Operator: XIYX
+Pauli Operator: XYYI
+Pauli Operator: XYYX
+Pauli Operator: YIXI
+Pauli Operator: YIXX
+Pauli Operator: YYXI
+Pauli Operator: YYXX
+Pauli Operator: ZIZI
+Pauli Operator: ZIZX
+Pauli Operator: ZYZI
+Pauli Operator: ZYZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IXII, IIXI, XIII>
+Stabilizers: <IIIX, IYII, -XIYI, -YIXI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 59
+
+Quasiprobability weight: 0.0022970773009198427
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IYII
+Pauli Operator: IYYI
+Pauli Operator: XIIX
+Pauli Operator: XIYX
+Pauli Operator: XYIX
+Pauli Operator: XYYX
+Pauli Operator: YIIY
+Pauli Operator: YIYY
+Pauli Operator: YYIY
+Pauli Operator: YYYY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIYZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, ZIII, IIIX>
+Stabilizers: <IIYI, IYII, XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 60
+
+Quasiprobability weight: 0.002297077300919541
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: IYXI
+Pauli Operator: IYXY
+Pauli Operator: IZZI
+Pauli Operator: IZZY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XXYI
+Pauli Operator: XXYY
+Pauli Operator: XYXI
+Pauli Operator: XYXY
+Pauli Operator: XZZI
+Pauli Operator: XZZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, ZIII>
+Stabilizers: <IIIY, IXYI, IYXI, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 61
+
+Quasiprobability weight: 2.0367030053454663e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIZZ
+Pauli Operator: IZIZ
+Pauli Operator: IZZI
+Pauli Operator: XXXY
+Pauli Operator: XXYX
+Pauli Operator: XYXX
+Pauli Operator: XYYY
+Pauli Operator: YXXX
+Pauli Operator: YXYY
+Pauli Operator: YYXY
+Pauli Operator: YYYX
+Pauli Operator: ZIIZ
+Pauli Operator: ZIZI
+Pauli Operator: ZZII
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, IXXX, XIII>
+Stabilizers: <-IIZZ, -IZIZ, XXXY, -YXXX>
+JW Elements: IIII
+
+Stabilizer in decomposition: 62
+
+Quasiprobability weight: 0.08470869120796182
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXXI
+Pauli Operator: IXXX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YIXI
+Pauli Operator: YIXX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IZII, XIII>
+Stabilizers: <IIIX, IIXI, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 63
+
+Quasiprobability weight: -0.008578643762690553
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: XYII
+Pauli Operator: XYXX
+Pauli Operator: XYYY
+Pauli Operator: XYZZ
+Pauli Operator: YXII
+Pauli Operator: YXXX
+Pauli Operator: YXYY
+Pauli Operator: YXZZ
+Pauli Operator: ZZII
+Pauli Operator: ZZXX
+Pauli Operator: ZZYY
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, XIII>
+Stabilizers: <IIXX, -IIZZ, -XYII, -YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 64
+
+Quasiprobability weight: 0.0042893218813449705
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXX
+Pauli Operator: IYYY
+Pauli Operator: IYZZ
+Pauli Operator: XIII
+Pauli Operator: XIXX
+Pauli Operator: XIYY
+Pauli Operator: XIZZ
+Pauli Operator: XYII
+Pauli Operator: XYXX
+Pauli Operator: XYYY
+Pauli Operator: XYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, ZIII>
+Stabilizers: <IIXX, -IIZZ, IYII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 65
+
+Quasiprobability weight: 0.0034456159513794283
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIY
+Pauli Operator: IXYY
+Pauli Operator: IYIX
+Pauli Operator: IYYX
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: XIII
+Pauli Operator: XIYI
+Pauli Operator: XXIY
+Pauli Operator: XXYY
+Pauli Operator: XYIX
+Pauli Operator: XYYX
+Pauli Operator: XZIZ
+Pauli Operator: XZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IIIX, IXII, ZIII>
+Stabilizers: <IIYI, IXIY, IYIX, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 66
+
+Quasiprobability weight: -0.017462120245875342
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZXI
+Pauli Operator: ZZXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IXII, XIII>
+Stabilizers: <IIIX, IIXI, -XYII, -YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 67
+
+Quasiprobability weight: -0.0022970773009194367
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, ZIII>
+Stabilizers: <-IIIY, -IIYI, -IYII, -XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 68
+
+Quasiprobability weight: 0.13725830020304947
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YIXI
+Pauli Operator: YIXX
+Pauli Operator: YYII
+Pauli Operator: YYIX
+Pauli Operator: YYXI
+Pauli Operator: YYXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, IXII, XIII>
+Stabilizers: <IIIX, IIXI, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 69
+
+Quasiprobability weight: 0.004289321881345051
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZYI
+Pauli Operator: ZZYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIIY, IIYI, XYII, YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 70
+
+Quasiprobability weight: 1.48318857196017e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXXI
+Pauli Operator: IXXY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIXI
+Pauli Operator: YIXY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXXI
+Pauli Operator: YXXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IZII, XIII>
+Stabilizers: <-IIIY, -IIXI, -IXII, -YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 71
+
+Quasiprobability weight: -1.1102230246251565e-16
+
+Pauli Operator: IIII
+Pauli Operator: IXYI
+Pauli Operator: IYXI
+Pauli Operator: IZZI
+Pauli Operator: XIIX
+Pauli Operator: XXYX
+Pauli Operator: XYXX
+Pauli Operator: XZZX
+Pauli Operator: YIIY
+Pauli Operator: YXYY
+Pauli Operator: YYXY
+Pauli Operator: YZZY
+Pauli Operator: ZIIZ
+Pauli Operator: ZXYZ
+Pauli Operator: ZYXZ
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IXII, ZIII, IIIX>
+Stabilizers: <-IXYI, -IYXI, XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 72
+
+Quasiprobability weight: -0.03262716319083048
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: XYII
+Pauli Operator: XYIX
+Pauli Operator: XYYI
+Pauli Operator: XYYX
+Pauli Operator: YXII
+Pauli Operator: YXIX
+Pauli Operator: YXYI
+Pauli Operator: YXYX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZYI
+Pauli Operator: ZZYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, XIII>
+Stabilizers: <IIIX, IIYI, -XYII, -YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 73
+
+Quasiprobability weight: -0.02343885398715259
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+Pauli Operator: YIXI
+Pauli Operator: YIXY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZYZI
+Pauli Operator: ZYZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IXII, IIXI, XIII>
+Stabilizers: <IIIY, IYII, -XIYI, -YIXI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 74
+
+Quasiprobability weight: 0.012867965644035655
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: IZZI
+Pauli Operator: IZZX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+Pauli Operator: XZZI
+Pauli Operator: XZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, ZIII>
+Stabilizers: <IIIX, IXYI, IYXI, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 75
+
+Quasiprobability weight: -0.017462120245875262
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: XYII
+Pauli Operator: XYIY
+Pauli Operator: XYYI
+Pauli Operator: XYYY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZYI
+Pauli Operator: ZZYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIIY, IIYI, -XYII, -YXII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 76
+
+Quasiprobability weight: 0.07781745930520248
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YXII
+Pauli Operator: YXIY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, XIII>
+Stabilizers: <IIIY, IIYI, IXII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 77
+
+Quasiprobability weight: 0.0034456159513785306
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XYXI
+Pauli Operator: XYXY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YYYI
+Pauli Operator: YYYY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZYZI
+Pauli Operator: ZYZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IXII, ZIII, IIXI>
+Stabilizers: <IIIY, IYII, XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 78
+
+Quasiprobability weight: -0.016313581595415114
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZXI
+Pauli Operator: ZZXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, ZIII, IXII>
+Stabilizers: <IIIY, IIXI, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 79
+
+Quasiprobability weight: -0.012867965644035723
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXII
+Pauli Operator: IXYI
+Pauli Operator: XIIX
+Pauli Operator: XIYX
+Pauli Operator: XXIX
+Pauli Operator: XXYX
+Pauli Operator: YIIY
+Pauli Operator: YIYY
+Pauli Operator: YXIY
+Pauli Operator: YXYY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIYZ
+Pauli Operator: ZXIZ
+Pauli Operator: ZXYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IZII, ZIII, IIIX>
+Stabilizers: <IIYI, IXII, -XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 80
+
+Quasiprobability weight: -0.02343885398715182
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: XIYI
+Pauli Operator: XIYX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+Pauli Operator: YIXI
+Pauli Operator: YIXX
+Pauli Operator: YXXI
+Pauli Operator: YXXX
+Pauli Operator: ZIZI
+Pauli Operator: ZIZX
+Pauli Operator: ZXZI
+Pauli Operator: ZXZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IZII, IIXI, XIII>
+Stabilizers: <IIIX, IXII, -XIYI, -YIXI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 81
+
+Quasiprobability weight: -0.0257359312880715
+
+Pauli Operator: IIII
+Pauli Operator: IIYI
+Pauli Operator: IXIY
+Pauli Operator: IXYY
+Pauli Operator: IYIX
+Pauli Operator: IYYX
+Pauli Operator: IZIZ
+Pauli Operator: IZYZ
+Pauli Operator: YIII
+Pauli Operator: YIYI
+Pauli Operator: YXIY
+Pauli Operator: YXYY
+Pauli Operator: YYIX
+Pauli Operator: YYYX
+Pauli Operator: YZIZ
+Pauli Operator: YZYZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIXI, IIIX, IXII, XIII>
+Stabilizers: <IIYI, -IXIY, -IYIX, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 82
+
+Quasiprobability weight: 0.002297077300920103
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: IYXI
+Pauli Operator: IYXX
+Pauli Operator: IZZI
+Pauli Operator: IZZX
+Pauli Operator: YIII
+Pauli Operator: YIIX
+Pauli Operator: YXYI
+Pauli Operator: YXYX
+Pauli Operator: YYXI
+Pauli Operator: YYXX
+Pauli Operator: YZZI
+Pauli Operator: YZZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IXII, XIII>
+Stabilizers: <IIIX, IXYI, IYXI, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 83
+
+Quasiprobability weight: -0.025735931288071494
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: XIXI
+Pauli Operator: XIXY
+Pauli Operator: XXXI
+Pauli Operator: XXXY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YXYI
+Pauli Operator: YXYY
+Pauli Operator: ZIZI
+Pauli Operator: ZIZY
+Pauli Operator: ZXZI
+Pauli Operator: ZXZY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IZII, ZIII, IIXI>
+Stabilizers: <IIIY, IXII, -XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 84
+
+Quasiprobability weight: -0.016313581595414607
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+Pauli Operator: YYII
+Pauli Operator: YYIX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZYI
+Pauli Operator: ZZYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, ZIII, IXII>
+Stabilizers: <IIIX, IIYI, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 85
+
+Quasiprobability weight: 0.0008437059299663957
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXY
+Pauli Operator: IXYX
+Pauli Operator: IXZZ
+Pauli Operator: XIII
+Pauli Operator: XIXY
+Pauli Operator: XIYX
+Pauli Operator: XIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXY
+Pauli Operator: XXYX
+Pauli Operator: XXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, ZIII>
+Stabilizers: <IIXY, IIYX, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 86
+
+Quasiprobability weight: 1.0408340855860843e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IXII
+Pauli Operator: IXIY
+Pauli Operator: IXYI
+Pauli Operator: IXYY
+Pauli Operator: XIII
+Pauli Operator: XIIY
+Pauli Operator: XIYI
+Pauli Operator: XIYY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXYI
+Pauli Operator: XXYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IZII, ZIII>
+Stabilizers: <-IIIY, -IIYI, -IXII, -XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 87
+
+Quasiprobability weight: 0.003445615951379495
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXIY
+Pauli Operator: IXXY
+Pauli Operator: IYIX
+Pauli Operator: IYXX
+Pauli Operator: IZIZ
+Pauli Operator: IZXZ
+Pauli Operator: YIII
+Pauli Operator: YIXI
+Pauli Operator: YXIY
+Pauli Operator: YXXY
+Pauli Operator: YYIX
+Pauli Operator: YYXX
+Pauli Operator: YZIZ
+Pauli Operator: YZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IXII, XIII>
+Stabilizers: <IIXI, IXIY, IYIX, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 88
+
+Quasiprobability weight: -0.012867965644035938
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IYII
+Pauli Operator: IYXI
+Pauli Operator: XIIX
+Pauli Operator: XIXX
+Pauli Operator: XYIX
+Pauli Operator: XYXX
+Pauli Operator: YIIY
+Pauli Operator: YIXY
+Pauli Operator: YYIY
+Pauli Operator: YYXY
+Pauli Operator: ZIIZ
+Pauli Operator: ZIXZ
+Pauli Operator: ZYIZ
+Pauli Operator: ZYXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IXII, ZIII, IIIX>
+Stabilizers: <IIXI, IYII, -XIIX, -ZIIZ>
+JW Elements: IIII
+
+Stabilizer in decomposition: 89
+
+Quasiprobability weight: -0.0334708691207965
+
+Pauli Operator: IIII
+Pauli Operator: IIXY
+Pauli Operator: IIYX
+Pauli Operator: IIZZ
+Pauli Operator: IYII
+Pauli Operator: IYXY
+Pauli Operator: IYYX
+Pauli Operator: IYZZ
+Pauli Operator: YIII
+Pauli Operator: YIXY
+Pauli Operator: YIYX
+Pauli Operator: YIZZ
+Pauli Operator: YYII
+Pauli Operator: YYXY
+Pauli Operator: YYYX
+Pauli Operator: YYZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <-IIXY, -IIYX, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 90
+
+Quasiprobability weight: -0.030330085889910874
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIXI
+Pauli Operator: IIXX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXXI
+Pauli Operator: XXXX
+Pauli Operator: YYII
+Pauli Operator: YYIX
+Pauli Operator: YYXI
+Pauli Operator: YYXX
+Pauli Operator: ZZII
+Pauli Operator: ZZIX
+Pauli Operator: ZZXI
+Pauli Operator: ZZXX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIZI, ZIII, IXII>
+Stabilizers: <IIIX, IIXI, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 91
+
+Quasiprobability weight: 0.0034456159513794687
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XXXI
+Pauli Operator: XXXX
+Pauli Operator: YIYI
+Pauli Operator: YIYX
+Pauli Operator: YXYI
+Pauli Operator: YXYX
+Pauli Operator: ZIZI
+Pauli Operator: ZIZX
+Pauli Operator: ZXZI
+Pauli Operator: ZXZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IZII, ZIII, IIXI>
+Stabilizers: <IIIX, IXII, XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 92
+
+Quasiprobability weight: 0.09159992311071788
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIXI
+Pauli Operator: IIXY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYXI
+Pauli Operator: IYXY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIXI
+Pauli Operator: YIXY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYXI
+Pauli Operator: YYXY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIZI, IXII, XIII>
+Stabilizers: <IIIY, IIXI, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 93
+
+Quasiprobability weight: -0.025735931288071456
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IYII
+Pauli Operator: IYIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XYXI
+Pauli Operator: XYXX
+Pauli Operator: YIYI
+Pauli Operator: YIYX
+Pauli Operator: YYYI
+Pauli Operator: YYYX
+Pauli Operator: ZIZI
+Pauli Operator: ZIZX
+Pauli Operator: ZYZI
+Pauli Operator: ZYZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IXII, ZIII, IIXI>
+Stabilizers: <IIIX, IYII, -XIXI, -ZIZI>
+JW Elements: IIII
+
+Stabilizer in decomposition: 94
+
+Quasiprobability weight: -0.008578643762690227
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXX
+Pauli Operator: XXYY
+Pauli Operator: XXZZ
+Pauli Operator: YYII
+Pauli Operator: YYXX
+Pauli Operator: YYYY
+Pauli Operator: YYZZ
+Pauli Operator: ZZII
+Pauli Operator: ZZXX
+Pauli Operator: ZZYY
+Pauli Operator: ZZZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, ZIII, IXII>
+Stabilizers: <-IIXX, -IIZZ, XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 95
+
+Quasiprobability weight: 2.480654570646834e-16
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IIYI
+Pauli Operator: IIYX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: IXYI
+Pauli Operator: IXYX
+Pauli Operator: XIII
+Pauli Operator: XIIX
+Pauli Operator: XIYI
+Pauli Operator: XIYX
+Pauli Operator: XXII
+Pauli Operator: XXIX
+Pauli Operator: XXYI
+Pauli Operator: XXYX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IIXI, IZII, ZIII>
+Stabilizers: <-IIIX, -IIYI, -IXII, -XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 96
+
+Quasiprobability weight: 0.13725830020305013
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: IYII
+Pauli Operator: IYIY
+Pauli Operator: IYYI
+Pauli Operator: IYYY
+Pauli Operator: YIII
+Pauli Operator: YIIY
+Pauli Operator: YIYI
+Pauli Operator: YIYY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYYI
+Pauli Operator: YYYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, IXII, XIII>
+Stabilizers: <IIIY, IIYI, IYII, YIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 97
+
+Quasiprobability weight: -0.030330085889911255
+
+Pauli Operator: IIII
+Pauli Operator: IIIY
+Pauli Operator: IIYI
+Pauli Operator: IIYY
+Pauli Operator: XXII
+Pauli Operator: XXIY
+Pauli Operator: XXYI
+Pauli Operator: XXYY
+Pauli Operator: YYII
+Pauli Operator: YYIY
+Pauli Operator: YYYI
+Pauli Operator: YYYY
+Pauli Operator: ZZII
+Pauli Operator: ZZIY
+Pauli Operator: ZZYI
+Pauli Operator: ZZYY
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIX, IIXI, ZIII, IXII>
+Stabilizers: <IIIY, IIYI, -XXII, -ZZII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 98
+
+Quasiprobability weight: -0.025735931288071473
+
+Pauli Operator: IIII
+Pauli Operator: IIXI
+Pauli Operator: IXIX
+Pauli Operator: IXXX
+Pauli Operator: IYIY
+Pauli Operator: IYXY
+Pauli Operator: IZIZ
+Pauli Operator: IZXZ
+Pauli Operator: XIII
+Pauli Operator: XIXI
+Pauli Operator: XXIX
+Pauli Operator: XXXX
+Pauli Operator: XYIY
+Pauli Operator: XYXY
+Pauli Operator: XZIZ
+Pauli Operator: XZXZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IZII, IIIX, ZIII>
+Stabilizers: <IIXI, -IXIX, -IZIZ, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 99
+
+Quasiprobability weight: -0.015469875665448824
+
+Pauli Operator: IIII
+Pauli Operator: IIXX
+Pauli Operator: IIYY
+Pauli Operator: IIZZ
+Pauli Operator: IXII
+Pauli Operator: IXXX
+Pauli Operator: IXYY
+Pauli Operator: IXZZ
+Pauli Operator: XIII
+Pauli Operator: XIXX
+Pauli Operator: XIYY
+Pauli Operator: XIZZ
+Pauli Operator: XXII
+Pauli Operator: XXXX
+Pauli Operator: XXYY
+Pauli Operator: XXZZ
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIZI, IIIX, IZII, ZIII>
+Stabilizers: <-IIXX, -IIZZ, IXII, XIII>
+JW Elements: IIII
+
+Stabilizer in decomposition: 100
+
+Quasiprobability weight: -0.026884469938531285
+
+Pauli Operator: IIII
+Pauli Operator: IIIX
+Pauli Operator: IXII
+Pauli Operator: IXIX
+Pauli Operator: XIXI
+Pauli Operator: XIXX
+Pauli Operator: XXXI
+Pauli Operator: XXXX
+Pauli Operator: YIYI
+Pauli Operator: YIYX
+Pauli Operator: YXYI
+Pauli Operator: YXYX
+Pauli Operator: ZIZI
+Pauli Operator: ZIZX
+Pauli Operator: ZXZI
+Pauli Operator: ZXZX
+
+ Cnc tableau object: 
+ CNC Simulator with n=4, m=0
+Destabilizers: <IIIZ, IZII, ZIII, IIXI>
+Stabilizers: <IIIX, IXII, -XIXI, -ZIZI>
+JW Elements: IIII
+
+Saving Stabilizer Tableau Keys: n = 4: 
+

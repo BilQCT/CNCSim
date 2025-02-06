@@ -128,6 +128,7 @@ def gaussian_elimination_mod2(A):
     basis = A[np.any(A, axis=1)]
     return basis
 
+from itertools import product
 
 def generate_all_vectors(n):
     """
@@ -212,6 +213,40 @@ def find_independent_subset(vectors):
 
 
 
+def find_complementary_subspace_naive(v_basis, n):
+    """
+    Find a basis for the complement subspace W such that U = V ⊕ W.
+    
+    Args:
+        v_basis: Basis of subspace V as a list of numpy arrays. Each vector is of length 2n.
+        n: Half the dimension of the space U (2n-dimensional vector space over Z2).
+        
+    Returns:
+        w_basis: Basis of the complement subspace W as a list of numpy arrays.
+    """
+    # generate all n-dimensional vectors over Z2:
+    u_vectorspace = generate_all_vectors(2 * n)
+    u_vectorspace = set(tuple(u.tolist()) for u in u_vectorspace)
+
+    # generate all vectors in subspace V:
+    v_subspace = generate_subspace_efficient(v_basis)
+    print(f"Size of subspace: {len(v_subspace)}")
+    v_subspace = set(tuple(v.tolist()) for v in v_subspace)
+
+    # take set difference:
+    w_subspace = list(u_vectorspace - v_subspace)
+
+    # find independent subset:
+    #w_basis = find_independent_subset(w_subspace)
+
+    return np.array(w_subspace, dtype=int)
+
+
+
+
+
+
+
 def find_complementary_subspace(v_basis, n):
     """
     Find a basis for the complement subspace W such that U = V ⊕ W.
@@ -254,6 +289,30 @@ def find_complementary_subspace(v_basis, n):
 
 
 
+
+def generate_destabilizer_basis_naive(d_subspace, w_basis):
+    """
+    Generate a new destabilizer basis from given bases.
+
+    Args:
+        d_basis: Vectors from the complementary subspace.
+        w_basis: Basis vectors from the generating subspace.
+
+    Returns:
+        new_destabilizer_basis: List of updated destabilizer vectors.
+    """
+    new_destabilizer_basis = []
+
+    for v in d_subspace:
+        commuting_vectors = [w for w in w_basis if symplectic_inner_product(v, w) == 0]
+        anticommuting_vectors = [w for w in w_basis if not any(np.array_equal(w, cv) for cv in commuting_vectors)]
+
+        if len(anticommuting_vectors) == 0:
+            new_destabilizer_basis.append(v)
+
+    return new_destabilizer_basis #find_independent_subset(new_destabilizer_basis)
+
+
 def generate_destabilizer_basis(d_basis, w_basis):
     """
     Generate a new destabilizer basis from given bases.
@@ -293,6 +352,9 @@ def symplectic_inner_product(v, w):
     """Calculate the symplectic inner product of two vectors over Z2."""
     n = len(v) // 2
     return (np.dot(v[:n], w[n:]) + np.dot(v[n:], w[:n])) % 2
+
+
+
 
 def symplectic_gram_schmidt(array1, array2, r):
     """
@@ -353,6 +415,9 @@ def symplectic_gram_schmidt(array1, array2, r):
 
 
 
+
+
+
 import numpy as np
 
 def is_symplectic(U, V, S):
@@ -393,6 +458,13 @@ def is_symplectic(U, V, S):
     # Check the symplectic condition
     symplectic_check = (U @ S @ V.T) % 2
     return np.all(symplectic_check == np.eye(dim_U, dtype=int))
+
+
+
+
+#################################################################
+#################################################################
+#################################################################
 
 
 # tableau1: left and stabilizer, tableau2: right and cnc/stabilizer.

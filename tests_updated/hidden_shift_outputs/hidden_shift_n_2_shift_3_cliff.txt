@@ -1,0 +1,10 @@
+Number of qubits: 2
+Hidden shift: [1, 1]
+
+Qiskit Simulation Results:
+Percentages: [('11', 1.0)]
+Simulation Time: 0.0190 seconds
+
+Tableau (QCM) Simulation Results:
+Percentages: [((1, 1), 1.0)]
+Simulation Time: 0.2125 seconds

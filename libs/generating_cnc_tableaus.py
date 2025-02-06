@@ -2,6 +2,7 @@ import numpy as np
 import h5py
 from src import tableau_helper_functions as helper
 from src import utils
+from neater_cnc_tableau import CncSimulator as cnc
 
 # Current directory
 #current_dir = os.getcwd()
@@ -55,8 +56,12 @@ for n in range(2,K+1):
 
         # Find jw gens:
         cosets = helper.find_cosets(jw_set)
+
         # Take a representative jw element:
-        jw_gens = [coset[0] for coset in cosets ]
+        jw_gens = [coset[0] for coset in cosets[1:] ]
+        # take 2m+1-st element as sum of first 2m:
+        jw_gens.append((sum(a for a in jw_gens) % 2 ))
+
         # Generators of I_perp:
         normalizer_gens = np.concatenate((stabilizer_gens,jw_gens[1:]),axis = 0)
 
@@ -64,10 +69,17 @@ for n in range(2,K+1):
         complement_vectors = helper.find_complementary_subspace(normalizer_gens,n)
         # Modify those vectors to commpute with W:
         destabilizer_gens = helper.generate_destabilizer_basis(complement_vectors,jw_gens[1:])
+
+
         # By definition a symplectic basis exists from Stab \oplus Destab:
         stab, destab = helper.symplectic_gram_schmidt(stabilizer_set,helper.generate_subspace_efficient(destabilizer_gens),n-m)
+
         # Check that the vector space is symplectic:
         symplectic_boolean = helper.is_symplectic(np.array(stab),np.array(destab),symplectic_form)
+
+        # exit if not symplectic
+        if not symplectic_boolean:
+            raise ValueError("Stabilizer and destabilizer must form a symplectic basis.")
 
         # Initialize tableau:
         tableau = np.concatenate((destab,stab,jw_gens),axis=0)
@@ -83,6 +95,11 @@ for n in range(2,K+1):
         # Append phases to tableau
         tableau = np.concatenate((tableau,phases),axis = 1)
 
+        # check if proper cnc:
+        cnc_boolean = cnc.is_cnc(n,m,tableau)
+        if not cnc_boolean:
+            raise ValueError("Not a proper CNC tableau.")
+
         # map integer index to quasiprobability-tableau pair
         tableau_array.append(tableau)
 
@@ -97,7 +114,10 @@ for n in range(2,K+1):
         dtype=[('W', float), ('tableau', 'O'), ('n', int), ('m', int)]
     )
 
+    print(f"Saving CNC tableaus.\n")
     # Save the structured array
     np.save(f"./keys/cnc_tableau_keys_{n}.npy", combined, allow_pickle=True)
+
+print(f"Generating CNC tableaus complete.\n")
 
 
