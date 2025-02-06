@@ -166,5 +166,4 @@ cython_debug/
 # large data files
 large_data/
 keys/
-qasm_files/
 qcm_stab_sim.py
