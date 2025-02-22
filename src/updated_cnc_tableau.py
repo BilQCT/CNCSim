@@ -9,32 +9,53 @@ import numpy as np
 
 GF2 = galois.GF(2)
 
-'''
-def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
-    """Computes the symplectic inner product of vectors u and v over GF(2)."""
-    n = len(u) // 2
-    ux, uz = u[:n], u[n:]
-    vx, vz = v[:n], v[n:]
-    return (uz.dot(vx) - ux.dot(vz)) % 2
-''';
-    
 
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
-    """Computes the symplectic inner product of vectors u and v over GF(2)."""
+    """Computes the symplectic inner product of two binary vectors over GF(2).
+    If it is 0, the two Pauli operators associated with the vectors commute.
+    If it is 1, they anticommute.
+
+    The symplectic inner product is defined as:
+        ω(u, v) = (uz ⋅ vx - ux ⋅ vz) mod 2
+    
+    Args:
+        u (np.ndarray): Binary vector of a Pauli operator.
+        v (np.ndarray): Binary vector of a Pauli operator.
+
+    Returns:
+        int: The symplectic inner product of the two vectors.
+    """
     n = len(u) // 2
     ux, uz = u[:n].astype(np.int64), u[n:].astype(np.int64)
     vx, vz = v[:n].astype(np.int64), v[n:].astype(np.int64)
-    return (uz.dot(vx) - ux.dot(vz)) % 2
 
+    return (uz.dot(vx) - ux.dot(vz)) % 2
 
 
 def beta(
     u: np.ndarray, v: np.ndarray, skip_commutation_check: bool = False
 ) -> int:
+    """
+    It computes the beta value of binary vectors u and v which determines
+    the sign of the product of the two commuting Pauli operators.
+
+    Args:
+        u (np.ndarray): Binary vector of a Pauli operator.
+        v (np.ndarray): Binary vector of a Pauli operator.
+        skip_commutation_check (bool, optional): If True, skips the commutation
+            check for efficiency. Defaults to False.
+
+    Returns:
+        int: The beta value of the two commuting Pauli operators.
+
+    Raises:
+        AssertionError: If the Pauli operators do not commute and
+            skip_commutation_check is False.
+    """
     n = len(u) // 2
 
     if not skip_commutation_check:
-        assert symplectic_inner_product(u, v) == 0
+        assert symplectic_inner_product(u, v) == 0, "Vectors do not commute!"
 
     ux, uz = u[:n], u[n:]
     vx, vz = v[:n], v[n:]
@@ -46,63 +67,60 @@ def beta(
     v_phase = vx.dot(vz) % 4
     combined_phase = x_terms.dot(z_terms) % 4
 
-    #gamma = (u_phase + v_phase + 2 * uz.dot(vx) - combined_phase) % 4
-    gamma = (
-    u_phase.astype(np.int32)
-    + v_phase.astype(np.int32)
-    + 2 * uz.astype(np.int32).dot(vx.astype(np.int32))
-    - combined_phase.astype(np.int32)
-) % 4
+    tilde_beta = (
+        u_phase.astype(np.int32)
+        + v_phase.astype(np.int32)
+        + 2 * uz.astype(np.int32).dot(vx.astype(np.int32))
+        - combined_phase.astype(np.int32)
+    ) % 4
 
-    beta = gamma // 2
-
-    return beta
+    return tilde_beta // 2
 
 
 def symplectic_matrix(n: int) -> np.ndarray:
+    """Generates the 2n × 2n symplectic matrix ω over GF(2).
+
+    The symplectic matrix S is defined as:
+        ω = [[ 0  I ],
+            [ I  0 ]]
+
+    where `I` is the `n × n` identity matrix, and `0` is the `n × n` zero
+    matrix.
+
+    Args:
+        n (int): The number of qubits (determines the size of the symplectic
+        matrix).
+
+    Returns:
+        np.ndarray: A 2n × 2n symplectic matrix over GF(2).
+    """
     zeros = np.zeros((n, n), dtype=np.uint8)
     identity = np.eye(n, dtype=np.uint8)
+
     return np.block([[zeros, identity], [identity, zeros]])
 
 
-def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
-    """Converts Binary Symplectic Form of a Pauli operator to its string
-    representation.
+def pauli_binary_vec_to_str(u: np.ndarray) -> str:
+    """Converts binary vector of a Pauli operator to its string representation.
+
     For example [1, 0, 0, 1] is converted to "XZ".
 
     Args:
-        pauli_bsf (np.ndarray): Binary Symplectic Form of the Pauli operator.
+        u (np.ndarray): Binary vector of a Pauli operator.
 
     Returns:
-        str: String representation of the Pauli operator.
+        str: String representation of the Pauli operator associated to given
+        binary vector (without phase).
     """
-    if not isinstance(pauli_bsf, np.ndarray):
-        raise TypeError(
-            "Binary symplectic form of the Pauli operator "
-            "must be a numpy array."
-        )
-
-    if not all(i in [0, 1] for i in pauli_bsf):
-        raise ValueError(
-            "Binary symplectic form of the Pauli operator is not "
-            "a binary array."
-        )
-
-    if len(pauli_bsf) % 2 == 1 or len(pauli_bsf) <= 0:
-        raise ValueError(
-            "Size of the given Binary Symplectic Form is not correct. "
-            "It must be a positive even number."
-        )
-
     pauli_str = ""
 
-    n = len(pauli_bsf) // 2
+    n = len(u) // 2
     for i in range(n):
-        if pauli_bsf[i] == 1 and pauli_bsf[i + n] == 1:
+        if u[i] == 1 and u[i + n] == 1:
             pauli_str += "Y"
-        elif pauli_bsf[i] == 1:
+        elif u[i] == 1:
             pauli_str += "X"
-        elif pauli_bsf[i + n] == 1:
+        elif u[i + n] == 1:
             pauli_str += "Z"
         else:
             pauli_str += "I"
@@ -111,7 +129,22 @@ def pauli_bsf_to_str(pauli_bsf: np.ndarray) -> str:
 
 
 class CncSimulator:
+    """Simulator of maximal CNC operators using tableau representation. The
+    tableau representation contains the stabilizer, destabilizer, and JW
+    elements of the CNC operator. Clifford gates, specifically CNOT, Hadamard,
+    and Phase gates, can be applied to the simulator. Measurements can be
+    performed in the Pauli basis.
+    """
+
     def __init__(self, n: int, m: int, seed: Optional[int] = None) -> None:
+        """Initializes the CncSimulator.
+
+        Args:
+            n (int): Number of qubits.
+            m (int): Parameter defining the type of the maximal CNC operator.
+            seed (Optional[int], optional): Seed for the random number
+                generator for reproducibility. Defaults to None.
+        """
         logging.debug(
             f"Initializing CncSimulator with n={n}, m={m}, seed={seed}"
         )
@@ -134,10 +167,18 @@ class CncSimulator:
             2 * self.isotropic_dim:
         ]
 
-        # Initialize local random generator
         self._rng = np.random.default_rng(seed)
 
     def __deepcopy__(self, memo: Optional[dict] = None) -> CncSimulator:
+        """Creates a deep copy of the current CncSimulator instance.
+
+        Args:
+            memo (Optional[dict], optional): Dictionary for memoization during
+                copy. Defaults to None.
+
+        Returns:
+            CncSimulator: A deep copy of the simulator.
+        """
         new_instance = CncSimulator(self.n, self.m)
         new_instance._tableau = copy.deepcopy(self._tableau)
         new_instance._tableau_without_phase = new_instance._tableau[:, :-1]
@@ -153,9 +194,21 @@ class CncSimulator:
         new_instance._jw_elements_rows = new_instance._tableau_without_phase[
             2 * self.isotropic_dim:
         ]
+
         return new_instance
 
     def __eq__(self, other: CncSimulator) -> bool:
+        """Checks equality between two CncSimulator instances.
+
+        Two simulators are considered equal if they have the same parameters 
+        and tableau.
+
+        Args:
+            other (CncSimulator): Another CNC simulator instance.
+
+        Returns:
+            bool: True if the simulators are equal, False otherwise.
+        """
         if not isinstance(other, CncSimulator):
             return NotImplemented
 
@@ -166,11 +219,20 @@ class CncSimulator:
         )
 
     def __str__(self) -> str:
+        """Returns a string representation of the current simulator state.
+
+        This includes the number of qubits n, type parameter m, and the string
+        representations of the destabilizer rows, stabilizer rows,
+        and JW elements.
+
+        Returns:
+            str: A formatted string representing the simulator.
+        """
         title = f"CNC Simulator with n={self.n}, m={self.m}"
 
         # Convert each destabilizer row to a string representation
         destabilizer_strings = [
-            pauli_bsf_to_str(row) for row in self._destabilizer_rows
+            pauli_binary_vec_to_str(row) for row in self._destabilizer_rows
         ]
         # Join all destabilizer strings with commas and enclose them
         # within angle brackets
@@ -180,7 +242,7 @@ class CncSimulator:
 
         # Convert each stabilizer string to a string representation
         stabilizer_strings = [
-            pauli_bsf_to_str(row) for row in self._stabilizer_rows
+            pauli_binary_vec_to_str(row) for row in self._stabilizer_rows
         ]
         # Add minus if the stabilizer has a negative phase
         stabilizer_strings = [
@@ -195,7 +257,7 @@ class CncSimulator:
 
         # Convert each JW element to a string representation
         jw_element_strings = [
-            pauli_bsf_to_str(row) for row in self._jw_elements_rows
+            pauli_binary_vec_to_str(row) for row in self._jw_elements_rows
         ]
         # Add minus if the JW element has a negative phase
         jw_element_strings = [
@@ -217,10 +279,30 @@ class CncSimulator:
         )
 
     def __repr__(self) -> str:
+        """Returns the official string representation of the simulator.
+
+        Returns:
+            str: The string representation of the simulator.
+        """
         return str(self)
 
     @classmethod
     def from_tableau(cls, n: int, m: int, tableau: np.ndarray) -> CncSimulator:
+        """Creates a CncSimulator instance from a given tableau.
+
+        Args:
+            n (int): Number of qubits.
+            m (int): Parameter defining the type of the maximal CNC operator.
+            tableau (np.ndarray): Tableau representing the maximal
+                CNC operator.
+
+        Returns:
+            CncSimulator: A simulator instance initialized with the
+                provided tableau.
+
+        Raises:
+            ValueError: If the provided tableau is not a valid CNC tableau.
+        """
         if not cls.is_cnc(n, m, tableau):
             raise ValueError("Given tableau is not a valid CNC tableau.")
 
@@ -239,10 +321,24 @@ class CncSimulator:
         instance._jw_elements_rows = instance._tableau_without_phase[
             2 * instance.isotropic_dim:
         ]
+
         return instance
 
     @classmethod
     def is_cnc(cls, n: int, m: int, tableau: np.ndarray) -> bool:
+        """Determines whether a given tableau is a valid CNC tableau.
+
+        This method validates the tableau's shape, binary content, commutation
+        relations, and the linear independence of its rows.
+
+        Args:
+            n (int): Number of qubits.
+            m (int): Parameter defining the type of the maximal CNC operator.
+            tableau (np.ndarray): Tableau to validate.
+
+        Returns:
+            bool: True if the tableau is valid, False otherwise.
+        """
         # Check if the tableau has the correct shape
         if tableau.shape != (2 * n + 1, 2 * n + 1):
             logging.info("Tableau has incorrect shape.")
@@ -280,7 +376,8 @@ class CncSimulator:
             np.eye(isotropic_dim)
         ):
             logging.info(
-                "Destabilizier and stabilizer bases are not symplectic bases."
+                "Destabilizier and stabilizer bases do not form "
+                "symplectic bases."
                 )
             return False
 
@@ -353,6 +450,26 @@ class CncSimulator:
 
     @staticmethod
     def initial_cnc_tableau(n: int, m: int) -> np.ndarray:
+        """Generates the initial CNC tableau for the simulator.
+        It is the canonical example for a maximal CNC operator
+        with n qubits and type m.
+
+        Destabilizer rows consist of x_i for i = 1, ..., n-m
+        Stabilizer rows consist of z_i for i = 1, ..., n-m
+        JW elements rows are described in the paper.
+
+        For example, for n=3 and m=1, the initial tableau is:
+            Destabilizer rows: x_1
+            Stabilizer rows: z_1
+            JW elements rows: x_2, z_2, y_2 + x_3, y_2 + y_3, y_2 + z_3
+
+        Args:
+            n (int): Number of qubits.
+            m (int): Parameter defining the type of the maximal CNC operator.
+
+        Returns:
+            np.ndarray: The initial tableau for the CNC simulator.
+        """
         isotropic_dim = n - m
         row_count = 2 * n + 1
         column_count = 2 * n + 1
@@ -406,21 +523,55 @@ class CncSimulator:
 
     @property
     def n(self) -> int:
+        """Returns the number of qubits in the simulator.
+
+        Returns:
+            int: The number of qubits.
+        """
         return self._n
 
     @property
     def m(self) -> int:
+        """Returns the type parameter m of the maximal CNC operator.
+
+        Returns:
+            int: The type parameter m of the maximal CNC operator.
+        """
         return self._m
 
     @property
     def isotropic_dim(self) -> int:
+        """Returns the isotropic dimension (n-m) of the CNC operator.
+
+        Returns:
+            int: The isotropic dimension of the CNC operator.
+        """
         return self._isotropic_dim
 
     @property
     def tableau(self) -> np.ndarray:
+        """Returns the current tableau representing the simulator's state.
+
+        Returns:
+            np.ndarray: The CNC tableau.
+        """
         return self._tableau
 
     def apply_cnot(self, control_qubit: int, target_qubit: int) -> None:
+        """Applies a CNOT gate to the simulator's state.
+
+        This operation updates the tableau according to the CNOT
+        transformation on the specified control and target qubits.
+        Applies the symplectic transformation associated with the CNOT gate
+        to all rows of the tableau.
+
+        Args:
+            control_qubit (int): The index of the control qubit.
+            target_qubit (int): The index of the target qubit.
+
+        Raises:
+            AssertionError: If the control and target qubits are identical.
+        """
         logging.debug(
             f"Applying CNOT with control_qubit={control_qubit}, "
             f"target_qubit={target_qubit}"
@@ -440,6 +591,16 @@ class CncSimulator:
         self._z_cols[:, control_qubit] ^= self._z_cols[:, target_qubit]
 
     def apply_hadamard(self, qubit: int) -> None:
+        """Applies a Hadamard gate to the specified qubit.
+
+        This operation updates the tableau by applying the Hadamard
+        transformation on the qubit. Applies the symplectic transformation
+        associated with the Hadamard gate to all rows of the tableau.
+
+        Args:
+            qubit (int): The index of the qubit on which to apply
+                the Hadamard gate.
+        """
         logging.debug(f"Applying Hadamard on qubit={qubit}")
         self._phase_col ^= self._x_cols[:, qubit] & self._z_cols[:, qubit]
         self._x_cols[:, qubit] ^= self._z_cols[:, qubit]
@@ -447,11 +608,43 @@ class CncSimulator:
         self._x_cols[:, qubit] ^= self._z_cols[:, qubit]
 
     def apply_phase(self, qubit: int) -> None:
+        """Applies a Phase (S) gate to the specified qubit.
+
+        This operation updates the tableau by applying the Phase
+        transformation on the qubit. Applies the symplectic transformation
+        associated with the Phase gate to all rows of the tableau.
+
+        Args:
+            qubit (int): The index of the qubit on which to apply the
+                Phase gate.
+        """
         logging.debug(f"Applying Phase on qubit={qubit}")
         self._phase_col ^= self._x_cols[:, qubit] & self._z_cols[:, qubit]
         self._z_cols[:, qubit] ^= self._x_cols[:, qubit]
 
     def measure(self, measurement_basis: np.ndarray) -> int:
+        """Performs a Pauli measurement on the simulator in the given
+        measurement basis. Measurement basis is a binary vector specifying
+        the Pauli operator to measure in.
+
+        The measurement operation updates the tableau based on one of four
+        cases determined by the commutation relations between the measurement
+        basis and the rows of the tableau. Also, the measurement outcome is
+        returned.
+
+        Args:
+            measurement_basis (np.ndarray): A binary vector representing Pauli
+                operator to measure in.
+
+        Returns:
+            int: The measurement outcome (0 or 1).
+
+        Raises:
+            AssertionError: If the length of measurement_basis is not equal to
+                2*n.
+            RuntimeError: If no appropriate commuting element is found when
+                required.
+        """
         logging.debug(f"Measuring with measurement_basis={measurement_basis}")
         assert len(measurement_basis) == 2 * self._n
 
@@ -478,10 +671,9 @@ class CncSimulator:
         )
 
         outcome = 0
-    
+
         # Case 1: Measurement basis is in the stabilizer
         if commutes_with_stabilizer and commutes_with_jw_elements:
-            #print("Performing Case 1\n")
             logging.debug("Measurement basis is in the stabilizer.")
             temp_vec = np.zeros(2 * self._n, dtype=np.uint8)
 
@@ -493,15 +685,11 @@ class CncSimulator:
 
                     outcome = outcome ^ s_i ^ beta(e_i, temp_vec)
                     temp_vec = temp_vec ^ e_i
-            
-            #if not self.is_cnc(self.n,self.m,self._tableau):
-            #    print(f"Performing Case I. Update is incorrect.")
 
         # Case 2: Measurement basis is Omega but not in the stabilizer
         elif commutes_with_stabilizer and (
             number_of_anticommuting_jw_elements == 2 * self._m
         ):
-            #print("Performing Case 2\n")
             logging.debug(
                 "Measurement basis is in Omega but not in the stabilizer."
             )
@@ -535,14 +723,10 @@ class CncSimulator:
                 indices = np.arange(2 * self.m + 1)
                 indices = indices[indices != k]
                 self._phase_col[jw_elements_start_index + indices] ^= 1
-            
-            #if not self.is_cnc(self.n,self.m,self._tableau):
-            #    print(f"Performing Case II. Update is incorrect.")
 
         # Case 3: Measurement basis commutes with the stabilizer
         # but not in Omega
         elif commutes_with_stabilizer:
-            #print("Performing Case 3\n")
             logging.debug(
                 "Measurement basis commutes with "
                 "the stabilizer but not in Omega."
@@ -553,7 +737,7 @@ class CncSimulator:
                 f"Number of anticommuting JW elements:"
                 f"{number_of_anticommuting_jw_elements}, so t={t}"
             )
-            #print(f"t = {t}\n")
+
             # Reorganize rows of JW elements to have anticommuting JW elements
             # in the first 2t rows
             max_anticommuting_index = 2 * self.m
@@ -590,11 +774,11 @@ class CncSimulator:
             )
 
             # New stabilizer, bar_b:
-            for i in range(1,2*t):
+            for i in range(1, 2*t):
                 self._row_add_without_phase(
                     anticomm_jw_indexes[0], anticomm_jw_indexes[i]
                 )
-            
+
             # Find outcome with coinflip and update the phase of b_bar
             outcome = self._rng.integers(0, 2, dtype=np.uint8)
             self._phase_col[anticomm_jw_indexes[0]] = outcome
@@ -604,10 +788,13 @@ class CncSimulator:
                 self._row_add_with_phase(i, anticomm_jw_indexes[0])
 
             # scratch space: O(n) memory:
-            scratch = self._tableau_without_phase[anticomm_jw_indexes[0]]^self._tableau_without_phase[anticomm_jw_indexes[1]]
+            scratch = (
+                self._tableau_without_phase[anticomm_jw_indexes[0]]
+                ^ self._tableau_without_phase[anticomm_jw_indexes[1]]
+            )
 
             # Find new stabilizers/destabilizers
-            for i in range(1,t):
+            for i in range(1, t):
                 # New stabilizer:
                 self._tableau_without_phase[anticomm_jw_indexes[2*i]] ^= scratch
                 # New destabilizer:
@@ -616,14 +803,13 @@ class CncSimulator:
                 if i < t-1:
                     scratch ^= self._tableau_without_phase[anticomm_jw_indexes[2*i]]
                     scratch ^= self._tableau_without_phase[anticomm_jw_indexes[2*i+1]]
-                
+
                 # assign phase to new stabilizers:
                 phase_bit = self._rng.integers(0, 2, dtype=np.uint8)
                 self._phase_col[anticomm_jw_indexes[2*i]] = phase_bit
 
                 # assign zero to new destabilizers:
                 self._phase_col[anticomm_jw_indexes[2*i+1]] = np.uint8(0)
-            
 
             # Rearrange stabilizers and destabilizers
             previous_stabilizer_indexes = [
@@ -632,18 +818,26 @@ class CncSimulator:
 
             new_destabilizer_indexes = [
                 2*self._isotropic_dim+2*i+1
-                for i in range(t
-                )
+                for i in range(t)
             ]
 
             new_stabilizer_indexes = [
                 2*self._isotropic_dim+2*i
-                for i in range(t
-                )
+                for i in range(t)
             ]
 
-            target_destabilizer_indexes = [i for i in range(2*self._isotropic_dim, 2 * self.isotropic_dim + t)]
-            target_stabilizer_indexes = [i for i in range(2*self._isotropic_dim+t, 2 * self.isotropic_dim + 2*t)]
+            target_destabilizer_indexes = [
+                i for i in range(
+                    2 * self._isotropic_dim,
+                    2 * self.isotropic_dim + t
+                )
+            ]
+            target_stabilizer_indexes = [
+                i for i in range(
+                    2*self._isotropic_dim+t,
+                    2 * self.isotropic_dim + 2*t
+                )
+            ]
 
             # put new stabilizers and destabilizers in consecutive indices:
             self._tableau[
@@ -651,7 +845,7 @@ class CncSimulator:
             ] = self._tableau[
                 new_stabilizer_indexes + new_destabilizer_indexes
             ]
-            
+
             # put new stabilizers/destabilizers into last t rows
             self._tableau[
                 previous_stabilizer_indexes + target_destabilizer_indexes
@@ -671,12 +865,9 @@ class CncSimulator:
             self._jw_elements_rows = self._tableau_without_phase[
                 2 * self.isotropic_dim:
             ]
-            #if not self.is_cnc(self.n,self.m,self._tableau):
-            #    print(f"Performing Case III. Update is incorrect.")
 
         # Case 4: Measurement basis does not commute with the stabilizer
         else:
-            #print("Performing Case 4\n")
             logging.debug(
                 "Measurement basis does not commute with the stabilizer."
             )
@@ -717,24 +908,30 @@ class CncSimulator:
             # stabilizer accordingly
             outcome = self._rng.integers(0, 2, dtype=np.uint8)
             self._phase_col[p] = outcome
-            #if not self.is_cnc(self.n,self.m,self._tableau):
-            #    print(f"Performing Case IV. Update is incorrect.")
 
         logging.debug(f"Measurement outcome: {outcome}")
 
         return outcome
 
     def _row_add_without_phase(self, i: int, j: int) -> None:
-        """
-        Adds row j to row i in the tableau but does not change the phase
+        """Adds row j to row i in the tableau without updating the phase
         column.
+
+        Args:
+            i (int): Index of the row to be updated.
+            j (int): Index of the row to add.
         """
         self._tableau_without_phase[i] ^= self._tableau_without_phase[j]
 
     def _row_add_with_phase(self, i: int, j: int) -> None:
-        """
-        Adds row j to row i in the tableau and changes the phase column
+        """Adds row j to row i in the tableau and updates the phase column
         accordingly.
+
+        The phase column is updated based on the beta function of the two rows.
+
+        Args:
+            i (int): Index of the row to be updated.
+            j (int): Index of the row to add.
         """
         self._row_add_without_phase(i, j)
         a = self._tableau_without_phase[i]
