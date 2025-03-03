@@ -31,13 +31,15 @@ class KeyNumberError(Error):
 def get_current_key_status(n_target):
     
     # Current directory
-    current_dir = os.getcwd()
+    par_dir = os.path.abspath(os.path.join(os.path.dirname('keys'), '..'))
 
     # key path:
     key_path = "keys/keys_info.pkl"
 
     # check current tableaus:
-    file_path = os.path.join(current_dir,key_path)
+    file_path = os.path.join(par_dir,key_path)
+
+    #print("File path: ",file_path,"\n")
 
     # To load it back
     with open(file_path, 'rb') as file:
@@ -70,8 +72,8 @@ def get_current_key_status(n_target):
 def compile_and_save_new_keys(n_base, n_stab, r_stab, s_stab):
 
     # Path to keys:
-    current_dir = os.getcwd()
-    key_dir = os.path.join(current_dir, "keys")
+    par_dir = os.path.abspath(os.path.join(os.path.dirname('keys'), '..'))
+    key_dir = os.path.join(par_dir, "keys")
 
     # Load n_base keys:
     #print(f"Loading keys for {n_base} qubits.\n")
@@ -187,13 +189,19 @@ def get_weighting_for_keys(keys):
 def get_keys(n_target):
     #print(f"Retrieving {n_target} qubit keys.\n")
 
+    # Path to keys:
+    par_dir = os.path.abspath(os.path.join(os.path.dirname('keys'), '..'))
+    key_dir = os.path.join(par_dir, "keys")
+    key_name = f"keys_n_{n_target}.npy"
+    key_path = os.path.join(key_dir,key_name)
+
     # retreive status of n_target in database:
     key_tuple = get_current_key_status(n_target)
 
     # check if n_target in database:
     if key_tuple[0]:
         #print("Keys are present, loading keys.\n")
-        keys_n_target = np.load(f"./keys/keys_n_{n_target}.npy",allow_pickle = True)
+        keys_n_target = np.load(key_path,allow_pickle = True)
     
     # if not:
     else:

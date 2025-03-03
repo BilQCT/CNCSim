@@ -88,7 +88,7 @@ if __name__ == "__main__":
     n=3
     qc = QuantumCircuit(n,n)
     #qc.x(range(n))
-    qc.ccz(0,1,2)
+    qc.ccx(0,1,2)
     #qc.ccz(0+m,1+m,2+m)
 
     print("Original Circuit:")
@@ -112,37 +112,3 @@ if __name__ == "__main__":
     print("\nSimulation Results:")
     print(raw_counts)
 
-
-
-
-
-
-def custom_ccz_decomposition(qc, c1, c2, anc1, anc2, target, clbit_index):
-    qc.h(target)
-    qc.h(anc1)
-    qc.cx(c1, anc2)
-    qc.cx(anc1, c1)
-    qc.cx(anc1, c2)
-    qc.cx(c2, anc2)
-    qc.t(anc1)
-    qc.t(anc2)
-    
-    qc.tdg(c2)
-    qc.tdg(c1)
-    qc.cx(c2, anc2)
-    qc.cx(anc1, c1)
-    qc.cx(anc1, c2)
-    qc.cx(c1, anc2)
-    
-    qc.h(anc1)
-    qc.s(anc1)
-    qc.cx(anc1, target)
-    qc.h(anc1)
-    
-    # Measure ancilla to the specified classical bit
-    qc.measure(anc1, clbit_index)
-
-    qc.h(c2)
-    qc.cx(c1, c2).c_if(clbit_index, 1)
-    qc.h(c2)
-    qc.h(target)

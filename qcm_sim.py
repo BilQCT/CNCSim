@@ -247,36 +247,57 @@ def run_qcm(file_loc: str, input_file_name: str, clifford_file_name: str, shots:
     shot_times = []  # List to store time per shot
     n_total = q_count + t_count
 
-    # Retrieve keys for T-states and compute the quasiprobability distribution.
-    qprob, prob, sim_keys = keys.get_keys(t_count)
-    negativity = sum(np.abs(q) for q in qprob)
+    if t_count > 0:
+        # Retrieve keys for T-states and compute the quasiprobability distribution.
+        qprob, prob, sim_keys = keys.get_keys(t_count)
+        negativity = sum(np.abs(q) for q in qprob)
 
-    # Create an index list corresponding to the keys.
-    key_indices = list(range(len(prob)))
+        # Create an index list corresponding to the keys.
+        key_indices = list(range(len(prob)))
 
-    # Sample keys according to the probability distribution.
-    samples = random.choices(key_indices, weights=prob, k=shots)
+        # Sample keys according to the probability distribution.
+        samples = random.choices(key_indices, weights=prob, k=shots)
+
+    # If t-count = 0 then stabilizer circuit:
+    else:
+        # no negativity:
+        negativity = 1
+
+        # generic set for samples:
+        samples = [i for i in range(shots)]
+
 
     # Initialize the stabilizer part of the tableau.
     stab_tableau = cnc.CncSimulator(q_count, 0)
+
+    # map to all zero state:
     for i in range(q_count):
         stab_tableau.apply_hadamard(i)
 
-    shot_number = 0
     for sample in samples:
-        # Record the start time for this shot.
-        start_time = time.time()
 
-        sign = sign_of_quasiprobability(qprob[sample])
-        shot_number += 1
+        if t_count > 0:
+            sign = sign_of_quasiprobability(qprob[sample])
 
-        # Create a copy of the initial stabilizer tableau.
-        stab_array = copy.deepcopy(stab_tableau.tableau[:-1, :])
-        cnc_array = copy.deepcopy(sim_keys[sample][1])
-        cnc_array = helper.compose_tableaus(stab_array, cnc_array, 0, sim_keys[sample][-1])
-        cnc_tableau = cnc.CncSimulator.from_tableau(n_total, sim_keys[sample][-1], cnc_array)
+            # Create a copy of the initial stabilizer tableau.
+            stab_array = copy.deepcopy(stab_tableau.tableau[:-1, :])
+            cnc_array = copy.deepcopy(sim_keys[sample][1])
+            cnc_array = helper.compose_tableaus(stab_array, cnc_array, 0, sim_keys[sample][-1])
+            cnc_tableau = cnc.CncSimulator.from_tableau(n_total, sim_keys[sample][-1], cnc_array)
+        
+        else:
+            sign = 1
+            # Initialize the stabilizer part of the tableau.
+            cnc_tableau = cnc.CncSimulator(q_count, 0)
+
+            # map to all zero state:
+            for i in range(q_count):
+                cnc_tableau.apply_hadamard(i)
 
         #print(f"Sampled CNC Key: {sample}\n{cnc_tableau}\n")
+
+        # Record the start time for this shot.
+        start_time = time.time()
 
         # Run the circuit operations without adaptivity.
         simulation_results = apply_circuit(clifford, q_count, t_count, cnc_tableau)
@@ -318,9 +339,21 @@ if __name__ == "__main__":
     # Specify the directory where the QASM file is located.
     file_directory = "./qasm_files/"
     
+    """
     filename = "ccz_circuit_n_3"
     qasm_file = filename + ".qasm"
     clifford_filename = filename + "_msi.qasm"
 
     # Run the gadgetized circuit simulation.
     counts, outputs, born_rule_estimates, shot_times = run_qcm(file_directory, qasm_file, clifford_filename, shots=4096)
+    """
+
+    for n in range(1,7):
+        print(f"Number of qubits: {n}\n")
+        filename = f"ht_{n}"
+        qasm_file = filename + ".qasm"
+        clifford_filename = filename + "_msi.qasm"
+
+        # Run the gadgetized circuit simulation.
+        counts, outputs, born_rule_estimates, shot_times = run_qcm(file_directory, qasm_file, clifford_filename, shots=4096)
+

@@ -1,9 +1,5 @@
 
-import argparse
-import re
 import numpy as np
-from qiskit import QuantumCircuit, Aer, execute
-from ccz_7T_decomposition import *
 
 # suppress qiskit 1.0 deprecation warnings:
 import warnings
@@ -13,6 +9,8 @@ warnings.filterwarnings("ignore")
 
 # Example code that raises warnings
 warnings.warn("This is a warning!")
+
+from qiskit import QuantumCircuit, Aer, execute
 
 
 def create_constant_oracle(n_qubits, output):
@@ -153,124 +151,3 @@ def run_deutsch_jozsa_test(n_qubits, oracle_type='constant', constant_output=0):
         print("Conclusion: f(x) is BALANCED.")
     
     return dj_circ
-
-
-def main():
-    import os
-    import sys
-
-    # Add the parent directory to sys.path
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname('circuits/dj_circuit.py'), '..')))
-    
-    import qcm_sim as sim
-    from circuits import toff_7T_decomposition as toff
-
-    parser = argparse.ArgumentParser(description="Run T Circuit.")
-    
-    # Optional argument to save QASM
-    parser.add_argument(
-        "-b", "--save_qasm", action="store_true", help="Save T QASM"
-    )
-
-    args = parser.parse_args()
-
-    n = 10
-
-    print(f"Number of qubits: {n}\n")
-
-    
-    print(f"Quantum Circuit:\n")
-
-    """
-    # Test deutsch jozsa on constant:
-    qc = run_deutsch_jozsa_test(n_qubits=n, oracle_type='constant', constant_output=0)
-
-    print(qc,"\n")
-
-    # Simulate the circuit after decomposition
-    simulator = Aer.get_backend('qasm_simulator')
-    job = execute(qc, simulator, shots=4096)
-    result = job.result()
-    counts = result.get_counts()
-
-    print("Qiskit Simulation Results:")
-    #print(counts)
-    percentages = [(k, v / sum(counts.values()))
-                        for k, v in counts.items()]
-    print(f"Percentages: {percentages}\n")
-
-    # Apply the 7T decomposition if applicable
-    qc_with_decomposition = toff.apply_toff_via_7t_decomposition(qc)
-
-    qasm_code = qc_with_decomposition.qasm()
-
-    # Replace 'tdg' with 's; s; s; t;'
-    modified_qasm_code = re.sub(r'\btdg\b', 's;\ns;\ns;\nt;', qasm_code)
-
-    with open(f"./qasm_files/dj_10.qasm", "w") as f:
-        f.write(modified_qasm_code)
-
-
-    print("CNC Tableau Simulation Results:")
-
-    # Specify the directory where the QASM file is located.
-    file_directory = "./qasm_files/"
-    filename = "dj_10"
-    qasm_file = filename + ".qasm"
-    clifford_filename = filename + "_msi.qasm"
-
-    # Run the gadgetized circuit simulation.
-    counts, outputs, born_rule_estimates, shot_times = sim.run_qcm(file_directory, qasm_file, clifford_filename, shots=4096)
-    """
-
-
-    print(f"Quantum Circuit:\n")
-
-    # Test deutsch jozsa on constant:
-    qc = run_deutsch_jozsa_test(n_qubits=n, oracle_type='balanced', constant_output=0)
-
-    print(qc,"\n")
-
-    # Simulate the circuit after decomposition
-    simulator = Aer.get_backend('qasm_simulator')
-    job = execute(qc, simulator, shots=4096)
-    result = job.result()
-    counts = result.get_counts()
-
-    print("Qiskit Simulation Results:")
-    #print(counts)
-    percentages = [(k, v / sum(counts.values()))
-                        for k, v in counts.items()]
-    print(f"Percentages: {percentages}\n")
-
-    # Apply the 7T decomposition if applicable
-    qc_with_decomposition = toff.apply_toff_via_7t_decomposition(qc)
-
-    print("With decomposition:")
-    print(qc_with_decomposition)
-
-    qasm_code = qc_with_decomposition.qasm()
-
-    #print(qasm_code)
-
-    # Replace 'tdg' with 's; s; s; t;'
-    modified_qasm_code = re.sub(r'\btdg\b', 's;\ns;\ns;\nt;', qasm_code)
-
-    with open(f"./qasm_files/dj_10.qasm", "w") as f:
-        f.write(modified_qasm_code)
-
-
-    print("CNC Tableau Simulation Results:")
-
-    # Specify the directory where the QASM file is located.
-    file_directory = "./qasm_files/"
-    filename = "dj_10"
-    qasm_file = filename + ".qasm"
-    clifford_filename = filename + "_msi.qasm"
-
-    # Run the gadgetized circuit simulation.
-    counts, outputs, born_rule_estimates, shot_times = sim.run_qcm(file_directory, qasm_file, clifford_filename, shots=4096)
-
-
-if __name__ == "__main__":
-    main()

@@ -141,7 +141,7 @@ class QuCirc():
             lines from the input .qasm file.
         """
         with open(
-                f'{self.input_file_loc}{self.input_file_name}') as file_object:
+                f'{self.input_file_loc}/{self.input_file_name}') as file_object:
             file_lines = list(file_object)
 
         for line in list(file_lines):
@@ -298,7 +298,7 @@ class QuCirc():
         if not msi_clifford_file_name[-5:] == '.qasm':
             msi_clifford_file_name += '.qasm'
 
-        with open(f'{msi_clifford_file_loc}{msi_clifford_file_name}',
+        with open(f'{msi_clifford_file_loc}/{msi_clifford_file_name}',
                   'w') as file_object:
             for line in circuit_list:
                 file_object.write(line)
