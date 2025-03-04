@@ -5,11 +5,6 @@ from src import utils
 from src import updated_cnc_tableau as cnc
 import contextlib
 
-# Current directory
-#current_dir = os.getcwd()
-# One upper directory
-#upper_dir = os.path.dirname(current_dir)
-
 # Redirect printed output to a file
 with open("generating_stab_tableaus.txt", "w") as f_out:
     with contextlib.redirect_stdout(f_out):
@@ -48,7 +43,7 @@ with open("generating_stab_tableaus.txt", "w") as f_out:
             print(f"Processing Stabilizer vectors for n = {n}:\n")
 
             # generate symplectic form for n -qubits:
-            symplectic_form = helper.create_symplectic_form(n)
+            symplectic_form = helper.symplectic_matrix(n)
 
             with h5py.File(filename, "r") as f:
                 key = f"n={n}"
@@ -101,8 +96,11 @@ with open("generating_stab_tableaus.txt", "w") as f_out:
                 m = 0
 
                 # determine the central elements and jw elements:
-                stabilizer_set = helper.find_commuting_elements(omega)
+                stabilizer_set, jw_elements = helper.find_commuting_elements(omega)
                 
+                # jw elements must be empty:
+                assert len(jw_elements) == 0
+
                 # Identify linearly independent vectors:
                 stabilizer_gens = helper.find_independent_subset(stabilizer_set)
 
@@ -152,5 +150,3 @@ with open("generating_stab_tableaus.txt", "w") as f_out:
 
             #print(f"Loading Stabilizer Tableau Keys: n = {n}: \n")
             #print(np.load(f"./keys/stab_tableau_keys_{n}.npy", allow_pickle=True))
-
-

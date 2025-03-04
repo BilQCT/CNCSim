@@ -7,7 +7,6 @@ from abc import ABC
 from dataclasses import dataclass
 from math import isclose, pi
 from typing import Sequence, Union
-import matplotlib.pyplot as plt;
 
 import h5py
 import numpy as np
