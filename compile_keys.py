@@ -1,216 +1,259 @@
 import numpy as np
-import h5py
 from src import tableau_helper_functions as helper
 from src import utils
 import os
-import pickle
+import random
 
-# Current directory
-#current_dir = os.getcwd()
-# One upper directory
-#upper_dir = os.path.dirname(current_dir)
-#print(upper_dir)
+#################################################################
+#                                                               #
+# Compute probabilities from quasi-distribution                 #
+#                                                               #                                                            
+#################################################################
 
-
-class Error(Exception):
-    """Base class for other exceptions"""
-    pass
-
-
-class KeyNumberError(Error):
-    """Exception raised when trying to generate keys that have already been generated.
+def get_key_probabilities(quasiprobabilities):
     """
-    def __init__(
-        self,
-        message="Keys already exist: Do not need to re-generate keys!"
-    ):
-        self.message = message
-        super().__init__(self.message)
-
-
-def get_current_key_status(n_target):
+    Compute and return a normalized probability distribution from a list of quasi-probabilities.
     
-    # Current directory
-    current_dir = os.getcwd()
-
-    # key path:
-    key_path = "keys/keys_info.pkl"
-
-    # check current tableaus:
-    file_path = os.path.join(current_dir,key_path)
-
-    # To load it back
-    with open(file_path, 'rb') as file:
-        key_dict = pickle.load(file)
+    The function first computes the negativity, which is defined as the sum of the absolute 
+    values of all provided quasi-probabilities. Then, each probability is computed as the absolute 
+    value of the corresponding quasi-probability divided by the negativity. If the sum of the 
+    computed probabilities is not (approximately) 1, a ValueError is raised.
     
-    # load existing key meta data:
-    n_cnc = key_dict['cnc']
-    n_stab = key_dict['stb']
-    n_max = key_dict['max']
-
-    # if existing: return True:
-    if n_target <= n_max:
-        #print("Keys already exist.\n")
-        return True, n_target
-    # if not existing: return False, determine which existing keys to compose with and how many times:
-    else:
-        # n_base = n_cnc+m*n_stab:
-        m_stab = int(np.floor((n_max-n_cnc)/n_stab))
-        n_base = n_cnc+m_stab*n_stab
-
-        # Number of times to compose with biggest stabilizer decomposition:
-        # n_target = n_base + r*n_stab + s
-        r_stab = int(np.floor(n_target-n_base)/n_stab)
-        s_stab = (n_target - n_base) % n_stab
-
-        #print("New keys need to be generated for this problem.\n")
-        return False, n_base, n_stab, r_stab, s_stab
-
-
-def compile_and_save_new_keys(n_base, n_stab, r_stab, s_stab):
-
-    # Path to keys:
-    current_dir = os.getcwd()
-    key_dir = os.path.join(current_dir, "keys")
-
-    # Load n_base keys:
-    #print(f"Loading keys for {n_base} qubits.\n")
-    keys_n_base_path = os.path.join(key_dir, f"keys_n_{n_base}.npy")
-    keys_n_base = np.load(keys_n_base_path, allow_pickle=True)
-
-    # If r_stab = s_stab = 0: return n_base:
-    if (r_stab == 0) and (s_stab == 0):
-        return keys_n_base
-
-    # Load n_stab keys:
-    keys_n_stab_path = os.path.join(key_dir, f"stab_tableau_keys_{n_stab}.npy")
-    keys_n_stab = np.load(keys_n_stab_path, allow_pickle=True)
-
-    # Calculate target qubit count:
-    n_target = n_base + r_stab * n_stab + s_stab
-    #print(f"Generating new keys for {n_target} qubits.\n")
-
-    # Initialize new tableaux:
-    new_tableaus = list(keys_n_base)
-
-    # Step 1: Apply r_stab repetitions with n_stab tableaus
-    for k in range(r_stab):
-        updated_tableaus = []
-        for base_tableau in new_tableaus:
-            n_cnc, m_cnc = base_tableau[2], base_tableau[3]
-            for stab_tableau in keys_n_stab:
-                # Calculate new quasiprobability:
-                new_q = base_tableau[0] * stab_tableau[0]
-
-                # Compose tableaus:
-                composed_tableau = helper.compose_tableaus(
-                    base_tableau[1], stab_tableau[1][:-1,:], m_cnc, 0
-                )
-
-                # Append the result:
-                updated_tableaus.append((new_q, composed_tableau, n_cnc + n_stab, m_cnc))
-        new_tableaus = updated_tableaus
-
-        # Convert to numpy array with structured dtype
-        new_tableau_array = np.array(
-            new_tableaus,
-            dtype=[('W', float), ('tableau', 'O'), ('n', int), ('m', int)]
-        )
-
-        # size of current tableaus:
-        n_current = n_base+(k+1)*n_stab
-
-        # Save the structured array
-        #print(f"Saving keys for {n_current} qubits to file.\n")
-        new_key_path = os.path.join(key_dir,f"keys_n_{n_current}.npy")
-        np.save(new_key_path, new_tableau_array, allow_pickle=True)
-
-        # exist loop if s_stab = 0:
-        if s_stab == 0:
-            return new_tableau_array
-
-    # Step 2: Apply composition with s_stab tableaus
-    if s_stab > 0:
-        # load remaining stabilizer tail:
-        keys_s_stab_path = os.path.join(key_dir, f"stab_tableau_keys_{s_stab}.npy")
-        keys_s_stab = np.load(keys_s_stab_path, allow_pickle=True)
-
-        final_tableaus = []
-        for base_tableau in new_tableaus:
-            n_cnc, m_cnc = base_tableau[2], base_tableau[3]
-            for stab_tableau in keys_s_stab:
-                # Calculate new quasiprobability:
-                new_q = base_tableau[0] * stab_tableau[0]
-
-                # Compose tableaus:
-                composed_tableau = helper.compose_tableaus(
-                    base_tableau[1], stab_tableau[1][:-1,:], m_cnc, 0
-                )
-
-                # Append the result:
-                final_tableaus.append((new_q, composed_tableau, n_cnc + s_stab, m_cnc))
-        new_tableaus = final_tableaus
-
-    # Convert to numpy array with structured dtype
-    new_tableau_array = np.array(
-        new_tableaus,
-        dtype=[('W', float), ('tableau', 'O'), ('n', int), ('m', int)]
-    )
-
-    # Save the structured array
-    print(f"Saving keys for {n_target} qubits to file.\n")
-    new_key_path = os.path.join(key_dir,f"keys_n_{n_target}.npy")
-    np.save(new_key_path, new_tableau_array, allow_pickle=True)
-
-    return new_tableau_array
-
-
-
-
-def get_weighting_for_keys(keys):
-    # retreive quasiprobabilities:
-    quasiprobabilities = [keys[i][0] for i in range(keys.shape[0])]
+    Parameters
+    ----------
+    quasiprobabilities : list or array_like of float
+        A collection of quasi-probability weights (which may be negative).
+    
+    Returns
+    -------
+    probabilities : list of float
+        The normalized probability distribution such that the sum of all probabilities is 1.
+    
+    Raises
+    ------
+    ValueError
+        If the computed probabilities do not sum to 1 (within rounding tolerance).
+    """
     # compute negativity:
     negativity = sum(np.abs(x) for x in quasiprobabilities)
     # renormalized probability distribution:
-    probabilities = [np.abs(q)/negativity for q in quasiprobabilities]
+    probabilities = [np.abs(q) / negativity for q in quasiprobabilities]
     # check if normalized:
     if np.round(sum(p for p in probabilities)) != 1.00:
         raise ValueError("Probabilities should be normalized")
     else:
-        # return normalized probability distribution:
-        return quasiprobabilities, probabilities
+        return probabilities
 
+#################################################################
+#                                                               #
+# Load keys for t-gates                                         #
+#                                                               #                                                            
+#################################################################
 
+# Define number of keys to load for CNC and stabilizer tableaus.
+n_cnc = 4
+n_stab = 4
 
+# Path to keys:
+current_dir = os.getcwd()
+key_dir = os.path.join(current_dir, "keys")
 
-def get_keys(n_target):
-    #print(f"Retrieving {n_target} qubit keys.\n")
+# Initialize lists for CNC keys.
+keys_cnc = []
+probabilities_cnc = []
+m_values_cnc = []
+negativity_cnc = []
 
-    # retreive status of n_target in database:
-    key_tuple = get_current_key_status(n_target)
-
-    # check if n_target in database:
-    if key_tuple[0]:
-        #print("Keys are present, loading keys.\n")
-        keys_n_target = np.load(f"./keys/keys_n_{n_target}.npy",allow_pickle = True)
+for n in range(1, n_cnc + 1):
+    # Load CNC keys for a given n.
+    keys_path = os.path.join(key_dir, f"keys_n_{n}.npy")
+    keys = np.load(keys_path, allow_pickle=True)
     
-    # if not:
+    # Extract quasi-probabilities from each key.
+    quasiprobabilities = [keys[i][0] for i in range(keys.shape[0])]
+    # Compute normalized probabilities.
+    probabilities = get_key_probabilities(quasiprobabilities)
+    # Compute negativity.
+    negativity = sum(np.abs(q) for q in quasiprobabilities)
+    
+    keys_cnc.append(keys)
+    probabilities_cnc.append(probabilities)
+    m_values_cnc.append([keys[i][-1] for i in range(keys.shape[0])])
+    negativity_cnc.append(negativity)
+
+# Initialize lists for stabilizer keys.
+keys_stab = []
+probabilities_stab = []
+negativity_stab = []
+
+for n in range(1, n_stab + 1):
+    keys_path = os.path.join(key_dir, f"stab_tableau_keys_{n}.npy")
+    keys = np.load(keys_path, allow_pickle=True)
+    
+    quasiprobabilities = [keys[i][0] for i in range(keys.shape[0])]
+    probabilities = get_key_probabilities(quasiprobabilities)
+    negativity = sum(np.abs(q) for q in quasiprobabilities)
+    
+    keys_stab.append(keys)
+    probabilities_stab.append(probabilities)
+    negativity_stab.append(negativity)
+
+#################################################################
+#                                                               #
+# Compile keys using tableau composition                        #
+#                                                               #                                                            
+#################################################################
+
+def get_key_breakdown(n_target):
+    """
+    Break down the target number of qubits into a key composition structure.
+    
+    The breakdown follows the formula:
+    
+        n_target = n_cnc + m_stab * n_stab + s_stab
+    
+    If n_target is less than or equal to n_cnc, the breakdown is defined as:
+    
+        (n_target, 0, 0)
+    
+    Otherwise, the function computes:
+    
+        m_stab = floor((n_target - n_cnc) / n_stab)
+        n_base = n_cnc + m_stab * n_stab
+        s_stab = (n_target - n_base) mod n_stab
+    
+    Parameters
+    ----------
+    n_target : int
+        The target number of qubits for the composite key.
+    
+    Returns
+    -------
+    tuple of (int, int, int)
+        A tuple (n_cnc, m_stab, s_stab) where:
+            - n_cnc: The base number of qubits from the CNC key.
+            - m_stab: The number of full stabilizer tableaus to compose.
+            - s_stab: The remainder stabilizer qubits.
+    """
+    if n_target <= n_cnc:
+        return n_target, 0, 0
+
+    m_stab = int(np.floor((n_target - n_cnc) / n_stab))
+    n_base = n_cnc + m_stab * n_stab
+    s_stab = (n_target - n_base) % n_stab
+
+    return n_cnc, m_stab, s_stab
+
+
+def compute_total_negativity(n_target):
+    """
+    Compute the total negativity for a composite key based on the target qubit number.
+    
+    The total negativity is computed by breaking down n_target into:
+        (k_cnc, r_stab, s_stab) = get_key_breakdown(n_target)
+    
+    Then, the negativity is computed as follows:
+    
+        - If r_stab == 0 and s_stab == 0:
+              negativity = negativity_cnc[k_cnc - 1]
+        - If r_stab == 0 and s_stab > 0:
+              negativity = negativity_cnc[k_cnc - 1] * negativity_stab[s_stab - 1]
+        - If r_stab > 0 and s_stab == 0:
+              negativity = negativity_cnc[k_cnc - 1] * (negativity_stab[n_stab - 1] ** r_stab)
+        - Otherwise:
+              negativity = negativity_cnc[k_cnc - 1] * (negativity_stab[n_stab - 1] ** r_stab) * negativity_stab[s_stab - 1]
+    
+    Parameters
+    ----------
+    n_target : int
+        The target number of qubits for the composite key.
+    
+    Returns
+    -------
+    float
+        The total negativity computed for the composite key.
+    """
+    k_cnc, r_stab, s_stab = get_key_breakdown(n_target)
+    
+    negativity_k_cnc = negativity_cnc[k_cnc - 1]
+    negativity_n_stab = negativity_stab[n_stab - 1]
+    negativity_s_stab = negativity_stab[s_stab - 1]
+    
+    if (r_stab == 0) and (s_stab == 0):
+        return negativity_k_cnc
+    elif (r_stab == 0) and (s_stab > 0):
+        return negativity_k_cnc * negativity_s_stab
+    elif (r_stab > 0) and (s_stab == 0):
+        return negativity_k_cnc * (negativity_n_stab ** r_stab)
     else:
-        # generate keys from existing keys via composition:
-        #print("Keys are not present, generating keys.\n")
-        keys_n_target = compile_and_save_new_keys(key_tuple[1], key_tuple[2], key_tuple[3], key_tuple[4])
-        #print("Keys generated.\n")
+        return negativity_k_cnc * (negativity_n_stab ** r_stab) * negativity_s_stab
+
+
+def sample_single_key(n_target):
+    """
+    Sample and compose a single composite key using tableau composition.
     
-    # extract probabilities:
-    keys_quasiprobabilities, keys_probabilities = get_weighting_for_keys(keys_n_target)
-
-    return keys_quasiprobabilities, keys_probabilities, keys_n_target
-
-
-
-
-# Example usage
-if __name__ == "__main__":
-    for t in range(5,11):
-        get_keys(t)
+    The function performs the following steps:
+    
+    1. Breaks down n_target into (k_cnc, r_stab, s_stab) via get_key_breakdown.
+    2. Loads the CNC keys, and stabilizer keys for full stabilizer tableaus and the remainder, using the 
+       pre-loaded global lists (keys_cnc and keys_stab).
+    3. Samples one key index from the CNC keys based on their probability distribution.
+    4. Initializes a composite tableau using the sampled CNC key.
+    5. For each full stabilizer repetition (r_stab), samples a stabilizer tableau and composes it with the current tableau.
+       The quasiprobability is updated multiplicatively.
+    6. If there is a remainder (s_stab > 0), samples one additional stabilizer key and composes it.
+    
+    Parameters
+    ----------
+    n_target : int
+        The target number of qubits for the composite key.
+    
+    Returns
+    -------
+    tuple
+        A tuple (array, q, m) where:
+            - array: The composed tableau (as a numpy array).
+            - q: The total quasi-probability (product of the sampled keys' weights).
+            - m: The m value associated with the CNC keys (from the sampled CNC key).
+    """
+    k_cnc, r_stab, s_stab = get_key_breakdown(n_target)
+    
+    # Load keys from global lists.
+    keys_k_cnc = keys_cnc[k_cnc - 1]
+    keys_n_stab = keys_stab[n_stab - 1]
+    keys_s_stab = keys_stab[s_stab - 1]
+    
+    # Load probabilities from global lists.
+    probabilities_k_cnc = probabilities_cnc[k_cnc - 1]
+    probabilities_n_stab = probabilities_stab[n_stab - 1]
+    probabilities_s_stab = probabilities_stab[s_stab - 1]
+    
+    # Create index lists.
+    indices_k_cnc = list(range(len(keys_k_cnc)))
+    indices_n_stab = list(range(len(keys_n_stab)))
+    indices_s_stab = list(range(len(keys_s_stab)))
+    
+    # Sample one CNC key.
+    sample_k_cnc = random.choices(indices_k_cnc, weights=probabilities_k_cnc, k=1)[0]
+    
+    # Initialize composite tableau from the sampled CNC key.
+    array = keys_k_cnc[sample_k_cnc][1]
+    q = keys_k_cnc[sample_k_cnc][0]
+    m = m_values_cnc[k_cnc - 1][sample_k_cnc]
+    
+    # Step 1: Compose with r_stab stabilizer tableaus.
+    for _ in range(r_stab):
+        sample_n_stab = random.choices(indices_n_stab, weights=probabilities_n_stab, k=1)[0]
+        stab_tableau = keys_n_stab[sample_n_stab][1][:-1, :]  # Exclude phase row if needed.
+        array = helper.compose_tableaus(array, stab_tableau, m, 0)
+        q = q * keys_n_stab[sample_n_stab][0]
+    
+    # Step 2: If there is a remainder, compose with one additional stabilizer tableau.
+    if s_stab > 0:
+        sample_s_stab = random.choices(indices_s_stab, weights=probabilities_s_stab, k=1)[0]
+        stab_tableau = keys_s_stab[sample_s_stab][1][:-1, :]
+        array = helper.compose_tableaus(array, stab_tableau, m, 0)
+        q = q * keys_s_stab[sample_s_stab][0]
+    
+    return array, q, m

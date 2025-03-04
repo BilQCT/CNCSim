@@ -9,7 +9,6 @@ import os
 
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname('circuits/hidden_shift.py'), '..')))
-import qcm_stab_sim as qcm
 
 # suppress qiskit 1.0 deprecation warnings:
 import warnings
@@ -181,10 +180,10 @@ def main():
     # filename for generated msi clifford circuit:
     clifford_filename = filename+"_msi.qasm"
 
-    qcm.run_qcm("./",
-            qasm_file,
-            clifford_filename,
-            shots=1024)
+    #qcm.run_qcm("./",
+    #        qasm_file,
+    #        clifford_filename,
+    #        shots=1024)
 
 
 if __name__ == "__main__":

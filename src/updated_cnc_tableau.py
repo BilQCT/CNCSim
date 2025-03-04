@@ -4,10 +4,10 @@ import copy
 import logging
 from typing import Optional
 
-import galois
+#import galois
 import numpy as np
 
-GF2 = galois.GF(2)
+#GF2 = galois.GF(2)
 
 
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
@@ -303,8 +303,8 @@ class CncSimulator:
         Raises:
             ValueError: If the provided tableau is not a valid CNC tableau.
         """
-        if not cls.is_cnc(n, m, tableau):
-            raise ValueError("Given tableau is not a valid CNC tableau.")
+        #if not cls.is_cnc(n, m, tableau):
+        #    raise ValueError("Given tableau is not a valid CNC tableau.")
 
         instance = cls(n, m)
         instance._tableau = copy.deepcopy(tableau)
