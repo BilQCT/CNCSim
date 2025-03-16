@@ -1,8 +1,7 @@
 import numpy as np
 import h5py
 from src import tableau_helper_functions as helper
-from src import utils
-from src.updated_cnc_tableau import CncSimulator as cnc
+from src.cnc_simulator import CncSimulator as cnc
 
 # set n <= K
 K = 4
@@ -31,7 +30,7 @@ for n in range(2, K+1):
     for i in range(N):
         # extract omega set and gamma images:
         omega = [
-            (utils.Pauli.from_basis_order(n, j).bsf)
+            (helper.get_pauli_vec_from_index(n, j).bsf)
             for j in range((M.shape)[0])
             if M[j, i] != 0
         ]

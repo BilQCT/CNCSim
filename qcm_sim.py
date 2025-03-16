@@ -1,5 +1,5 @@
 import numpy as np
-from src import updated_cnc_tableau as cnc
+from src import cnc_simulator as cnc
 import qasm_prep as prep
 import compile_keys as keys
 from src import tableau_helper_functions as helper
