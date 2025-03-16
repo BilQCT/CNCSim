@@ -4,128 +4,14 @@ import copy
 import logging
 from typing import Optional
 
-#import galois
+import galois
 import numpy as np
-
-#GF2 = galois.GF(2)
-
-
-def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
-    """Computes the symplectic inner product of two binary vectors over GF(2).
-    If it is 0, the two Pauli operators associated with the vectors commute.
-    If it is 1, they anticommute.
-
-    The symplectic inner product is defined as:
-        ω(u, v) = (uz ⋅ vx - ux ⋅ vz) mod 2
-    
-    Args:
-        u (np.ndarray): Binary vector of a Pauli operator.
-        v (np.ndarray): Binary vector of a Pauli operator.
-
-    Returns:
-        int: The symplectic inner product of the two vectors.
-    """
-    n = len(u) // 2
-    ux, uz = u[:n].astype(np.int64), u[n:].astype(np.int64)
-    vx, vz = v[:n].astype(np.int64), v[n:].astype(np.int64)
-
-    return (uz.dot(vx) - ux.dot(vz)) % 2
-
-
-def beta(
-    u: np.ndarray, v: np.ndarray, skip_commutation_check: bool = False
-) -> int:
-    """
-    It computes the beta value of binary vectors u and v which determines
-    the sign of the product of the two commuting Pauli operators.
-
-    Args:
-        u (np.ndarray): Binary vector of a Pauli operator.
-        v (np.ndarray): Binary vector of a Pauli operator.
-        skip_commutation_check (bool, optional): If True, skips the commutation
-            check for efficiency. Defaults to False.
-
-    Returns:
-        int: The beta value of the two commuting Pauli operators.
-
-    Raises:
-        AssertionError: If the Pauli operators do not commute and
-            skip_commutation_check is False.
-    """
-    n = len(u) // 2
-
-    if not skip_commutation_check:
-        assert symplectic_inner_product(u, v) == 0, "Vectors do not commute!"
-
-    ux, uz = u[:n], u[n:]
-    vx, vz = v[:n], v[n:]
-
-    x_terms = (ux ^ vx) % 2
-    z_terms = (uz ^ vz) % 2
-
-    u_phase = ux.dot(uz) % 4
-    v_phase = vx.dot(vz) % 4
-    combined_phase = x_terms.dot(z_terms) % 4
-
-    tilde_beta = (
-        u_phase.astype(np.int32)
-        + v_phase.astype(np.int32)
-        + 2 * uz.astype(np.int32).dot(vx.astype(np.int32))
-        - combined_phase.astype(np.int32)
-    ) % 4
-
-    return tilde_beta // 2
-
-
-def symplectic_matrix(n: int) -> np.ndarray:
-    """Generates the 2n × 2n symplectic matrix ω over GF(2).
-
-    The symplectic matrix S is defined as:
-        ω = [[ 0  I ],
-            [ I  0 ]]
-
-    where `I` is the `n × n` identity matrix, and `0` is the `n × n` zero
-    matrix.
-
-    Args:
-        n (int): The number of qubits (determines the size of the symplectic
-        matrix).
-
-    Returns:
-        np.ndarray: A 2n × 2n symplectic matrix over GF(2).
-    """
-    zeros = np.zeros((n, n), dtype=np.uint8)
-    identity = np.eye(n, dtype=np.uint8)
-
-    return np.block([[zeros, identity], [identity, zeros]])
-
-
-def pauli_binary_vec_to_str(u: np.ndarray) -> str:
-    """Converts binary vector of a Pauli operator to its string representation.
-
-    For example [1, 0, 0, 1] is converted to "XZ".
-
-    Args:
-        u (np.ndarray): Binary vector of a Pauli operator.
-
-    Returns:
-        str: String representation of the Pauli operator associated to given
-        binary vector (without phase).
-    """
-    pauli_str = ""
-
-    n = len(u) // 2
-    for i in range(n):
-        if u[i] == 1 and u[i + n] == 1:
-            pauli_str += "Y"
-        elif u[i] == 1:
-            pauli_str += "X"
-        elif u[i + n] == 1:
-            pauli_str += "Z"
-        else:
-            pauli_str += "I"
-
-    return pauli_str
+from src.tableau_helper_functions import (
+    symplectic_matrix,
+    pauli_binary_vec_to_str,
+    beta,
+)
+GF2 = galois.GF(2)
 
 
 class CncSimulator:
@@ -200,7 +86,7 @@ class CncSimulator:
     def __eq__(self, other: CncSimulator) -> bool:
         """Checks equality between two CncSimulator instances.
 
-        Two simulators are considered equal if they have the same parameters 
+        Two simulators are considered equal if they have the same parameters
         and tableau.
 
         Args:
@@ -287,7 +173,9 @@ class CncSimulator:
         return str(self)
 
     @classmethod
-    def from_tableau(cls, n: int, m: int, tableau: np.ndarray) -> CncSimulator:
+    def from_tableau(
+        cls, n: int, m: int, tableau: np.ndarray, check_cnc: bool = False
+    ) -> CncSimulator:
         """Creates a CncSimulator instance from a given tableau.
 
         Args:
@@ -303,8 +191,9 @@ class CncSimulator:
         Raises:
             ValueError: If the provided tableau is not a valid CNC tableau.
         """
-        #if not cls.is_cnc(n, m, tableau):
-        #    raise ValueError("Given tableau is not a valid CNC tableau.")
+        if check_cnc:
+            if not cls.is_cnc(n, m, tableau):
+                raise ValueError("Given tableau is not a valid CNC tableau.")
 
         instance = cls(n, m)
         instance._tableau = copy.deepcopy(tableau)
@@ -939,4 +828,3 @@ class CncSimulator:
         s = self._phase_col[i]
         r = self._phase_col[j]
         self._phase_col[i] = s ^ r ^ beta(a, b)
-    

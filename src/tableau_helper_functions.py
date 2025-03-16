@@ -1,102 +1,228 @@
 import numpy as np
-import h5py
+from itertools import product
 
-def find_m_from_omega(n, omega_size):
-    """
-    Find the maximum value of m given n and omega_size based on the equation:
-        omega_size = (2m+2)*2^(n-m)
+
+def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
+    """Computes the symplectic inner product of two binary vectors over GF(2).
+    If it is 0, the two Pauli operators associated with the vectors commute.
+    If it is 1, they anticommute.
+
+    The symplectic inner product is defined as:
+        ω(u, v) = (uz ⋅ vx - ux ⋅ vz) mod 2
 
     Args:
-        n: Number of qubits.
-        omega_size: Size of the omega set.
+        u (np.ndarray): Binary vector of a Pauli operator.
+        v (np.ndarray): Binary vector of a Pauli operator.
 
     Returns:
-        m: The calculated maximum integer satisfying the condition.
+        int: The symplectic inner product of the two vectors.
     """
-    m = 1
-    while True:
-        if ((m+1) * (2 ** (n + 1 - m)) == omega_size):
+    n = len(u) // 2
+    ux, uz = u[:n].astype(np.int64), u[n:].astype(np.int64)
+    vx, vz = v[:n].astype(np.int64), v[n:].astype(np.int64)
+
+    return (uz.dot(vx) - ux.dot(vz)) % 2
+
+
+def beta(
+    u: np.ndarray, v: np.ndarray, skip_commutation_check: bool = False
+) -> int:
+    """
+    It computes the beta value of binary vectors u and v which determines
+    the sign of the product of the two commuting Pauli operators.
+
+    Args:
+        u (np.ndarray): Binary vector of a Pauli operator.
+        v (np.ndarray): Binary vector of a Pauli operator.
+        skip_commutation_check (bool, optional): If True, skips the commutation
+            check for efficiency. Defaults to False.
+
+    Returns:
+        int: The beta value of the two commuting Pauli operators.
+
+    Raises:
+        AssertionError: If the Pauli operators do not commute and
+            skip_commutation_check is False.
+    """
+    n = len(u) // 2
+
+    if not skip_commutation_check:
+        assert symplectic_inner_product(u, v) == 0, "Vectors do not commute!"
+
+    ux, uz = u[:n], u[n:]
+    vx, vz = v[:n], v[n:]
+
+    x_terms = (ux ^ vx) % 2
+    z_terms = (uz ^ vz) % 2
+
+    u_phase = ux.dot(uz) % 4
+    v_phase = vx.dot(vz) % 4
+    combined_phase = x_terms.dot(z_terms) % 4
+
+    tilde_beta = (
+        u_phase.astype(np.int32)
+        + v_phase.astype(np.int32)
+        + 2 * uz.astype(np.int32).dot(vx.astype(np.int32))
+        - combined_phase.astype(np.int32)
+    ) % 4
+
+    return tilde_beta // 2
+
+
+def symplectic_matrix(n: int) -> np.ndarray:
+    """Generates the 2n × 2n symplectic matrix ω over GF(2).
+
+    The symplectic matrix S is defined as:
+        ω = [[ 0  I ],
+            [ I  0 ]]
+
+    where `I` is the `n × n` identity matrix, and `0` is the `n × n` zero
+    matrix.
+
+    Args:
+        n (int): The number of qubits (determines the size of the symplectic
+        matrix).
+
+    Returns:
+        np.ndarray: A 2n × 2n symplectic matrix over GF(2).
+    """
+    zeros = np.zeros((n, n), dtype=np.uint8)
+    identity = np.eye(n, dtype=np.uint8)
+
+    return np.block([[zeros, identity], [identity, zeros]])
+
+
+def pauli_binary_vec_to_str(u: np.ndarray) -> str:
+    """Converts binary vector of a Pauli operator to its string representation.
+
+    For example [1, 0, 0, 1] is converted to "XZ".
+
+    Args:
+        u (np.ndarray): Binary vector of a Pauli operator.
+
+    Returns:
+        str: String representation of the Pauli operator associated to given
+        binary vector (without phase).
+    """
+    pauli_str = ""
+
+    n = len(u) // 2
+    for i in range(n):
+        if u[i] == 1 and u[i + n] == 1:
+            pauli_str += "Y"
+        elif u[i] == 1:
+            pauli_str += "X"
+        elif u[i + n] == 1:
+            pauli_str += "Z"
+        else:
+            pauli_str += "I"
+
+    return pauli_str
+
+
+def find_m_from_omega_size(n: int, omega_size: int) -> int:
+    """
+    Compute the maximum value of m given the number of qubits and omega_size,
+    based on the equation:
+        omega_size = (2m + 2) * 2^(n - m)
+
+    Args:
+        n (int): Number of qubits.
+        omega_size (int): Size of the omega set.
+
+    Returns:
+        int: The calculated maximum integer m satisfying the equation.
+
+    Raises:
+        ValueError: If no valid m (m > n) is found.
+    """
+    for m in range(n + 1):
+        if ((m + 1) * (2 ** (n + 1 - m)) == omega_size):
             return m
-        m += 1
-        if m > n:
-            raise ValueError("Not a valid size for Omega")
+
+    raise ValueError("Not a valid size for Omega")
 
 
-def find_commuting_elements(vectors):
+def find_commuting_elements(
+    vectors: list[np.ndarray]
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """
-    Find isotropic generators and their complement from a list of vectors.
+    Seperates the list of vectors to the ones that commute with the all
+    vectors (isotropic) and the others(non_isotropic). Either list can be
+    empty.
 
     Args:
-        vectors: List of binary vectors as numpy arrays.
+        vectors (list[np.ndarray]): List of binary vectors representing
+            Pauli operators.
 
     Returns:
-        isotropic_gens: List of isotropic generators.
-        jw_gens: Complementary set of generators.
+        tuple[list[np.ndarray], list[np.ndarray]]: A tuple containing two lists
+            of binary vectors. The first list contains the isotropic vectors
+            and the second list contains the non-isotropic vectors.
     """
-    N = len(vectors)
-    isotropic_elems = []
-    
-    # Ensure vectors are arrays and make a set for fast lookup
-    vector_tuples = {tuple(v) for v in vectors}
-    
+    # Convert to tuples for faster lookup and set operations
+    # Note: numpy arrays are not hashable
+    vector_set = {tuple(v.tolist()) for v in vectors}
+    isotropic_set = set()
+
+    # Find vectors that commute with all other vectors
     for v in vectors:
-        K = sum(1 for w in vectors if symplectic_inner_product(v, w) == 0)
-        if K == N:  # Commuting with all vectors
-            isotropic_elems.append(tuple(v))
-    
-    # Find generators not in isotropic_gens
-    complement_elems = list(set(vector_tuples) - set(isotropic_elems))
+        # A vector is isotropic if it commutes with every vector in the set
+        if all(
+            symplectic_inner_product(v, np.array(w)) == 0 for w in vector_set
+        ):
+            isotropic_set.add(tuple(v.tolist()))
+
+    # Find the complementary elements (non-isotropic)
+    non_isotropic_set = vector_set - isotropic_set
 
     # Convert back to numpy arrays
-    isotropic_elems = [np.array(v) for v in isotropic_elems]
-    complement_elems = [np.array(w) for w in complement_elems]
+    isotropic_elements = [np.array(v) for v in isotropic_set]
+    non_isotropic_elements = [np.array(w) for w in non_isotropic_set]
 
-    if len(complement_elems) > 0:
-        return isotropic_elems, complement_elems
-    else:
-        return isotropic_elems
-    
+    return isotropic_elements, non_isotropic_elements
 
-def find_commuting_coset(v, vectors):
+
+def find_jw_elements(
+    non_stabilizer_vectors: list[np.ndarray]
+) -> list[np.ndarray]:
     """
-    Find all vectors commuting with a given vector v.
+    Find the jw elements from the list of non-stabilizer vectors.
+
     Args:
-        v: Reference vector as a numpy array.
-        vectors: List of binary vectors as numpy arrays.
-    Returns:
-        List of vectors commuting with v.
-    """
-    return [w for w in vectors if symplectic_inner_product(v, w) == 0]
+        non_stabilizer_vectors (list[np.ndarray]): List of binary vectors.
 
-def find_cosets(vectors):
-    """
-    Find all commuting cosets from a list of vectors.
-    Args:
-        vectors: List of binary vectors as numpy arrays.
     Returns:
-        List of cosets.
+        list[np.ndarray]: List of jw elements.
     """
-    cosets = []
-    vectors = vectors.copy()
+    vectors = set(non_stabilizer_vectors)
+    jw_elements = []
 
     while len(vectors) > 0:
-        v = vectors[0]  # Select the first vector
-        coset = find_commuting_coset(v, vectors)
-        cosets.append(coset)
-        # Remove the entire coset from the remaining vectors
-        vectors = [w for w in vectors if not any(np.array_equal(w, c) for c in coset)]
+        v = vectors.pop()
+        commuting_coset = {
+            w for w in vectors if symplectic_inner_product(v, w) == 0
+        }
+        jw_elements.append(v)
+        vectors -= commuting_coset
 
-    return cosets
+    # To make sure they are in JW elements form we need remove the last element
+    # and add the sum of the rest of the elements instead
+    jw_elements[-1] = (sum(jw_elements[:-1]) % 2)
 
-def gaussian_elimination_mod2(A):
+    return jw_elements
+
+
+def gaussian_elimination_mod2(A: np.ndarray) -> np.ndarray:
     """
-    Perform Gaussian elimination on matrix A over Z2.
+    Perform Gaussian elimination on a binary matrix A over Z2.
 
     Args:
-        A: Binary matrix over Z2 (numpy array).
+        A (np.ndarray): A binary matrix.
 
     Returns:
-        basis: Linearly independent row vectors of A, ordered by pivot columns.
+        np.ndarray: A matrix containing a basis of the row space of A, with
+        zero rows removed.
     """
     A = A.copy() % 2
     rows, cols = A.shape
@@ -109,14 +235,14 @@ def gaussian_elimination_mod2(A):
             if A[i, col] == 1:
                 pivot_row = i
                 break
-        
+
         # If no pivot found, move to next column
         if pivot_row == -1:
             continue
-        
+
         # Swap current row with the pivot row
         A[[row_idx, pivot_row]] = A[[pivot_row, row_idx]]
-        
+
         # Eliminate all other 1s in this column
         for i in range(rows):
             if i != row_idx and A[i, col] == 1:
@@ -128,30 +254,17 @@ def gaussian_elimination_mod2(A):
     basis = A[np.any(A, axis=1)]
     return basis
 
-from itertools import product
 
-def generate_all_vectors(n):
+def generate_subspace_efficient(vectors: list[np.ndarray]) -> list[np.ndarray]:
     """
-    Generate all vectors of dimension n over Z2.
+    Generate the subspace spanned by the input vectors over Z2 efficiently
+    using Gaussian elimination.
 
     Args:
-        n: Dimension of the vector space.
-        
-    Returns:
-        vectors: List of all binary vectors as numpy arrays.
-    """
-    vectors = [np.array(v, dtype=int) for v in product([0, 1], repeat=n)]
-    return vectors
-
-def generate_subspace_efficient(vectors):
-    """
-    Generate the subspace spanned by the input vectors over Z2 efficiently using Gaussian elimination.
-
-    Args:
-        vectors: List of binary vectors as numpy arrays.
+        vectors (List[np.ndarray]): List of binary vectors.
 
     Returns:
-        subspace: Set of unique binary vectors forming the subspace.
+        List[np.ndarray]: List of binary vectors in the generated subspace.
     """
     subspace = set()
     subspace.add(tuple(np.zeros(len(vectors[0]), dtype=int)))
@@ -165,38 +278,15 @@ def generate_subspace_efficient(vectors):
     return [np.array(v) for v in subspace]
 
 
-def create_symplectic_form(n):
+def find_independent_subset(vectors: list[np.ndarray]) -> np.ndarray:
     """
-    Create a 2n x 2n symplectic form matrix with the coordinate convention
-    (x1, ..., xn, z1, ..., zn).
+    Find a maximal linearly independent subset of binary vectors over Z2.
 
     Args:
-        n: Dimension parameter (half the total space dimension).
-        
+        vectors (List[np.ndarray]): List of binary vectors.
+
     Returns:
-        S: 2n x 2n symplectic form matrix.
-    """
-    # Create nxn identity matrix
-    I = np.eye(n, dtype=int)
-
-    # Arrange the symplectic form matrix
-    S = np.block([
-        [np.zeros((n, n), dtype=int), I],
-        [I, np.zeros((n, n), dtype=int)]
-    ])
-
-    return S
-
-
-def find_independent_subset(vectors):
-    """
-    Find a maximal linearly independent subset of binary vectors.
-    
-    Args:
-        vectors: List of binary vectors as numpy arrays.
-        
-    Returns:
-        A NumPy array of linearly independent binary vectors from the input.
+        np.ndarray: Array of linearly independent binary vectors over Z2.
     """
     vectors_matrix = np.array(vectors, dtype=int)
     reduced_matrix = gaussian_elimination_mod2(vectors_matrix)
@@ -207,25 +297,33 @@ def find_independent_subset(vectors):
         if any(np.array_equal(v, row) for row in reduced_matrix):
             independent_subset.append(v)
             # Remove the row to avoid duplicates
-            reduced_matrix = reduced_matrix[~np.all(reduced_matrix == v, axis=1)]
+            reduced_matrix = reduced_matrix[
+                ~np.all(reduced_matrix == v, axis=1)
+            ]
 
     return np.array(independent_subset, dtype=int)
 
 
-
-def find_complementary_subspace_naive(v_basis, n):
+def find_complementary_subspace_naive(
+    v_basis: list[np.ndarray], n: int
+) -> np.ndarray:
     """
-    Find a basis for the complement subspace W such that U = V ⊕ W.
-    
+    Find a basis for the complement subspace W such that U = V ⊕ W, using a
+    naive approach.
+
     Args:
-        v_basis: Basis of subspace V as a list of numpy arrays. Each vector is of length 2n.
-        n: Half the dimension of the space U (2n-dimensional vector space over Z2).
-        
+        v_basis (List[np.ndarray]): Basis of subspace V (each vector of length
+            2n).
+        n (int): Half the dimension of the space U (i.e. U is 2n-dimensional
+            over Z2).
+
     Returns:
-        w_basis: Basis of the complement subspace W as a list of numpy arrays.
+        np.ndarray: Array representing the complement subspace basis.
     """
     # generate all n-dimensional vectors over Z2:
-    u_vectorspace = generate_all_vectors(2 * n)
+    u_vectorspace = [
+        np.array(v, dtype=int) for v in product([0, 1], repeat=2*n)
+    ]
     u_vectorspace = set(tuple(u.tolist()) for u in u_vectorspace)
 
     # generate all vectors in subspace V:
@@ -236,27 +334,23 @@ def find_complementary_subspace_naive(v_basis, n):
     # take set difference:
     w_subspace = list(u_vectorspace - v_subspace)
 
-    # find independent subset:
-    #w_basis = find_independent_subset(w_subspace)
-
     return np.array(w_subspace, dtype=int)
 
 
-
-
-
-
-
-def find_complementary_subspace(v_basis, n):
+def find_complementary_subspace(
+    v_basis: list[np.ndarray], n: int
+) -> np.ndarray:
     """
     Find a basis for the complement subspace W such that U = V ⊕ W.
-    
+
     Args:
-        v_basis: Basis of subspace V as a list of numpy arrays. Each vector is of length 2n.
-        n: Half the dimension of the space U (2n-dimensional vector space over Z2).
-        
+        v_basis (list[np.ndarray]): Basis of subspace V (each vector of
+            length 2n).
+        n (int): Half the dimension of the space U (i.e. U is 2n-dimensional
+            over Z2).
+
     Returns:
-        w_basis: Basis of the complement subspace W as a list of numpy arrays.
+        np.ndarray: Array representing the complement subspace basis.
     """
     # Convert the basis of V into a matrix
     V_matrix = np.array(v_basis, dtype=int)
@@ -268,7 +362,7 @@ def find_complementary_subspace(v_basis, n):
 
     # Determine the required dimension of the complement basis
     required_complement_dim = dim_u - rank_v  # Should be n-m
-    
+
     complement_basis = []
 
     # Find independent vectors
@@ -284,52 +378,71 @@ def find_complementary_subspace(v_basis, n):
             complement_basis.append(v)
             V_matrix = reduced_basis  # Update the basis with the new dimension
             rank_v = V_matrix.shape[0]  # This should be n+m
-    
+
     return np.array(complement_basis, dtype=int)
 
 
-
-
-def generate_destabilizer_basis_naive(d_subspace, w_basis):
+def generate_destabilizer_basis_naive(
+    d_subspace: list[np.ndarray], w_basis: list[np.ndarray]
+) -> list[np.ndarray]:
     """
-    Generate a new destabilizer basis from given bases.
+    Generate a new destabilizer basis from the provided subspace and
+    generating basis, using a naive approach.
 
     Args:
-        d_basis: Vectors from the complementary subspace.
-        w_basis: Basis vectors from the generating subspace.
+        d_subspace (List[np.ndarray]): List of vectors from the complementary
+            subspace.
+        w_basis (List[np.ndarray]): List of basis vectors from the generating
+            subspace.
 
     Returns:
-        new_destabilizer_basis: List of updated destabilizer vectors.
+        List[np.ndarray]: Updated destabilizer basis.
     """
     new_destabilizer_basis = []
 
     for v in d_subspace:
-        commuting_vectors = [w for w in w_basis if symplectic_inner_product(v, w) == 0]
-        anticommuting_vectors = [w for w in w_basis if not any(np.array_equal(w, cv) for cv in commuting_vectors)]
+        commuting_vectors = [
+            w for w in w_basis
+            if symplectic_inner_product(v, w) == 0
+        ]
+        anticommuting_vectors = [
+            w for w in w_basis
+            if not any(np.array_equal(w, cv) for cv in commuting_vectors)
+        ]
 
         if len(anticommuting_vectors) == 0:
             new_destabilizer_basis.append(v)
 
-    return new_destabilizer_basis #find_independent_subset(new_destabilizer_basis)
+    return new_destabilizer_basis
 
 
-def generate_destabilizer_basis(d_basis, w_basis):
+def generate_destabilizer_basis(
+    d_basis: list[np.ndarray], w_basis: list[np.ndarray]
+) -> list[np.ndarray]:
     """
-    Generate a new destabilizer basis from given bases.
+    Generate a new destabilizer basis from the provided basis vectors.
 
     Args:
-        d_basis: Basis vectors from the complementary subspace.
-        w_basis: Basis vectors from the generating subspace.
+        d_basis (List[np.ndarray]): List of basis vectors from the
+            complementary subspace.
+        w_basis (List[np.ndarray]): List of basis vectors from the generating
+            subspace.
 
     Returns:
-        new_destabilizer_basis: List of updated destabilizer vectors.
+        List[np.ndarray]: Updated destabilizer basis.
     """
     new_destabilizer_basis = []
 
     for v in d_basis:
-        commuting_vectors = [w for w in w_basis if symplectic_inner_product(v, w) == 0]
-        anticommuting_vectors = [w for w in w_basis if not any(np.array_equal(w, cv) for cv in commuting_vectors)]
-        
+        commuting_vectors = [
+            w for w in w_basis
+            if symplectic_inner_product(v, w) == 0
+        ]
+        anticommuting_vectors = [
+            w for w in w_basis
+            if not any(np.array_equal(w, cv) for cv in commuting_vectors)
+        ]
+
         # Check the number of anticommuting vectors is even
         if len(anticommuting_vectors) % 2 == 0:
             v_prime = v.copy()
@@ -345,31 +458,24 @@ def generate_destabilizer_basis(d_basis, w_basis):
     return new_destabilizer_basis
 
 
-
-import numpy as np
-
-def symplectic_inner_product(v, w):
-    """Calculate the symplectic inner product of two vectors over Z2."""
-    n = len(v) // 2
-    return (np.dot(v[:n], w[n:]) + np.dot(v[n:], w[:n])) % 2
-
-
-
-
-def symplectic_gram_schmidt(array1, array2, r):
+def symplectic_gram_schmidt(
+    array1: list[np.ndarray], array2: list[np.ndarray], r: int
+) -> tuple[np.ndarray, np.ndarray]:
     """
-    Perform the Symplectic Gram-Schmidt process on a set of vectors over Z2.
+    Perform the Symplectic Gram-Schmidt process on two lists of binary vectors
+    over Z2.
 
-    Based off Symplectic Gram-Schmidt pseudo-code of https://arxiv.org/abs/1406.2170
+    Based off Symplectic Gram-Schmidt pseudo-code of
+        https://arxiv.org/abs/1406.2170
 
     Args:
-        array1: A list of binary vectors for the first set.
-        array2: A list of binary vectors for the second set.
-        r: The number of basis pairs to find.
+        array1 (List[np.ndarray]): List of binary vectors for the first set.
+        array2 (List[np.ndarray]): List of binary vectors for the second set.
+        r (int): Number of basis pairs to extract.
 
     Returns:
-        Two numpy arrays representing the symplectic basis vectors.
-    
+        Tuple[np.ndarray, np.ndarray]: Two numpy arrays representing the
+            symplectic basis vectors from the two sets.
     """
     old_basis1 = [np.array(v, dtype=int) for v in array1]
     old_basis2 = [np.array(v, dtype=int) for v in array2]
@@ -379,11 +485,12 @@ def symplectic_gram_schmidt(array1, array2, r):
     k = 0
 
     while k < r:
-        
         found_pair = False
 
         for i, v in enumerate(old_basis1):
-            commutations = np.array([symplectic_inner_product(v, w) for w in old_basis2])
+            commutations = np.array([
+                symplectic_inner_product(v, w) for w in old_basis2
+            ])
 
             # Check if anticommuting vector exists
             if not np.any(commutations):
@@ -400,8 +507,15 @@ def symplectic_gram_schmidt(array1, array2, r):
             old_basis2.pop(j)
 
             # Modify remaining vectors
-            old_basis1 = [(u + symplectic_inner_product(u, w) * v) % 2 for u in old_basis1]
-            old_basis2 = [(u + symplectic_inner_product(u, v) * w + symplectic_inner_product(u, w) * v) % 2 for u in old_basis2]
+            old_basis1 = [
+                (u + symplectic_inner_product(u, w) * v) % 2
+                for u in old_basis1
+            ]
+            old_basis2 = [
+                (u + symplectic_inner_product(u, v) * w +
+                    symplectic_inner_product(u, w) * v) % 2
+                for u in old_basis2
+            ]
 
             k += 1
             found_pair = True
@@ -414,17 +528,11 @@ def symplectic_gram_schmidt(array1, array2, r):
     return np.array(new_basis1, dtype=int), np.array(new_basis2, dtype=int)
 
 
-
-
-
-
-import numpy as np
-
-def is_symplectic(U, V, S):
+def is_symplectic(U: np.ndarray, V: np.ndarray, S: np.ndarray) -> bool:
     """
     Check if two matrices form a symplectic pair over Z2.
 
-    A pair of matrices (U, V) is considered symplectic with respect to the 
+    A pair of matrices (U, V) is considered symplectic with respect to the
     symplectic form S if they satisfy the symplectic condition:
         (U @ S) @ V^T ≡ I (mod 2)
     where I is the identity matrix, and V^T is the transpose of V.
@@ -506,11 +614,8 @@ def left_compose(tableau1,tableau2,m1,m2):
 
     # stack: jw (2m2)
     tableau[(2*(n1+n2-m2)):,:] = _tableau2[2*(n2-m2):,:]
-    
+
     return tableau
-
-
-
 
 
 def right_compose(tableau1,tableau2,m1,m2):
@@ -554,8 +659,6 @@ def right_compose(tableau1,tableau2,m1,m2):
     tableau[(2*(n1+n2-m1)):,:] = _tableau1[2*(n1-m1):,:]
     
     return tableau
-
-
 
 
 def compose_tableaus(tableau1,tableau2,m1,m2):
