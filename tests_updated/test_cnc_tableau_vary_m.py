@@ -1,148 +1,110 @@
-import timeit
 import numpy as np
 import timeit
+import matplotlib.pyplot as plt
 from random import choice
-
 import sys
 import os
+from test_functions import *
 
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname('tests_updated/test_cnc_tableau.py'), '..')))
 
-from src import chp
 from src import updated_cnc_tableau as cnc
 
 
-# generate random cliffords:
-def generate_gate_sequence(n, beta):
-    """Generate a random sequence of Clifford gates."""
-    num_gates = int(beta * n) #* np.log2(n)
-    gates = ['h', 's', 'cnot']
-    sequence = []
-    for _ in range(num_gates):
-        gate = choice(gates)
-        if gate == 'h' or gate == 's':  # Single qubit gates
-            qubit = np.random.randint(0, n)
-            sequence.append(f"{gate}_{qubit}")
-        elif gate == 'cnot':  # Two-qubit gate
-            control = np.random.randint(0, n)
-            target = np.random.randint(0, n)
-            while target == control:  # Ensure control != target
-                target = np.random.randint(0, n)
-            sequence.append(f"{gate}_{control}_{target}")
-    return sequence
+##########################################
+#      Fixed beta, varying m           #
+##########################################
 
+iterations = 1
 
+# Fix beta value for these simulations
+beta = 1
+# Define segmentation factor k for m
+k = 4
+n_min = 200
+n_max = 2401   # n from 200 to 2400
+n_delta = 200
+n_values = range(n_min, n_max, n_delta)
 
-# apply random gate sequence with cnc sim:
-def apply_sequence_of_clifford(simulator, sequence):
-    """Apply a sequence of Clifford gates to the simulator."""
-    for gate in sequence:
-        if gate.startswith('h'):
-            qubit = int(gate.split('_')[1])
-            simulator.apply_hadamard(qubit)
-        elif gate.startswith('s'):
-            qubit = int(gate.split('_')[1])
-            simulator.apply_phase(qubit)
-        elif gate.startswith('cnot'):
-            control, target = map(int, gate.split('_')[1:])
-            simulator.apply_cnot(control, target)
+print(f"Generating results for varying m by increments of n/{k}\n Min. n = {n_min}, Max. n = {n_max}\n")
 
-
-
-# Loop over beta and n ranges
-#beta_min = 1.00; beta_max = 1.01; delta = 0.4
-#beta_values = np.arange(beta_min, beta_max, delta)
-
-# define qubit ranges:
-n_min = 200; n_max = 1201; n_delta = 50
-n_values = range(n_min, n_max, n_delta)  # n from 200 to 1000
-
-results = []
+results = []  # Reset results list
 
 for n in n_values:
-
-    m_values = [1,np.int64(np.round(n/4,0)),np.int64(np.round(n/2,0)),np.int64(np.round((3*n)/4,0)),n]
-    #print(n,m_values)
-
+    # Generate a random sequence of Clifford gates for fixed beta
+    sequence = generate_gate_sequence(n, beta)
+    # Define m values: 0, 1, and then int(r*n/k) for r = 1 to k
+    m_values = [0, 1] + [int(r * n / k) for r in range(1, k+1)]
     for m in m_values:
-
-        print(f"Running simulation for n={n}, m={m}:\n")
-
-        # Generate Clifford gate sequence
-        sequence = generate_gate_sequence(n, 1.0)
-
-        # Initialize the CNC simulator
+        print(f"Running simulation for m={m}, n={n}")
+        # Initialize the CNC simulator for current n and m
         simulator = cnc.CncSimulator(n, m)
-
-        # Apply the gate sequence
+        # Apply the generated gate sequence
         apply_sequence_of_clifford(simulator, sequence)
-
-        # Prepare measurement bases
+        # Prepare measurement bases (concatenation of identity and zero matrices)
         zero_matrix = np.zeros((n, n), dtype=int)
         identity_matrix = np.eye(n, dtype=int)
-        measurement_bases = np.hstack((identity_matrix,zero_matrix))
-
-        # Define the setup code
+        measurement_bases = np.hstack((identity_matrix, zero_matrix))
+        # Setup code string for timeit
         setup_code = f"""
 import numpy as np
 from __main__ import simulator, measurement_bases
 """
-
-        # Define the statement to measure
+        # Statement to measure: perform measurement on each basis vector
         stmt_code = """
 for base in range(measurement_bases.shape[0]):
     simulator.measure(measurement_bases[base, :])
 """
-
-        # Time the execution
-        repeat = 5
+        # Time the execution and compute average time per measurement
+        repeat = iterations
         execution_time = timeit.timeit(stmt=stmt_code, setup=setup_code, number=repeat)
-        avg_time = execution_time /(repeat*n)
-        print(f"Average time per iteration for n={n}, m={m}: {avg_time:.6f} seconds")
+        avg_time = execution_time / (repeat * n)
+        print(f"Average time per measurement ({repeat} iterations) for beta={beta:.1f}, n={n}: {avg_time:.6f} seconds \n")
+        # Store results as a tuple (beta, n, m, average_time)
+        results.append((beta, n, m, avg_time))
 
-        # Store results
-        results.append((n, m, avg_time))
+# Save the results for fixed beta and varying m
+np.save(f"./figures/cnc_measurement_n_{n_min}_{n_max}_{n_delta}_m_vary_{k}_beta_{beta}.npy", np.array(results))
 
-# Print all results
-for n, m, avg_time in results:
-    print(f"n={n}, m={m}, Avg Time={avg_time:.6f} seconds")
+##########################################
+# Plot results grouped by m values
+##########################################
 
-# Save to .npy file
-np.save(f"./figures/cnc_measurement_n_{n_min}_{n_max}_{n_delta}_m_1_n_beta_1.npy", np.array(results))
-
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Your numpy array
+# Convert results to a numpy array
 data = np.array(results)
+# Group data by beta value and then by m groups:
+k = 4  # number of segments for m grouping
+groups = {i: [] for i in range(0, k+2)}
+for beta, n, m, avg_time in results:
+    if m == 0:
+        group = 0
+    elif m == 1:
+        group = 1
+    else:
+        # Determine group based on integer division of n
+        for r in range(2, k+2):
+            if m == int(r * n / k):
+                group = r
+                break
+        else:
+            continue
+    groups[group].append((n, avg_time))
 
-# Extract unique beta values
-m_values = np.unique(data[:, 1])
+# Sort each group's data by n
+for key in groups:
+    groups[key] = np.array(sorted(groups[key], key=lambda x: x[0]))
 
-# Create the plot
-plt.figure(figsize=(10, 6))
+# Define group labels (adjust for k = 4)
+labels = ["m = 0", "m = 1", "m = n/2", "m = 3n/4", "m = n", "Extra"]
 
-m_strings = ["1","n/4","n/2","3n/4","n"]
-
-for m in range(5):
-    subset_indices = [5*i+m for i in range(len(n_values))]
-    subset = data[subset_indices]  # Filter rows with the current beta
-    n = subset[:, 0]
-    avg_time = subset[:, 2]
-    plt.plot(n, avg_time, marker='o', label=f"m={m_strings[m]}")  # LaTeX syntax for beta
-
-# Label the axes and add a legend
+plt.figure(figsize=(8, 6))
+for i in range(k+2):
+    if groups[i].size > 0:
+        plt.plot(groups[i][:, 0], groups[i][:, 1], marker='o', label=labels[i])
 plt.xlabel("n (Number of Qubits)")
-plt.ylabel("Average Time (s)")
-plt.title(f"CNC: Measurement Time vs. n for Different m Values")  # Use beta in title
+plt.ylabel("Average Time per Measurement (s)")
+plt.title("CNC Simulation: Average Time vs n (Varying m)")
 plt.legend()
 plt.grid(True)
-
-# Save the plot to a file
-plt.savefig(f"./figures/cnc_measurement_plot_n_{n_min}_{n_max}_{n_delta}_m_1_n_beta_1.png", format="png", dpi=300)
-
-# Show the plot (optional)
 plt.show()
