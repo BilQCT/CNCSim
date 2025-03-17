@@ -4,11 +4,12 @@ from itertools import product
 
 def symplectic_inner_product(u: np.ndarray, v: np.ndarray) -> int:
     """Computes the symplectic inner product of two binary vectors over GF(2).
-    If it is 0, the two Pauli operators associated with the vectors commute.
-    If it is 1, they anticommute.
 
     The symplectic inner product is defined as:
-        ω(u, v) = (uz ⋅ vx - ux ⋅ vz) mod 2
+        ω(u, v) = (u_z · v_x - u_x · v_z) mod 2
+
+    If the result is 0, the corresponding Pauli operators commute.
+    If the result is 1, they anticommute.
 
     Args:
         u (np.ndarray): Binary vector of a Pauli operator.
@@ -28,8 +29,8 @@ def beta(
     u: np.ndarray, v: np.ndarray, skip_commutation_check: bool = False
 ) -> int:
     """
-    It computes the beta value of binary vectors u and v which determines
-    the sign of the product of the two commuting Pauli operators.
+    Computes the beta value which determines the sign of the product of two
+    commuting Pauli operators.
 
     Args:
         u (np.ndarray): Binary vector of a Pauli operator.
@@ -69,29 +70,6 @@ def beta(
     return tilde_beta // 2
 
 
-def symplectic_matrix(n: int) -> np.ndarray:
-    """Generates the 2n × 2n symplectic matrix ω over GF(2).
-
-    The symplectic matrix S is defined as:
-        ω = [[ 0  I ],
-            [ I  0 ]]
-
-    where `I` is the `n × n` identity matrix, and `0` is the `n × n` zero
-    matrix.
-
-    Args:
-        n (int): The number of qubits (determines the size of the symplectic
-        matrix).
-
-    Returns:
-        np.ndarray: A 2n × 2n symplectic matrix over GF(2).
-    """
-    zeros = np.zeros((n, n), dtype=np.uint8)
-    identity = np.eye(n, dtype=np.uint8)
-
-    return np.block([[zeros, identity], [identity, zeros]])
-
-
 def pauli_binary_vec_to_str(u: np.ndarray) -> str:
     """Converts binary vector of a Pauli operator to its string representation.
 
@@ -120,9 +98,89 @@ def pauli_binary_vec_to_str(u: np.ndarray) -> str:
     return pauli_str
 
 
+def pauli_str_to_binary_vec(pauli_str: str) -> np.ndarray:
+    """
+    Converts the string representation of a Pauli operator to its binary
+    vector.
+
+    Args:
+        pauli_str (str): String representation of a Pauli operator.
+
+    Returns:
+        np.ndarray: Binary vector of the Pauli operator.
+    """
+    x_part = np.zeros(len(pauli_str), dtype=int)
+    z_part = np.zeros(len(pauli_str), dtype=int)
+
+    pauli_str = pauli_str.upper().strip()
+
+    for i, op in enumerate(pauli_str):
+        if op == "X":
+            x_part[i] = 1
+        elif op == "Y":
+            x_part[i] = 1
+            z_part[i] = 1
+        elif op == "Z":
+            z_part[i] = 1
+        elif op == "I":
+            pass
+        else:
+            raise ValueError(
+                "Invalid Pauli string. It must contain only X, Y, Z, I."
+            )
+
+    return np.concatenate((x_part, z_part))
+
+
+def get_pauli_vec_from_index(n: int, index: int) -> np.ndarray:
+    """
+    Returns the binary vector of a n-qubit Pauli operator from its index in the
+    lexicographic order.
+
+    Args:
+        n (int): Number of qubits.
+        index (int): Index of the Pauli operator.
+
+    Returns:
+        np.ndarray: Binary vector of the Pauli operator.
+    """
+    index_to_pauli = {0: "I", 1: "X", 2: "Y", 3: "Z"}
+    inc_unit = 4 ** (n - 1)
+    pauli_str = ""
+    while inc_unit != 0:
+        pauli_index, index = divmod(index, inc_unit)
+        pauli_str += index_to_pauli[pauli_index]
+        inc_unit //= 4
+
+    return pauli_str_to_binary_vec(pauli_str)
+
+
+def symplectic_matrix(n: int) -> np.ndarray:
+    """Generates the 2n × 2n symplectic matrix ω over GF(2).
+
+    The symplectic matrix S is defined as:
+        ω = [[ 0  I ],
+            [ I  0 ]]
+
+    where `I` is the `n × n` identity matrix, and `0` is the `n × n` zero
+    matrix.
+
+    Args:
+        n (int): The number of qubits (determines the size of the symplectic
+        matrix).
+
+    Returns:
+        np.ndarray: A 2n × 2n symplectic matrix over GF(2).
+    """
+    zeros = np.zeros((n, n), dtype=np.uint8)
+    identity = np.eye(n, dtype=np.uint8)
+
+    return np.block([[zeros, identity], [identity, zeros]])
+
+
 def find_m_from_omega_size(n: int, omega_size: int) -> int:
     """
-    Compute the maximum value of m given the number of qubits and omega_size,
+    Computes the maximum value of m given the number of qubits and omega_size,
     based on the equation:
         omega_size = (2m + 2) * 2^(n - m)
 
@@ -187,7 +245,7 @@ def find_jw_elements(
     non_stabilizer_vectors: list[np.ndarray]
 ) -> list[np.ndarray]:
     """
-    Find the jw elements from the list of non-stabilizer vectors.
+    Finds a set of jw elements from the list of non-stabilizer vectors.
 
     Args:
         non_stabilizer_vectors (list[np.ndarray]): List of binary vectors.
@@ -215,7 +273,7 @@ def find_jw_elements(
 
 def gaussian_elimination_mod2(A: np.ndarray) -> np.ndarray:
     """
-    Perform Gaussian elimination on a binary matrix A over Z2.
+    Performs Gaussian elimination on a binary matrix A over GF(2).
 
     Args:
         A (np.ndarray): A binary matrix.
@@ -257,7 +315,7 @@ def gaussian_elimination_mod2(A: np.ndarray) -> np.ndarray:
 
 def generate_subspace_efficient(vectors: list[np.ndarray]) -> list[np.ndarray]:
     """
-    Generate the subspace spanned by the input vectors over Z2 efficiently
+    Generates the subspace spanned by the input vectors over GF(2) efficiently
     using Gaussian elimination.
 
     Args:
@@ -280,13 +338,13 @@ def generate_subspace_efficient(vectors: list[np.ndarray]) -> list[np.ndarray]:
 
 def find_independent_subset(vectors: list[np.ndarray]) -> np.ndarray:
     """
-    Find a maximal linearly independent subset of binary vectors over Z2.
+    Finds a maximal linearly independent subset of binary vectors over GF(2).
 
     Args:
         vectors (List[np.ndarray]): List of binary vectors.
 
     Returns:
-        np.ndarray: Array of linearly independent binary vectors over Z2.
+        np.ndarray: Array of linearly independent binary vectors over GF(2).
     """
     vectors_matrix = np.array(vectors, dtype=int)
     reduced_matrix = gaussian_elimination_mod2(vectors_matrix)
@@ -303,24 +361,24 @@ def find_independent_subset(vectors: list[np.ndarray]) -> np.ndarray:
 
     return np.array(independent_subset, dtype=int)
 
-
+# TODO: Decide if we want to keep the not-used naive approach
 def find_complementary_subspace_naive(
     v_basis: list[np.ndarray], n: int
 ) -> np.ndarray:
     """
-    Find a basis for the complement subspace W such that U = V ⊕ W, using a
+    Finds a basis for the complement subspace W such that U = V ⊕ W, using a
     naive approach.
 
     Args:
         v_basis (List[np.ndarray]): Basis of subspace V (each vector of length
             2n).
         n (int): Half the dimension of the space U (i.e. U is 2n-dimensional
-            over Z2).
+            over GF(2)).
 
     Returns:
         np.ndarray: Array representing the complement subspace basis.
     """
-    # generate all n-dimensional vectors over Z2:
+    # generate all n-dimensional vectors over GF(2):
     u_vectorspace = [
         np.array(v, dtype=int) for v in product([0, 1], repeat=2*n)
     ]
@@ -341,13 +399,13 @@ def find_complementary_subspace(
     v_basis: list[np.ndarray], n: int
 ) -> np.ndarray:
     """
-    Find a basis for the complement subspace W such that U = V ⊕ W.
+    Finds a basis for the complement subspace W such that U = V ⊕ W.
 
     Args:
         v_basis (list[np.ndarray]): Basis of subspace V (each vector of
             length 2n).
         n (int): Half the dimension of the space U (i.e. U is 2n-dimensional
-            over Z2).
+            over GF(2)).
 
     Returns:
         np.ndarray: Array representing the complement subspace basis.
@@ -381,12 +439,12 @@ def find_complementary_subspace(
 
     return np.array(complement_basis, dtype=int)
 
-
+# TODO: Decide if we want to keep the not-used naive approach
 def generate_destabilizer_basis_naive(
     d_subspace: list[np.ndarray], w_basis: list[np.ndarray]
 ) -> list[np.ndarray]:
     """
-    Generate a new destabilizer basis from the provided subspace and
+    Generates a new destabilizer basis from the provided subspace and
     generating basis, using a naive approach.
 
     Args:
@@ -420,7 +478,7 @@ def generate_destabilizer_basis(
     d_basis: list[np.ndarray], w_basis: list[np.ndarray]
 ) -> list[np.ndarray]:
     """
-    Generate a new destabilizer basis from the provided basis vectors.
+    Generates a new destabilizer basis from the provided basis vectors.
 
     Args:
         d_basis (List[np.ndarray]): List of basis vectors from the
@@ -462,8 +520,8 @@ def symplectic_gram_schmidt(
     array1: list[np.ndarray], array2: list[np.ndarray], r: int
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Perform the Symplectic Gram-Schmidt process on two lists of binary vectors
-    over Z2.
+    Performs the Symplectic Gram-Schmidt process on two lists of binary vectors
+    over GF(2).
 
     Based off Symplectic Gram-Schmidt pseudo-code of
         https://arxiv.org/abs/1406.2170
@@ -530,7 +588,8 @@ def symplectic_gram_schmidt(
 
 def is_symplectic(U: np.ndarray, V: np.ndarray, S: np.ndarray) -> bool:
     """
-    Check if two matrices form a symplectic pair over Z2.
+    Check whether two matrices U and V form a symplectic pair with respect to
+    S over GF(2).
 
     A pair of matrices (U, V) is considered symplectic with respect to the
     symplectic form S if they satisfy the symplectic condition:
@@ -538,8 +597,8 @@ def is_symplectic(U: np.ndarray, V: np.ndarray, S: np.ndarray) -> bool:
     where I is the identity matrix, and V^T is the transpose of V.
 
     Args:
-        U (np.ndarray): First matrix of shape (dim_U, 2n).
-        V (np.ndarray): Second matrix of shape (dim_V, 2n).
+        U (np.ndarray): Matrix of shape (dim, 2n).
+        V (np.ndarray): Matrix of shape (dim, 2n).
         S (np.ndarray): Symplectic form matrix of shape (2n, 2n).
 
     Returns:
@@ -569,12 +628,11 @@ def is_symplectic(U: np.ndarray, V: np.ndarray, S: np.ndarray) -> bool:
 
 
 
-
 #################################################################
 #################################################################
 #################################################################
 
-
+# TODO: Merge the functions below into the CNCSimulator class
 # tableau1: left and stabilizer, tableau2: right and cnc/stabilizer.
 def left_compose(tableau1,tableau2,m1,m2):
 

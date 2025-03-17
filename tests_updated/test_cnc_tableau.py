@@ -9,7 +9,8 @@ from test_functions import *
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname('tests_updated/test_cnc_tableau.py'), '..')))
 
-from src import updated_cnc_tableau as cnc
+from src import chp
+from src import cnc_simulator as cnc
 
 ##########################################
 #                                        #

@@ -1,8 +1,7 @@
 import numpy as np
 import h5py
 from src import tableau_helper_functions as helper
-from src import utils
-from src import updated_cnc_tableau as cnc
+from src import cnc_simulator as cnc
 import contextlib
 
 # Redirect printed output to a file
@@ -26,8 +25,6 @@ with open("generating_stab_tableaus.txt", "w") as f_out:
         sys.path.append(main_dir)
 
         from src import tableau_helper_functions as helper
-        from src import utils
-        import neater_cnc_tableau as cnc
         '''
 
         # set n <= K
@@ -80,12 +77,12 @@ with open("generating_stab_tableaus.txt", "w") as f_out:
                 print(f"Stabilizer in decomposition: {i+1}\n")
                 print(f"Quasiprobability weight: {W[i]}\n")
                 # Identify stabilizer elements and value assignment:
-                omega = [(utils.Pauli.from_basis_order(n, j).bsf) for j in range((M.shape)[0]) if M[j,i] != 0]
+                omega = [(helper.get_pauli_vec_from_index(n, j).bsf) for j in range((M.shape)[0]) if M[j,i] != 0]
                 gamma = [to_bits[np.sign(M[j,i])] for j in range((M.shape)[0]) if M[j,i] != 0]
 
                 # print omega elements:
                 for a in omega:
-                    print(f"Pauli Operator: {utils.pauli_bsf_to_str(a)}")
+                    print(f"Pauli Operator: {helper.pauli_binary_vec_to_str(a)}")
 
                 # Convert omega elements to tuples of int
                 value_assignment = dict(
