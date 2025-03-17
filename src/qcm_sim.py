@@ -8,7 +8,7 @@ import src.qasm_prep as prep
 import src.qcm_functions as functions
 import src.compile_keys as keys
 import src.tableau_helper_functions as helper
-import src.updated_cnc_tableau as cnc
+import src.cnc_simulator as cnc
 
 
 def run_qcm(msi_qasm_string: str = None, file_loc: str = None, 

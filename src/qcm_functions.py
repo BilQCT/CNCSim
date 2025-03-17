@@ -1,6 +1,6 @@
 import re
 import copy
-import src.updated_cnc_tableau as cnc
+import src.cnc_simulator as cnc
 import numpy as np
 
 #################################################################
