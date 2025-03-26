@@ -1,5 +1,12 @@
 import numpy as np
 from random import choice
+import sys, os
+import chp as chp
+
+# Add the parent directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname('tests_updated/test_functions.py'), '..')))
+
+from src import cnc_simulator as cnc
 
 ##########################################
 #                                        #
@@ -87,6 +94,109 @@ def apply_sequence_of_clifford_chp(simulator, sequence):
         elif gate.startswith('cnot'):
             control, target = map(int, gate.split('_')[1:])
             simulator.cnot(control, target)
+
+
+
+
+##########################################
+#                                        #
+#     Full Simulation Functions          #
+#                                        #
+##########################################
+
+def simulate_init(n, beta, m, sequence=None):
+    """
+    Initialization only: set up the simulator by generating (or using a provided)
+    gate sequence, applying it, and preparing measurement bases.
+    
+    Parameters:
+        n (int): Number of qubits.
+        beta (float): Scaling parameter for the gate sequence.
+        m (int): Simulator parameter (e.g., number of auxiliary qubits).
+        sequence (list, optional): If provided, use this gate sequence instead of generating one.
+    
+    Returns:
+        tuple: (simulator, measurement_bases, sequence)
+    """
+    # Use provided sequence or generate a new one
+    if sequence is None:
+        sequence = generate_gate_sequence(n, beta)
+    simulator = cnc.CncSimulator(n, m)
+    apply_sequence_of_clifford(simulator, sequence)
+    # Prepare measurement bases: horizontal stack of identity and zero matrix
+    zero_matrix = np.zeros((n, n), dtype=int)
+    identity_matrix = np.eye(n, dtype=int)
+    measurement_bases = np.hstack((identity_matrix, zero_matrix))
+    return simulator, measurement_bases, sequence
+
+def simulate_full(n, beta, m, sequence=None):
+    """
+    Full simulation: runs initialization (using the same gate sequence if provided)
+    and then performs the measurement loop.
+    
+    Parameters:
+        n (int): Number of qubits.
+        beta (float): Scaling parameter for the gate sequence.
+        m (int): Simulator parameter.
+        sequence (list, optional): If provided, use this gate sequence.
+    
+    Returns:
+        None
+    """
+    simulator, measurement_bases, sequence = simulate_init(n, beta, m, sequence)
+    for base in range(measurement_bases.shape[0]):
+        simulator.measure(measurement_bases[base, :])
+    return sequence  # Optionally return the sequence for consistency
+
+
+
+
+
+##########################################
+#                                        #
+#     Full CHP Simulation Functions      #
+#                                        #
+##########################################
+
+def simulate_init_chp(n, beta, sequence=None):
+    """
+    Initialization only: set up the simulator by generating (or using a provided)
+    gate sequence, applying it, and preparing measurement bases.
+    
+    Parameters:
+        n (int): Number of qubits.
+        beta (float): Scaling parameter for the gate sequence.
+        m (int): Simulator parameter (e.g., number of auxiliary qubits).
+        sequence (list, optional): If provided, use this gate sequence instead of generating one.
+    
+    Returns:
+        tuple: (simulator, measurement_bases, sequence)
+    """
+    # Use provided sequence or generate a new one
+    if sequence is None:
+        sequence = generate_gate_sequence(n, beta)
+    simulator = chp.ChpSimulator(n)
+    apply_sequence_of_clifford_chp(simulator, sequence)
+    return simulator, sequence
+
+def simulate_full_chp(n, beta, sequence=None):
+    """
+    Full simulation: runs initialization (using the same gate sequence if provided)
+    and then performs the measurement loop.
+    
+    Parameters:
+        n (int): Number of qubits.
+        beta (float): Scaling parameter for the gate sequence.
+        m (int): Simulator parameter.
+        sequence (list, optional): If provided, use this gate sequence.
+    
+    Returns:
+        None
+    """
+    simulator, sequence = simulate_init_chp(n, beta, sequence)
+    for qubit in range(n):
+        simulator.measure(qubit)
+    return sequence  # Optionally return the sequence for consistency
 
 
 

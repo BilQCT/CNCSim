@@ -27,6 +27,8 @@ n_max = 2401   # n from 200 to 2400
 n_delta = 200
 n_values = range(n_min, n_max, n_delta)
 
+repeat = 3  # number of repetitions
+
 print(f"Generating results for varying m by increments of n/{k}\n Min. n = {n_min}, Max. n = {n_max}\n")
 
 results = []  # Reset results list
@@ -38,30 +40,23 @@ for n in n_values:
     m_values = [0, 1] + [int(r * n / k) for r in range(1, k+1)]
     for m in m_values:
         print(f"Running simulation for m={m}, n={n}")
-        # Initialize the CNC simulator for current n and m
-        simulator = cnc.CncSimulator(n, m)
-        # Apply the generated gate sequence
-        apply_sequence_of_clifford(simulator, sequence)
-        # Prepare measurement bases (concatenation of identity and zero matrices)
-        zero_matrix = np.zeros((n, n), dtype=int)
-        identity_matrix = np.eye(n, dtype=int)
-        measurement_bases = np.hstack((identity_matrix, zero_matrix))
-        # Setup code string for timeit
-        setup_code = f"""
-import numpy as np
-from __main__ import simulator, measurement_bases
-"""
-        # Statement to measure: perform measurement on each basis vector
-        stmt_code = """
-for base in range(measurement_bases.shape[0]):
-    simulator.measure(measurement_bases[base, :])
-"""
-        # Time the execution and compute average time per measurement
-        repeat = iterations
-        execution_time = timeit.timeit(stmt=stmt_code, setup=setup_code, number=repeat)
-        avg_time = execution_time / (repeat * n)
-        print(f"Average time per measurement ({repeat} iterations) for beta={beta:.1f}, n={n}: {avg_time:.6f} seconds \n")
-        # Store results as a tuple (beta, n, m, average_time)
+        # Generate a random sequence of Clifford gates for the current parameters
+        sequence = generate_gate_sequence(n, beta)
+        
+        # Time the full simulation (initialization + measurement)
+        full_time = timeit.timeit(lambda: simulate_full(n, beta, m), number=repeat)
+        
+        # Time the initialization only
+        init_time = timeit.timeit(lambda: simulate_init(n, beta, m), number=repeat)
+        
+        # The measurement time is full_time minus init_time
+        measurement_time = full_time - init_time
+        # Calculate average time per measurement by dividing by number of measurement operations (n)
+        avg_time = measurement_time / (n*repeat)
+        
+        print(f"Full simulation time: {full_time:.6f} s, Initialization time: {init_time:.6f} s")
+        print(f"Adjusted measurement time per measurement for beta={beta:.1f}, n={n}: {avg_time:.6f} seconds\n")
+        
         results.append((beta, n, m, avg_time))
 
 # Save the results for fixed beta and varying m
@@ -98,7 +93,7 @@ for key in groups:
 # Define group labels (adjust for k = 4)
 labels = ["m = 0", "m = 1", "m = n/2", "m = 3n/4", "m = n", "Extra"]
 
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(10, 6))
 for i in range(k+2):
     if groups[i].size > 0:
         plt.plot(groups[i][:, 0], groups[i][:, 1], marker='o', label=labels[i])
@@ -107,4 +102,5 @@ plt.ylabel("Average Time per Measurement (s)")
 plt.title("CNC Simulation: Average Time vs n (Varying m)")
 plt.legend()
 plt.grid(True)
+plt.savefig(f"./figures/cnc_measurement_plot_n_{n_min}_{n_max}_{n_delta}_m_{k}_beta_{beta}.png", format="png", dpi=300)
 plt.show()
