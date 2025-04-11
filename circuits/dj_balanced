@@ -1,5 +1,5 @@
 from qiskit import QuantumCircuit
-def create_balanced(toff_count):
+def create_balanced_oracle(toff_count):
     n_qubits=3*toff_count+1
     oracle=QuantumCircuit(n_qubits)
     for i in range(0,n_qubits-1,3):
