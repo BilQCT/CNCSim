@@ -37,9 +37,34 @@ def create_constant_oracle(n_qubits, output):
         oracle.x(n_qubits)
 
     return oracle
+def create_balanced_oracle(toff_count, n_qubits):
+    """
+    Creates a 'balanced' oracle.
 
+    Half of the input bit patterns output 0, and the other half output 1.
 
-def create_balanced_oracle(n_qubits):
+    Args:
+        toff_count (int): The number of Toffoli gates in the desired oracle.
+        n_qubits (int): The number of qubits int the oracle.
+
+    Returns:
+        QuantumCircuit: A quantum circuit implementing the balanced oracle.
+    """
+    
+    oracle=QuantumCircuit(n_qubits)
+    toff_part=3*toff_count+1
+    if n_qubits>=toff_part:
+        for i in range(0,toff_part-1,3):
+            oracle.ccx(i, i+1, i+2)
+            oracle.cx(i+2, n_qubits-1)
+        for i in range(toff_part-1,n_qubits-1,1):
+            oracle.cx(i,n_qubits-1)
+
+        return oracle
+    else:
+        print("The total qubit count must be greater or equal to three times the number of Toffoli gates plus one.")
+
+def create_balanced_oracle2(n_qubits):
     """
     Creates a 'balanced' oracle.
 
@@ -113,7 +138,7 @@ def deutsch_jozsa_circuit(oracle, n_qubits):
     return dj_circuit
 
 
-def run_deutsch_jozsa_test(n_qubits, oracle_type='constant', constant_output=0):
+def run_deutsch_jozsa_test(n_qubits,toff_count, oracle_type='constant', constant_output=0):
     """
     Builds and runs the Deutsch-Jozsa circuit for either a constant oracle
     or a balanced oracle, then prints the results.
@@ -128,7 +153,7 @@ def run_deutsch_jozsa_test(n_qubits, oracle_type='constant', constant_output=0):
         oracle = create_constant_oracle(n_qubits, constant_output)
         print(f"Using a CONSTANT oracle that always returns {constant_output}")
     else:
-        oracle = create_balanced_oracle(n_qubits)
+        oracle = create_balanced_oracle(toff_count,n_qubits)
         print("Using a BALANCED oracle.")
 
     # Create the Deutsch-Jozsa circuit
@@ -183,7 +208,7 @@ def main():
 
     """
     # Test deutsch jozsa on constant:
-    qc = run_deutsch_jozsa_test(n_qubits=n, oracle_type='constant', constant_output=0)
+    qc = run_deutsch_jozsa_test(n_qubits=n, toff_count, oracle_type='constant', constant_output=0)
 
     print(qc,"\n")
 
@@ -227,7 +252,9 @@ def main():
     print(f"Quantum Circuit:\n")
 
     # Test deutsch jozsa on constant:
-    qc = run_deutsch_jozsa_test(n_qubits=n, oracle_type='balanced', constant_output=0)
+    toff_count=int(input("Enter the number of the Toffoli gates"))
+    n_qubits=int(input("Enter the number of qubits"))
+    qc = run_deutsch_jozsa_test(n_qubits=n,toff_count, oracle_type='balanced', constant_output=0)
 
     print(qc,"\n")
 
