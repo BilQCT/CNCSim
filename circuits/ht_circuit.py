@@ -3,7 +3,6 @@ import argparse
 import re
 import numpy as np
 from qiskit import QuantumCircuit, Aer, execute
-from ccz_7T_decomposition import *
 
 # suppress qiskit 1.0 deprecation warnings:
 import warnings

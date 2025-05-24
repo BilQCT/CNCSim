@@ -190,6 +190,11 @@ def compute_total_negativity(n_target):
         return negativity_k_cnc * (negativity_n_stab ** r_stab) * negativity_s_stab
 
 
+def compute_hoeffding_samples(t, epsilon, prob_fail):
+    negativity = compute_total_negativity(t)
+    return int((negativity**2) * (2 / (epsilon**2)) * np.log(2 / prob_fail))
+
+
 def sample_single_key(n_target):
     """
     Sample and compose a single composite key using tableau composition.
