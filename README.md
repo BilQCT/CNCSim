@@ -40,7 +40,7 @@ To view the generated documentation, open the `index.html` file in the `/docs/_b
 
 
 
-# Patent Pending Notice
+## Patent Pending Notice
 This repository contains material related to our arXiv preprint arXiv:2506.04033. Please note that the technology described herein is subject to a pending patent (application number: 2025/007146). Licensed under MIT, which does not grant patent rights. 
 
 For inquiries: cihan.okay@bilkent.edu.tr.
