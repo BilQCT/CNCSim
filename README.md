@@ -33,6 +33,14 @@ Then, run the following command in the terminal:
     make html
 ```
 
+
 To view the generated documentation, open the `index.html` file in the `/docs/_build/html` folder.
 
 **Note:** If a new file is added into .rst files need to be created in the `docs` folder. To do that, one can create a `.rst` file in the `docs` folder and add its name into `modules.rst` file. 
+
+
+
+# Patent Pending Notice
+This repository contains material related to our arXiv preprint arXiv:2506.04033. Please note that the technology described herein is subject to a pending patent (application number: 2025/007146). Licensed under MIT, which does not grant patent rights. 
+
+For inquiries: cihan.okay@bilkent.edu.tr.
