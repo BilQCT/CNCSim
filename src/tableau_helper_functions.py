@@ -361,39 +361,6 @@ def find_independent_subset(vectors: list[np.ndarray]) -> np.ndarray:
 
     return np.array(independent_subset, dtype=int)
 
-# TODO: Decide if we want to keep the not-used naive approach
-def find_complementary_subspace_naive(
-    v_basis: list[np.ndarray], n: int
-) -> np.ndarray:
-    """
-    Finds a basis for the complement subspace W such that U = V ⊕ W, using a
-    naive approach.
-
-    Args:
-        v_basis (List[np.ndarray]): Basis of subspace V (each vector of length
-            2n).
-        n (int): Half the dimension of the space U (i.e. U is 2n-dimensional
-            over GF(2)).
-
-    Returns:
-        np.ndarray: Array representing the complement subspace basis.
-    """
-    # generate all n-dimensional vectors over GF(2):
-    u_vectorspace = [
-        np.array(v, dtype=int) for v in product([0, 1], repeat=2*n)
-    ]
-    u_vectorspace = set(tuple(u.tolist()) for u in u_vectorspace)
-
-    # generate all vectors in subspace V:
-    v_subspace = generate_subspace_efficient(v_basis)
-    print(f"Size of subspace: {len(v_subspace)}")
-    v_subspace = set(tuple(v.tolist()) for v in v_subspace)
-
-    # take set difference:
-    w_subspace = list(u_vectorspace - v_subspace)
-
-    return np.array(w_subspace, dtype=int)
-
 
 def find_complementary_subspace(
     v_basis: list[np.ndarray], n: int
@@ -438,40 +405,6 @@ def find_complementary_subspace(
             rank_v = V_matrix.shape[0]  # This should be n+m
 
     return np.array(complement_basis, dtype=int)
-
-# TODO: Decide if we want to keep the not-used naive approach
-def generate_destabilizer_basis_naive(
-    d_subspace: list[np.ndarray], w_basis: list[np.ndarray]
-) -> list[np.ndarray]:
-    """
-    Generates a new destabilizer basis from the provided subspace and
-    generating basis, using a naive approach.
-
-    Args:
-        d_subspace (List[np.ndarray]): List of vectors from the complementary
-            subspace.
-        w_basis (List[np.ndarray]): List of basis vectors from the generating
-            subspace.
-
-    Returns:
-        List[np.ndarray]: Updated destabilizer basis.
-    """
-    new_destabilizer_basis = []
-
-    for v in d_subspace:
-        commuting_vectors = [
-            w for w in w_basis
-            if symplectic_inner_product(v, w) == 0
-        ]
-        anticommuting_vectors = [
-            w for w in w_basis
-            if not any(np.array_equal(w, cv) for cv in commuting_vectors)
-        ]
-
-        if len(anticommuting_vectors) == 0:
-            new_destabilizer_basis.append(v)
-
-    return new_destabilizer_basis
 
 
 def generate_destabilizer_basis(
@@ -627,13 +560,6 @@ def is_symplectic(U: np.ndarray, V: np.ndarray, S: np.ndarray) -> bool:
     return np.all(symplectic_check == np.eye(dim_U, dtype=int))
 
 
-
-#################################################################
-#################################################################
-#################################################################
-
-# TODO: Merge the functions below into the CNCSimulator class
-# tableau1: left and stabilizer, tableau2: right and cnc/stabilizer.
 def left_compose(tableau1,tableau2,m1,m2):
 
     # check if composition is valid:
