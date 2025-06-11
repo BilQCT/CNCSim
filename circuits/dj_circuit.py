@@ -3,7 +3,7 @@ import argparse
 import re
 import numpy as np
 from qiskit import QuantumCircuit, Aer, execute
-from .ccz_7T_decomposition import *
+from .toff_7T_decomposition import *
 
 # suppress qiskit 1.0 deprecation warnings:
 import warnings
@@ -65,31 +65,7 @@ def create_balanced_oracle(toff_count, n_qubits):
     else:
         print("The total qubit count must be greater or equal to three times the number of Toffoli gates plus one.")
 
-def create_balanced_oracle2(n_qubits):
-    """
-    Creates a 'balanced' oracle.
 
-    Half of the input bit patterns output 0, and the other half output 1.
-
-    For demonstration, this function implements a simple balanced function
-    by placing X-gates on the first qubit of the input as a control,
-    inverting the output qubit for half of the inputs.
-
-    Args:
-        n_qubits (int): The number of input qubits.
-
-    Returns:
-        QuantumCircuit: A quantum circuit implementing the balanced oracle.
-    """
-    oracle = QuantumCircuit(n_qubits + 1)
-
-    # We'll use a simple pattern: if the first qubit is 1, flip the output.
-    # This means for half of the possible inputs, the output changes.
-    oracle.ccx(0,1,2)
-    for i in range(2,n_qubits):
-        oracle.cx(i,i+1)
-
-    return oracle
 
 
 def deutsch_jozsa_circuit(oracle, n_qubits):
@@ -133,7 +109,7 @@ def deutsch_jozsa_circuit(oracle, n_qubits):
         dj_circuit.h(qubit)
 
     # 6. Finally, measure the input qubits.
-    for qubit in range(n_qubits):
+    for qubit in range(n_qubits-1):
         dj_circuit.measure(qubit, qubit)
 
     return dj_circuit
@@ -152,113 +128,11 @@ def run_deutsch_jozsa_test(n_qubits,toff_count,oracle_type,constant_output):
     # Create the chosen oracle
     if oracle_type == 'constant':
         oracle = create_constant_oracle(n_qubits, constant_output)
-        print(f"Using a CONSTANT oracle that always returns {constant_output}")
     else:
         oracle = create_balanced_oracle(toff_count,n_qubits)
-        print("Using a BALANCED oracle.")
 
     # Create the Deutsch-Jozsa circuit
     dj_circ = deutsch_jozsa_circuit(oracle, n_qubits)
-
-    print(f"Quantum Circuit:\n")
-    print(dj_circ,"\n")
-    
-    # Simulate the circuit after decomposition
-    simulator = Aer.get_backend('qasm_simulator')
-    job = execute(dj_circ, simulator, shots=4096)
-    result = job.result()
-    counts = result.get_counts()
-
-    print(counts,"\n")
-
-    # Interpret the measurement
-    # If all measured bits are 0 (e.g., '000' for 3 qubits), then the
-    # function is constant. Otherwise, it is balanced.
-    measured_result = max(counts, key=counts.get)  # The most likely outcome
-    if measured_result[1:] == '0' * (n_qubits-1):
-        print("Conclusion: f(x) is CONSTANT.")
-    else:
-        print("Conclusion: f(x) is BALANCED.")
+    dj_circ = apply_toff_via_7t_decomposition(dj_circ)
     
     return dj_circ
-
-
-def main():
-    import os
-    import sys
-
-    # Add the parent directory to sys.path
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname('circuits/dj_circuit.py'), '..')))
-    
-    import qcm_sim as sim
-    from circuits import toff_7T_decomposition as toff
-
-    parser = argparse.ArgumentParser(description="Run T Circuit.")
-    
-    # Optional argument to save QASM
-    parser.add_argument(
-        "-b", "--save_qasm", action="store_true", help="Save T QASM"
-    )
-
-    args = parser.parse_args()
-
-    n = 10
-
-    print(f"Number of qubits: {n}\n")
-
-    
-    print(f"Quantum Circuit:\n")
-
-
-    print(f"Quantum Circuit:\n")
-
-    # Test deutsch jozsa on constant:
-    toff_count=int(input("Enter the number of the Toffoli gates"))
-    n_qubits=int(input("Enter the number of qubits"))
-    qc = run_deutsch_jozsa_test(n_qubits,toff_count, oracle_type='balanced', constant_output=0)
-
-    print(qc,"\n")
-
-    # Simulate the circuit after decomposition
-    simulator = Aer.get_backend('qasm_simulator')
-    job = execute(qc, simulator, shots=4096)
-    result = job.result()
-    counts = result.get_counts()
-
-    print("Qiskit Simulation Results:")
-    #print(counts)
-    percentages = [(k, v / sum(counts.values()))
-                        for k, v in counts.items()]
-    print(f"Percentages: {percentages}\n")
-
-    # Apply the 7T decomposition if applicable
-    qc_with_decomposition = toff.apply_toff_via_7t_decomposition(qc)
-
-    print("With decomposition:")
-    print(qc_with_decomposition)
-
-    qasm_code = qc_with_decomposition.qasm()
-
-    #print(qasm_code)
-
-    # Replace 'tdg' with 's; s; s; t;'
-    modified_qasm_code = re.sub(r'\btdg\b', 's;\ns;\ns;\nt;', qasm_code)
-
-    with open(f"./qasm_files/dj_10.qasm", "w") as f:
-        f.write(modified_qasm_code)
-
-
-    print("CNC Tableau Simulation Results:")
-
-    # Specify the directory where the QASM file is located.
-    file_directory = "./qasm_files/"
-    filename = "dj_10"
-    qasm_file = filename + ".qasm"
-    clifford_filename = filename + "_msi.qasm"
-
-    # Run the gadgetized circuit simulation.
-    counts, outputs, born_rule_estimates, shot_times = sim.run_qcm(file_directory, qasm_file, clifford_filename, shots=4096)
-
-
-if __name__ == "__main__":
-    main()
