@@ -16,29 +16,6 @@ To install the dependencies for a user, run the following command in the termina
     pip install -r requirements.txt
 ```
 
-#### Installing Dependencies for Developer
-To install the dependencies for a developer, run the following command in the terminal:
-```bash
-    pip install -r requirements-dev.txt
-```
-
-
-#### Creating the Documentation
-To create the documentation, first one should change the directory to the `docs` folder:
-```bash
-    cd docs
-```
-Then, run the following command in the terminal:
-```bash
-    make html
-```
-
-
-To view the generated documentation, open the `index.html` file in the `/docs/_build/html` folder.
-
-**Note:** If a new file is added into .rst files need to be created in the `docs` folder. To do that, one can create a `.rst` file in the `docs` folder and add its name into `modules.rst` file. 
-
-
 
 ## Patent Pending Notice
 This repository contains material related to our arXiv preprint arXiv:2506.04033. Please note that the technology described herein is subject to a pending patent (application number: 2025/007146). Licensed under MIT, which does not grant patent rights. 
