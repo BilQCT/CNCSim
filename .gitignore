@@ -167,3 +167,4 @@ cython_debug/
 large_data/
 qcm_stab_sim.py
 extra_files/
+tests_updated/
